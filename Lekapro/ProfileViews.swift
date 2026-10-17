@@ -107,6 +107,22 @@ struct ProfileEditor: View {
                 Section("Trình duyệt") {
                     TextField("https://example.com", text: $profile.homeURL).keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                     Toggle("Yêu cầu giao diện máy tính", isOn: $profile.desktopMode)
+                    Picker("Chữ tối thiểu", selection: $profile.minimumFontSize) {
+                        Text("Mặc định").tag(Double?.none)
+                        ForEach([16.0, 20.0, 24.0, 32.0], id: \.self) { size in
+                            Text("\(Int(size)) điểm").tag(Optional(size))
+                        }
+                    }
+                    Picker("Múi giờ", selection: $profile.timeZoneID) {
+                        Text("Theo thiết bị").tag(String?.none)
+                        ForEach(["UTC", "Asia/Ho_Chi_Minh", "Asia/Tokyo", "America/Chicago", "Europe/Berlin"], id: \.self) { zone in
+                            Text(zone).tag(Optional(zone))
+                        }
+                    }
+                    if profile.timeZoneID != nil {
+                        Text("Múi giờ riêng dùng cấu hình WebKit nội bộ; app báo lỗi nếu hệ điều hành không hỗ trợ.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
                 }
                 Section {
                     Picker("User-Agent", selection: Binding(get: {

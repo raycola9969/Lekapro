@@ -15,10 +15,17 @@ final class BrowserSession: ObservableObject, Identifiable {
     private var started = false
     private var blocker: WKContentRuleList?
     private var saveTask: Task<Void, Never>?
+    private let processPool: WKProcessPool?
     var selectedTab: BrowserTab? { tabs.first { $0.id == selectedTabID } }
 
     init(profile: BrowserProfile, store: ProfileStore) throws {
         self.id = profile.id; self.profile = profile; self.store = store
+        if let zone = profile.timeZoneID {
+            guard let pool = try LegacyWebKitBridge.makeProcessPool(timeZone: zone) else {
+                throw BrowserError.invalid("Không tạo được ngữ cảnh múi giờ riêng.")
+            }
+            processPool = pool
+        } else { processPool = nil }
         if let proxyID = profile.proxyID, store.proxy(proxyID) == nil { throw BrowserError.invalid("Proxy của hồ sơ không còn tồn tại.") }
         dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID))
     }
@@ -43,6 +50,8 @@ final class BrowserSession: ObservableObject, Identifiable {
         guard tabs.count < 30 else { message = "Tối đa 30 tab mỗi hồ sơ."; return }
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = dataStore
+        if let processPool { configuration.processPool = processPool }
+        if let size = profile.minimumFontSize { configuration.preferences.minimumFontSize = CGFloat(size) }
         configuration.allowsInlineMediaPlayback = true
         configuration.defaultWebpagePreferences.preferredContentMode = profile.desktopMode ? .desktop : .mobile
         if let blocker { configuration.userContentController.add(blocker) }

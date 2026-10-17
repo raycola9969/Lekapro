@@ -4,6 +4,22 @@
 // Runtime-checked WebKit SPI for locally installed iOS 16 builds.
 // All paths belong to this app's own Application Support container.
 @implementation LegacyWebKitBridge
++ (WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone error:(NSError **)error {
+    @try {
+        Class cls = NSClassFromString(@"_WKProcessPoolConfiguration");
+        SEL setter = NSSelectorFromString(@"setTimeZoneOverride:");
+        SEL initializer = NSSelectorFromString(@"_initWithConfiguration:");
+        if (![NSTimeZone timeZoneWithName:timeZone] || !cls || ![cls instancesRespondToSelector:setter] || ![WKProcessPool instancesRespondToSelector:initializer]) {
+            @throw [NSException exceptionWithName:@"UnsupportedTimeZone" reason:@"WebKit cannot configure this profile time zone on this OS." userInfo:nil];
+        }
+        id configuration = [[cls alloc] init];
+        ((void (*)(id, SEL, id))objc_msgSend)(configuration, setter, timeZone);
+        return ((id (*)(id, SEL, id))objc_msgSend)([WKProcessPool alloc], initializer, configuration);
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.LegacyWebKit" code:2 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Time zone configuration failed."}];
+        return nil;
+    }
+}
 + (NSDictionary<NSString *, NSNumber *> *)capabilities {
     Class cls = NSClassFromString(@"_WKWebsiteDataStoreConfiguration");
     return @{

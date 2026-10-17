@@ -66,6 +66,8 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var homeURL = "https://www.google.com"
     var desktopMode = false
     var userAgent: String?
+    var timeZoneID: String?
+    var minimumFontSize: Double?
     var proxyID: UUID?
     var privacy = PrivacySettings()
     var tabs: [SavedTab] = []

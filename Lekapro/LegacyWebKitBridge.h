@@ -9,6 +9,9 @@ NS_ASSUME_NONNULL_BEGIN
                                         error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(makeStore(at:proxy:));
 + (NSDictionary<NSString *, NSNumber *> *)capabilities;
++ (nullable WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone
+                                                error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(makeProcessPool(timeZone:));
 @end
 
 NS_ASSUME_NONNULL_END

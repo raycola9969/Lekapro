@@ -49,6 +49,12 @@ final class ProfileStore: ObservableObject {
             }
             try AddressInput.validateHome(profile.homeURL)
             try UserAgentPreset.validate(profile.userAgent)
+            if let zone = profile.timeZoneID, TimeZone(identifier: zone) == nil {
+                throw BrowserError.invalid("Múi giờ không hợp lệ.")
+            }
+            if let size = profile.minimumFontSize, !size.isFinite || !(0...32).contains(size) {
+                throw BrowserError.invalid("Cỡ chữ tối thiểu nằm trong 0–32 điểm.")
+            }
             if let id = profile.proxyID, !database.proxies.contains(where: { $0.id == id }) {
                 throw BrowserError.invalid("Không tìm thấy proxy của hồ sơ.")
             }
