@@ -159,6 +159,26 @@ final class BrowserTests: XCTestCase {
         let preservedValues = try await DiagnosticSiteState.localValues(reopenedSource)
         XCTAssertEqual(preservedValues["_vid_t"], "fixture-A")
     }
+    func testNetworkOnlyResetRetainsDisposablePersistentTokens() async throws {
+        var profile = BrowserProfile(); profile.tags = "qa-disposable-site-state"
+        let dataStore = try DataStoreFactory.make(id: profile.dataStoreID, forceLegacy: true)
+        let document = try await DiagnosticSiteState.originDocument(store: dataStore)
+        defer { document.close(); DataStoreFactory.release(id: profile.dataStoreID) }
+        _ = try await document.webView.evaluateJavaScript("localStorage.setItem('_vid_t','network-fixture')")
+        let cookie = CookieRecord(name: "_vid_t", value: "network-cookie", domain: "fingerprint.com",
+            expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
+        _ = try await CookieService.importData(JSONEncoder().encode([cookie]), into: dataStore)
+        let result = try await DiagnosticSiteState.reset(.networkOnly, profile: profile, store: dataStore)
+        let before = try XCTUnwrap(result["stateBefore"] as? NSDictionary)
+        let after = try XCTUnwrap(result["stateAfter"] as? NSDictionary)
+        XCTAssertEqual(before["localIdentityTokens"] as? NSDictionary, after["localIdentityTokens"] as? NSDictionary)
+        XCTAssertEqual(before["cookieIdentityTokens"] as? NSArray, after["cookieIdentityTokens"] as? NSArray)
+        XCTAssertEqual(result["requestedNativeDataTypes"] as? [String], [])
+        let beforePID = try XCTUnwrap(result["networkPIDBefore"] as? Int32)
+        let afterPID = try XCTUnwrap(result["networkPIDAfter"] as? Int32)
+        XCTAssertGreaterThan(beforePID, 0); XCTAssertGreaterThan(afterPID, 0); XCTAssertNotEqual(beforePID, afterPID)
+        XCTAssertEqual(after["cookieCount"] as? Int, 1)
+    }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()
         let baseline = try await sampleContext(defaultProfile)

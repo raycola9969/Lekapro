@@ -20,7 +20,7 @@ enum DiagnosticSiteState {
         try await withCheckedThrowingContinuation { continuation in
             let pending = Pending(continuation)
             let timeout = Task { @MainActor in
-                do { try await Task.sleep(for: .seconds(30)) } catch { return }
+                do { try await Task.sleep(for: .seconds(120)) } catch { return }
                 pending.finish(.failure(BrowserError.invalid("State experiment timed out: " + label)))
             }
             operation { result in
@@ -48,6 +48,7 @@ enum DiagnosticSiteState {
     enum Reset: String, Codable {
         case cookies, localStorage, indexedDB, caches, allSiteData, cookiesAndLocalStorage
         case allNativeData, allNativeDataAndNetwork
+        case networkOnly, allSiteDataAndNetwork
 
         var dataTypes: Set<String> {
             switch self {
@@ -58,6 +59,8 @@ enum DiagnosticSiteState {
             case .allSiteData: return WKWebsiteDataStore.allWebsiteDataTypes()
             case .cookiesAndLocalStorage: return [WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage]
             case .allNativeData, .allNativeDataAndNetwork: return WKWebsiteDataStore.allWebsiteDataTypes()
+            case .networkOnly: return []
+            case .allSiteDataAndNetwork: return WKWebsiteDataStore.allWebsiteDataTypes()
             }
         }
     }
@@ -185,12 +188,13 @@ enum DiagnosticSiteState {
         if action == .allNativeData || action == .allNativeDataAndNetwork {
             types = try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
         } else { types = action.dataTypes }
-        try await remove(types: types, from: store)
+        if !types.isEmpty { try await remove(types: types, from: store) }
+        let restartsNetwork = [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
         let processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store)
-        if action == .allNativeDataAndNetwork { try LegacyWebKitBridge.restartDiagnosticNetwork(store) }
+        if restartsNetwork { try LegacyWebKitBridge.restartDiagnosticNetwork(store) }
         let stateAfter = try await snapshot(store: store)
         let processAfter = LegacyWebKitBridge.diagnosticNetworkPID(store)
-        if action == .allNativeDataAndNetwork, processBefore <= 0 || processAfter <= 0 || processBefore == processAfter {
+        if restartsNetwork, processBefore <= 0 || processAfter <= 0 || processBefore == processAfter {
             throw BrowserError.invalid("The diagnostic network process did not restart.")
         }
         let after = try await cookies(in: store)
