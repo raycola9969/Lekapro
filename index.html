@@ -6,7 +6,7 @@
 <title>Đo Storage API</title>
 <style>body{max-width:720px;margin:24px auto;padding:0 18px;background:#f3f5f8;color:#192939;font:17px/1.5 system-ui}h1{font-size:27px}button,select,textarea{font:inherit;padding:12px;border:1px solid #8596a7;border-radius:10px}button{background:#163e72;color:white;cursor:pointer}select{background:white}textarea{box-sizing:border-box;width:100%;height:330px;font:13px/1.5 monospace;background:white;color:#192939}p{margin:16px 0}#status{font-weight:600}</style>
 <h1>Đo Storage API</h1>
-<p>Mở cùng trang này trong từng hồ sơ ExitAnty và Safari để so sánh. Trang chỉ đọc API; không ghi dữ liệu thử, không gửi kết quả lên máy chủ.</p>
+<p id="intro">Mở cùng trang này trong từng hồ sơ ExitAnty và Safari để so sánh. Trang chỉ đọc API; không ghi dữ liệu thử. Khi mở link thường, kết quả chỉ nằm trong trang.</p>
 <label>Hồ sơ <select id="slot"><option>A</option><option>B</option><option>Safari</option><option>Lekapro</option></select></label>
 <p><button id="measure">Đo</button> <button id="copy" disabled>Sao chép JSON</button></p>
 <p id="status">Chọn hồ sơ rồi bấm Đo.</p>
@@ -17,6 +17,18 @@
 const el=id=>document.getElementById(id);
 const slot=new URLSearchParams(location.search).get('p');
 if(['A','B','Safari','Lekapro'].includes(slot))el('slot').value=slot;
+let receiver;
+try{
+  const target=new URLSearchParams(location.hash.slice(1)).get('receiver');
+  if(target){
+    const url=new URL(target);
+    if(!['http:','https:'].includes(url.protocol)||url.username||url.password)throw new Error('Receiver URL not allowed');
+    receiver=url;
+    el('measure').textContent='Đo và gửi';
+    el('intro').textContent='Trang chỉ đọc API và gửi kết quả về máy tính của bạn qua Tailscale khi bấm nút bên dưới. Không gửi kết quả cho GitHub.';
+    el('status').textContent='Kết quả sẽ được gửi về máy tính '+url.hostname+' qua Tailscale khi bấm Đo và gửi.';
+  }
+}catch(_){el('status').textContent='Địa chỉ máy nhận không hợp lệ. Chỉ đo tại chỗ.';}
 async function storageSample(scope){
   const manager=scope.navigator.storage;
   const value={secureContext:scope.isSecureContext,available:!!manager,estimateSupported:typeof manager?.estimate==='function'};
@@ -57,6 +69,15 @@ el('measure').onclick=async()=>{
     el('result').value=JSON.stringify(result,null,2);
     el('copy').disabled=false;
     el('status').textContent='Đã đo. Bấm Sao chép JSON rồi dán về cuộc trò chuyện.';
+    if(receiver){
+      // Top-level navigation permits the private tailnet receiver without
+      // mixed-content fetch or opening a public tunnel. No result goes to GitHub.
+      const target=new URL(receiver);
+      target.searchParams.set('data',JSON.stringify(result));
+      if(target.href.length>10000)throw new Error('Kết quả quá dài để tự gửi. Hãy sao chép JSON.');
+      el('status').textContent='Đang gửi về máy tính…';
+      location.assign(target.href);
+    }
   }catch(error){el('status').textContent='Lỗi: '+String(error);}finally{el('measure').disabled=false;}
 };
 el('copy').onclick=async()=>{
