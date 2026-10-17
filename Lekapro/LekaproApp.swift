@@ -15,7 +15,10 @@ struct LekaproApp: App {
             .tint(.mint)
             .environmentObject(store)
             .environmentObject(workspace)
-            .task { await DeviceDiagnostics.runOnce() }
+            .task {
+                await DeviceDiagnostics.runOnce()
+                await DeviceNetworkDiagnostics.runIfRequested(store: store, workspace: workspace)
+            }
             .alert("Thông báo", isPresented: Binding(get: { store.errorMessage != nil }, set: { if !$0 { store.errorMessage = nil } })) {
                 Button("Đóng") { store.errorMessage = nil }
             } message: { Text(store.errorMessage ?? "") }

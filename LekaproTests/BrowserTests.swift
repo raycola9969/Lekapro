@@ -64,6 +64,8 @@ final class BrowserTests: XCTestCase {
         let legacy = try ProxyService.legacyConfiguration(for: proxy, password: "example")
         XCTAssertEqual(legacy["SOCKSProxy"] as? String, "127.0.0.1")
         XCTAssertEqual(legacy["SOCKSPassword"] as? String, "example")
+        XCTAssertEqual(legacy["kCFStreamPropertySOCKSUser"] as? String, "test")
+        XCTAssertEqual(legacy["kCFStreamPropertySOCKSPassword"] as? String, "example")
         proxy.port = 70000
         XCTAssertThrowsError(try ProxyService.legacyConfiguration(for: proxy, password: "example"))
     }

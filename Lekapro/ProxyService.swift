@@ -1,4 +1,5 @@
 import Foundation
+import CFNetwork
 import Network
 import WebKit
 
@@ -41,6 +42,8 @@ enum ProxyService {
             if !proxy.username.isEmpty {
                 configuration["SOCKSUser"] = proxy.username
                 configuration["SOCKSPassword"] = password
+                configuration[kCFStreamPropertySOCKSUser as String] = proxy.username
+                configuration[kCFStreamPropertySOCKSPassword as String] = password
             }
         } else {
             configuration["HTTPEnable"] = 1
