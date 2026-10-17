@@ -28,6 +28,19 @@ enum DiagnosticSiteState {
     static func reset(_ action: Reset, profile: BrowserProfile, store: WKWebsiteDataStore) async throws -> [String: Any] {
         #if DEBUG
         try validateTarget(profile)
+        // Legacy iOS16 stores load their persisted cookie session lazily.
+        // Initialize it with local HTML before measuring/removing state. This
+        // makes no request to the site whose identity is being tested.
+        let configuration = WKWebViewConfiguration(); configuration.websiteDataStore = store
+        let warmup = BrowserTab(configuration: configuration)
+        defer { warmup.close() }
+        warmup.webView.loadHTMLString("<!doctype html><title>Disposable state session</title>",
+            baseURL: URL(string: "https://lekapro-state.invalid"))
+        let deadline = Date().addingTimeInterval(20)
+        while warmup.webView.title != "Disposable state session" || warmup.webView.isLoading {
+            guard Date() < deadline else { throw BrowserError.invalid("Disposable state session did not initialize.") }
+            try await Task.sleep(for: .milliseconds(100))
+        }
         let before = await CookieService.all(in: store)
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             store.removeData(ofTypes: action.dataTypes, modifiedSince: .distantPast) { continuation.resume() }
