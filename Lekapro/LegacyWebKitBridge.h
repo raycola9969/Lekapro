@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
                                         error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(makeFontStyle(family:));
 + (void)installFontStyle:(NSObject *)style controller:(WKUserContentController *)controller;
++ (BOOL)applyDiagnosticOptions:(NSDictionary<NSString *, id> *)options
+                 configuration:(WKWebViewConfiguration *)configuration
+                         error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(applyDiagnosticOptions(_:configuration:));
 @end
 
 NS_ASSUME_NONNULL_END

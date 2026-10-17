@@ -4,6 +4,43 @@
 // Runtime-checked WebKit SPI for locally installed iOS 16 builds.
 // All paths belong to this app's own Application Support container.
 @implementation LegacyWebKitBridge
++ (BOOL)applyDiagnosticOptions:(NSDictionary<NSString *, id> *)options configuration:(WKWebViewConfiguration *)configuration error:(NSError **)error {
+    @try {
+#if DEBUG
+        NSDictionary<NSString *, NSString *> *setters = @{
+            @"webAudioEnabled": @"_setWebAudioEnabled:",
+            @"acceleratedDrawing": @"_setAcceleratedDrawingEnabled:",
+            @"allowInstalledFonts": @"_setShouldAllowUserInstalledFonts:",
+            @"allowDesignSystemFonts": @"_setShouldAllowDesignSystemUIFonts:",
+            @"storageAPIEnabled": @"_setStorageAPIEnabled:",
+            @"standalone": @"_setStandalone:"
+        };
+        for (NSString *key in setters) {
+            NSNumber *value = options[key];
+            if (!value) continue;
+            SEL setter = NSSelectorFromString(setters[key]);
+            if (![value isKindOfClass:NSNumber.class] || ![configuration.preferences respondsToSelector:setter]) {
+                @throw [NSException exceptionWithName:@"UnsupportedDiagnosticOption" reason:[@"WebKit cannot apply " stringByAppendingString:key] userInfo:nil];
+            }
+            ((void (*)(id, SEL, BOOL))objc_msgSend)(configuration.preferences, setter, value.boolValue);
+        }
+        NSString *platform = options[@"navigatorPlatform"];
+        if (platform) {
+            SEL setter = NSSelectorFromString(@"_setCustomNavigatorPlatform:");
+            if (![@[@"iPhone", @"iPad", @"MacIntel", @"Linux aarch64", @"Win32"] containsObject:platform] || ![configuration.defaultWebpagePreferences respondsToSelector:setter]) {
+                @throw [NSException exceptionWithName:@"UnsupportedDiagnosticPlatform" reason:@"WebKit cannot apply this navigator platform." userInfo:nil];
+            }
+            ((void (*)(id, SEL, id))objc_msgSend)(configuration.defaultWebpagePreferences, setter, platform);
+        }
+#else
+        if (options.count) @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Engine experiments require a DEBUG build." userInfo:nil];
+#endif
+        return YES;
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.EngineDiagnostic" code:1 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Engine diagnostic configuration failed."}];
+        return NO;
+    }
+}
 + (NSObject *)makeFontStyleWithFamily:(NSString *)family error:(NSError **)error {
     @try {
         Class cls = NSClassFromString(@"_WKUserStyleSheet");

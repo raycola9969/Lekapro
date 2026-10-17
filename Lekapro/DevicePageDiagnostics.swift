@@ -6,7 +6,10 @@ import WebKit
 // Reads rendered DOM and captures WebKit snapshots; never changes page results.
 @MainActor
 enum DevicePageDiagnostics {
-    private struct Request: Decodable { var profileIDs: [UUID] }
+    private struct Request: Decodable {
+        var profileIDs: [UUID]
+        var engineOptionsByProfileID: [String: DiagnosticEngineOptions]?
+    }
     private static var task: Task<Void, Never>?
 
     static func startIfRequested(store: ProfileStore, workspace: BrowserWorkspace) {
@@ -21,7 +24,10 @@ enum DevicePageDiagnostics {
     private static func run(input: URL, folder: URL, store: ProfileStore, workspace: BrowserWorkspace) async {
         let wasIdleTimerDisabled = UIApplication.shared.isIdleTimerDisabled
         UIApplication.shared.isIdleTimerDisabled = true
-        defer { UIApplication.shared.isIdleTimerDisabled = wasIdleTimerDisabled }
+        defer {
+            UIApplication.shared.isIdleTimerDisabled = wasIdleTimerDisabled
+            DiagnosticEngineRegistry.clear()
+        }
         let output = folder.appendingPathComponent("Lekapro-fingerprint-check.json")
         let evidence = folder.appendingPathComponent("Lekapro-fingerprint-evidence", isDirectory: true)
         var result: [String: Any] = ["completed": false, "status": "running",
@@ -44,6 +50,16 @@ enum DevicePageDiagnostics {
             guard request.profileIDs.count == 2, Set(request.profileIDs).count == 2 else {
                 throw BrowserError.invalid("Select exactly two different existing profiles.")
             }
+            var experiments: [UUID: DiagnosticEngineOptions] = [:]
+            for (key, options) in request.engineOptionsByProfileID ?? [:] {
+                guard let id = UUID(uuidString: key), request.profileIDs.contains(id) else {
+                    throw BrowserError.invalid("Engine options must name one of the two requested QA profiles.")
+                }
+                try options.validate()
+                experiments[id] = options
+            }
+            DiagnosticEngineRegistry.set(experiments)
+            if !experiments.isEmpty { result["nativeEngineExperimentsRequested"] = true }
             try FileManager.default.removeItem(at: input)
             try FileManager.default.createDirectory(at: evidence, withIntermediateDirectories: true)
             for (index, id) in request.profileIDs.enumerated() {
@@ -132,6 +148,7 @@ enum DevicePageDiagnostics {
         serverReady: !!(id && agentID === id && serverID === id && agentEvent && agentEvent === serverEvent),
         javascriptUserAgent: navigator.userAgent,
         javascriptContext: {timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+          platform:navigator.platform,webAudioAvailable:typeof OfflineAudioContext === 'function' || typeof webkitOfflineAudioContext === 'function',
           offset:new Date('2026-01-15T12:00:00Z').getTimezoneOffset(),
           hour:new Date('2026-01-15T12:00:00Z').getHours(),
           locale:Intl.DateTimeFormat().resolvedOptions().locale,language:navigator.language,

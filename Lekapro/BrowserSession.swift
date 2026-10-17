@@ -56,6 +56,8 @@ final class BrowserSession: ObservableObject, Identifiable {
         if let fontStyle { LegacyWebKitBridge.installFontStyle(fontStyle, controller: configuration.userContentController) }
         configuration.allowsInlineMediaPlayback = true
         configuration.defaultWebpagePreferences.preferredContentMode = profile.desktopMode ? .desktop : .mobile
+        do { try DiagnosticEngineRegistry.apply(profileID: profile.id, configuration: configuration) }
+        catch { message = error.localizedDescription; return }
         if let blocker { configuration.userContentController.add(blocker) }
         PrivacyService.install(profile.privacy, controller: configuration.userContentController)
         ReadbackPrivacy.install(profile: profile, controller: configuration.userContentController)

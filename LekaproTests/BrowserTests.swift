@@ -59,6 +59,24 @@ final class BrowserTests: XCTestCase {
         XCTAssertNil(privacy.audioNoiseScale)
         XCTAssertEqual(privacy, PrivacySettings())
     }
+    func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
+        let defaultProfile = BrowserProfile()
+        let baseline = try await sampleContext(defaultProfile)
+        let selected = BrowserProfile()
+        DiagnosticEngineRegistry.set([selected.id: DiagnosticEngineOptions(navigatorPlatform: "MacIntel", webAudioEnabled: false)])
+        defer { DiagnosticEngineRegistry.clear() }
+        let changed = try await sampleContext(selected)
+        XCTAssertEqual(changed["platform"] as? String, "MacIntel")
+        XCTAssertEqual(changed["webAudioAvailable"] as? Bool, false)
+        let other = try await sampleContext(defaultProfile)
+        XCTAssertEqual(other["platform"] as? String, baseline["platform"] as? String)
+        XCTAssertEqual(other["webAudioAvailable"] as? Bool, baseline["webAudioAvailable"] as? Bool)
+        DiagnosticEngineRegistry.clear()
+        let restored = try await sampleContext(selected)
+        XCTAssertEqual(restored["platform"] as? String, baseline["platform"] as? String)
+        XCTAssertEqual(restored["webAudioAvailable"] as? Bool, baseline["webAudioAvailable"] as? Bool)
+        XCTAssertThrowsError(try DiagnosticEngineOptions(navigatorPlatform: "unsupported").validate())
+    }
     func testContextOptionsValidateAndOldProfilesKeepDeviceDefaults() throws {
         let file = temporaryFile()
         let store = ProfileStore(fileURL: file)
@@ -255,6 +273,7 @@ final class BrowserTests: XCTestCase {
         document.body.append(frame); await loaded;
         const d = new Date('2026-01-15T12:00:00Z');
         const result = {zone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+          platform:navigator.platform,webAudioAvailable:typeof OfflineAudioContext==='function'||typeof webkitOfflineAudioContext==='function',
           cpu:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
           offset:d.getTimezoneOffset(),hour:d.getHours(),
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
