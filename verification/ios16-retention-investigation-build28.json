@@ -1,0 +1,2084 @@
+{
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "uniqueUncachedDeviceEvents": 648,
+  "eventsByInstalledBuild": {
+    "21": 16,
+    "22": 72,
+    "23": 44,
+    "24": 92,
+    "26": 116,
+    "27": 196,
+    "28": 112
+  },
+  "allPageAgentServerIDsAndEventsMatch": true,
+  "sameIPAcrossIncludedEvents": true,
+  "sameServerEnvironmentAcrossIncludedEvents": true,
+  "universalFreshProfileUniquenessEstablished": false,
+  "completeRetentionCauseEstablished": false,
+  "freshProfileReplication": {
+    "actualOSVersion": "16.1.1",
+    "build": "21",
+    "uniqueUncachedEvents": 16,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "sameIPThroughout": true,
+    "freshProfilesWithoutNoise": 6,
+    "distinctIDsAmongThoseProfiles": 1,
+    "UAStringSuffixDidNotCreateDifferentIDs": true,
+    "cases": [
+      {
+        "case": "same-firefox119-first",
+        "freshStores": 2,
+        "uniqueUncachedEvents": 4,
+        "distinctIDsInPair": 1,
+        "differentUAStrings": false
+      },
+      {
+        "case": "same-firefox119-second",
+        "freshStores": 2,
+        "uniqueUncachedEvents": 4,
+        "distinctIDsInPair": 1,
+        "differentUAStrings": false
+      },
+      {
+        "case": "firefox119-distinct-ua-suffixes",
+        "freshStores": 2,
+        "uniqueUncachedEvents": 4,
+        "distinctIDsInPair": 1,
+        "differentUAStrings": true
+      }
+    ],
+    "twoDifferentNoiseSeeds": {
+      "freshProfiles": 2,
+      "distinctIDs": 1,
+      "changedRawGroupsOnReload": [
+        "audio",
+        "canvas"
+      ],
+      "sameIDAsSixNativeAPIProfiles": true
+    },
+    "conclusion": "The observed Firefox UA setup does not provide one unique visitor ID per fresh profile."
+  },
+  "publicStateAndTokenInterventions": {
+    "build": "22",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 60,
+    "sameIPThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "cookiesAndLocalStorage",
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 27,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "copy",
+        "selection": "localStorage:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 22,
+        "localKeysAfter": 1,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allSiteData",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "copy",
+        "selection": "cookies:_iidt",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ]
+  },
+  "originalFreshOriginalStoreTest": {
+    "build": "22",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 12,
+    "sameIPThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "sameProfileIDsAndSettingsThroughout": true,
+    "onlyProfileAStoreIDTemporarilyChanged": true,
+    "profileBStoreAndIDUnchanged": true,
+    "newStoreAAdoptedBVisitorID": true,
+    "originalAVisitorIDReturnedWithOriginalStore": true,
+    "allStagesStableOnReload": true,
+    "oldStoreDirectoriesNeverMovedOrDeleted": true,
+    "limits": [
+      "Shows recognition follows the selected persistent WebKit store in this test.",
+      "Does not locate the precise persisted signal or reveal the server matching algorithm.",
+      "A fresh UUID store alone does not guarantee a different Fingerprint visitor ID."
+    ]
+  },
+  "privateStateAndNetworkInterventions": {
+    "build": "23",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 36,
+    "sameIPThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allNativeData",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkProcessChanged": false,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allNativeDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkProcessChanged": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allNativeDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkProcessChanged": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ]
+  },
+  "preservedThreeProfileRecheck": {
+    "build": "23",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 8,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "sameIPThroughout": true,
+    "threeDistinctPreservedIDs": true,
+    "allSameSafari17_2UA": true,
+    "profileAndStoreUUIDsUnchanged": true,
+    "originalIDsPreserved": true,
+    "checkedAfterDisposableStoreNetworkRestart": true,
+    "namedProfiles": [
+      "03 - Safari 17.2 A",
+      "04 - Safari 17.2 B",
+      "05 - Safari 17.2 C"
+    ]
+  },
+  "limits": [
+    "Three retained historical IDs do not imply one ID per newly created profile.",
+    "The tested clearing/restart combinations identify causal groups, not every internal WebKit or server signal.",
+    "Build23 restart observations used abrupt process termination. Later tests found unflushed fresh data can be lost; network-only claims require the new persistence checks.",
+    "Build26 cold-copy observations had native disk-cache records reappear after restart. These were not accepted as clean token-sufficiency proofs. Build28 source review found disk-cache enumeration can span network sessions, so these records alone do not prove target-store contamination.",
+    "A build26 localStorage-copy cohort had a missing Worker UA observation and is excluded from strict totals.",
+    "No engine, response, DOM visitor ID, SDK event, or provider matching result was forged.",
+    "Native record enumeration timeouts are unknown metadata, never evidence that a store is empty.",
+    "Build28 Chrome/native seeded empty controls converged with the source ID even when target-first; the earlier build27 order-dependent contrast did not replicate under the new measurement protocol.",
+    "Additional UA families produced four new IDs, but repeating the exact Edge/Opera seeds in fresh stores reused their earlier IDs. Seven retained profiles are not a per-UUID uniqueness guarantee.",
+    "A native DiskCache record list can cover multiple network sessions; compare actual target-directory inventories before attributing cache to one profile."
+  ],
+  "references": [
+    "https://docs.fingerprint.com/docs/identification-accuracy-and-confidence",
+    "https://docs.fingerprint.com/docs/browser-and-device-support",
+    "https://raw.githubusercontent.com/WebKit/WebKit/main/Source/WebKit/UIProcess/API/Cocoa/WKWebsiteDataStorePrivate.h"
+  ],
+  "networkOnlyAndPublicStateControls": {
+    "build": "24",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 84,
+    "sameIPThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "networkOnly",
+        "identityCookieAndLocalStorageHashesUnchangedBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 24,
+        "localKeysBefore": 26,
+        "localKeysAfter": 26,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allSiteDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "cookies",
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 26,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "localStorage",
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeLocalStorage"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 24,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "cookiesAndLocalStorage",
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeLocalStorage"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "caches",
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeMemoryCache"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 24,
+        "localKeysBefore": 26,
+        "localKeysAfter": 26,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allSiteDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ]
+  },
+  "finalPreservedThreeProfileRecheck": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 8,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "sameIPThroughout": true,
+    "threeDistinctPreservedIDs": true,
+    "allSameSafari17_2UA": true,
+    "profileAndStoreUUIDsUnchanged": true,
+    "originalIDsPreserved": true,
+    "checkedAfterDisposableStoreNetworkRestart": true,
+    "namedProfiles": [
+      "03 - Safari 17.2 A",
+      "04 - Safari 17.2 B",
+      "05 - Safari 17.2 C"
+    ]
+  },
+  "controlledInterventionsBuild26": {
+    "build": "26",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 108,
+    "sameIPThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeIndexedDBDatabases"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "unselectedIdentityCookieHashesPreserved": true,
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeCookies"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 24,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "unselectedLocalIdentityHashesPreserved": true,
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeLocalStorage"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 26,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeDiskCache"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeIndexedDBDatabases"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": false,
+        "remainingPublicNativeTypesAfterClear": [
+          "WKWebsiteDataTypeDiskCache"
+        ],
+        "coldCopyCausalConclusionEligible": false,
+        "coldCopyLimitation": "Native cache records reappeared after restart. Token effect is confounded; the strict empty-target criterion failed.",
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": false,
+        "remainingPublicNativeTypesAfterClear": [
+          "WKWebsiteDataTypeDiskCache"
+        ],
+        "coldCopyCausalConclusionEligible": false,
+        "coldCopyLimitation": "Native cache records reappeared after restart. Token effect is confounded; the strict empty-target criterion failed.",
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_iidt",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": false,
+        "remainingPublicNativeTypesAfterClear": [
+          "WKWebsiteDataTypeDiskCache"
+        ],
+        "coldCopyCausalConclusionEligible": false,
+        "coldCopyLimitation": "Native cache records reappeared after restart. Token effect is confounded; the strict empty-target criterion failed.",
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t+_iidt",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 2,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ],
+    "excludedCohorts": [
+      {
+        "cohort": "20261017T190150879576Z-copy-localStorage-_vid_t-clean-cold",
+        "reason": "Worker UA metadata unavailable; excluded from strict evidence totals",
+        "workerMetadataGaps": [
+          {
+            "phase": "baseline",
+            "profileIndex": 0,
+            "stage": "initial"
+          }
+        ]
+      }
+    ]
+  },
+  "controlledInterventionsBuild27": {
+    "build": "27",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 168,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": false,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_iidt",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "localStorage:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 22,
+        "localKeysAfter": 1,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": false,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_iidt",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "localStorage:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 1,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": [
+          "_vid_t"
+        ]
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "cookiesAndLocalStorage",
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeLocalStorage"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [
+          "WKWebsiteDataTypeIndexedDBDatabases"
+        ],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "customTypes",
+        "remainingPublicNativeDataTypesBeforeNetworkPage": [],
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache"
+        ],
+        "explicitNetworkRestartAfterSelectedTypeRemoval": true,
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": false,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allSiteDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ],
+    "excludedCohorts": [],
+    "verifiedCleanTokenTransferContrastByNavigationOrder": {
+      "source-first": false,
+      "target-first": true
+    },
+    "verifiedCleanTokenTransferContrastEstablished": true
+  },
+  "controlledInterventionsBuild28": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 72,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "interventions": [
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 0,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [
+          "WKWebsiteDataTypeDiskCache"
+        ],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": false,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 22,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 0,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": false,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 1,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [
+          "_vid_t"
+        ],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [
+          "WKWebsiteDataTypeCookies"
+        ],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 22,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 0,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": false,
+        "allFourFinalEventsHaveOneID": true,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 1,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [
+          "_vid_t"
+        ],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [
+          "WKWebsiteDataTypeCookies"
+        ],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "selectedTokenDifferentFromOriginalTarget": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": true,
+        "cookieCountBefore": 23,
+        "cookieCountAfter": 1,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "target-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "allTargetWebsiteDataRemovalRequested": true,
+        "targetNativeDataRecordsEmptyAfterClear": true,
+        "remainingPublicNativeTypesAfterClear": [],
+        "emptyTargetNetworkRestartBeforeVerifiedTokenCopy": true,
+        "flushBeforeTargetRemoval": true,
+        "strictNativeEmptyTargetVerifiedBeforeCopy": true,
+        "targetCookieCountBeforeOwnNavigation": 0,
+        "targetLocalKeyCountBeforeOwnNavigation": 0,
+        "targetIdentityCookieNamesBeforeOwnNavigation": [],
+        "targetLocalIdentityKeyNamesBeforeOwnNavigation": [],
+        "targetIdentityCookieHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetLocalIdentityHashesChangedBetweenCopyAndOwnNavigation": false,
+        "targetNativePublicTypesBeforeOwnNavigation": [],
+        "targetDiskCacheFileCountAfterCopy": 1,
+        "targetDiskCacheFileCountBeforeOwnNavigation": 1,
+        "targetDiskCacheFileCountChangeBeforeOwnNavigation": 0,
+        "targetDiskCacheByteChangeBeforeOwnNavigation": 0,
+        "matchedNoTokenControl": true,
+        "noTokenControlRetainedBothOriginalIDs": true,
+        "operation": "copy",
+        "selection": "cookies:_vid_t",
+        "clearedTargetFirst": true,
+        "targetAdoptedSourceID": false,
+        "cookieCountBefore": 7,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 24,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      }
+    ],
+    "excludedCohorts": [],
+    "verifiedCleanTokenTransferContrastByNavigationOrder": {
+      "source-first": false,
+      "target-first": false
+    },
+    "verifiedCleanTokenTransferContrastEstablished": false
+  },
+  "additionalBrowserFamilySeeding": {
+    "build": "27",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 28,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "sixFreshProfilesDistinctIDs": 4,
+    "newIDsOutsideHistoricalThree": 4,
+    "historicalPlusNewDistinctIDs": 7,
+    "allSixRetainIDsWithSameSafari17_2UA": true,
+    "rows": [
+      {
+        "UAInputPair": "edge-opera",
+        "serverParsedBrowserFamilies": [
+          "Edge",
+          "Opera"
+        ],
+        "IDGroups": [
+          "new-1",
+          "new-2"
+        ],
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "sameSafari17_2IDsPreserved": true
+      },
+      {
+        "UAInputPair": "samsung-uc",
+        "serverParsedBrowserFamilies": [
+          "Samsung Internet",
+          "UC Browser"
+        ],
+        "IDGroups": [
+          "new-3",
+          "new-4"
+        ],
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "sameSafari17_2IDsPreserved": true
+      },
+      {
+        "UAInputPair": "vivaldi-yandex",
+        "serverParsedBrowserFamilies": [
+          "Vivaldi",
+          "Yandex Browser"
+        ],
+        "IDGroups": [
+          "new-3",
+          "new-4"
+        ],
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "sameSafari17_2IDsPreserved": true
+      }
+    ],
+    "sameSeedFreshStoreReplication": {
+      "freshProfiles": 2,
+      "uniqueUncachedEvents": 4,
+      "sameIDsAsFirstEdgeOperaStores": true,
+      "sameUAStrings": true,
+      "profileAndStoreUUIDsAreNew": true
+    },
+    "universalFreshProfileUniquenessEstablished": false
+  },
+  "finalPreservedSevenProfileRecheck": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 24,
+    "distinctPreservedIDs": 7,
+    "newlyPreservedProfiles": 4,
+    "historicalPreservedProfiles": 3,
+    "newProfilesMeasuredAcrossTwoAppLaunches": true,
+    "sameSafari17_2UAForAllSeven": true,
+    "nativeDeviceAPIs": true,
+    "allWorkerUAsMatch": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "originalProfileAndStoreUUIDsPreserved": true,
+    "newProfilesProtectedFromDisposableQAReset": true,
+    "newProfileNames": [
+      "06 - Safari 17.2 Edge",
+      "07 - Safari 17.2 Opera",
+      "08 - Safari 17.2 Samsung Internet",
+      "09 - Safari 17.2 UC Browser"
+    ],
+    "universalFreshProfileUniquenessEstablished": false,
+    "limit": "These are seven retained profile histories, not one new ID for each newly created UUID."
+  },
+  "afterLastInterventionSevenProfileRecheck": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 16,
+    "distinctPreservedIDs": 7,
+    "allSameSafari17_2UA": true,
+    "originalProfileAndStoreUUIDsPreserved": true,
+    "originalIDsPreserved": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "checkedAfterLastDisposableIntervention": true,
+    "observedStoreCountIncludingHistoricalAuxiliaryControl": 8,
+    "historicalAuxiliaryControlProfiles": 1,
+    "profileNames": [
+      "03 - Safari 17.2 A",
+      "04 - Safari 17.2 B",
+      "05 - Safari 17.2 C",
+      "06 - Safari 17.2 Edge",
+      "07 - Safari 17.2 Opera",
+      "08 - Safari 17.2 Samsung Internet",
+      "09 - Safari 17.2 UC Browser"
+    ],
+    "universalFreshProfileUniquenessEstablished": false
+  },
+  "sourceSeparatedCookieTransferContrast": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 36,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "matchedEmptyControlsBeforeAndAfterPositive": true,
+    "sourceAndEmptyControlIDsAreDifferent": true,
+    "verifiedCookieVidTTransferContrast": true,
+    "rows": [
+      {
+        "matchedNoTokenControl": true,
+        "uniqueUncachedEvents": 12,
+        "targetFirst": true,
+        "sourceOriginalIDRetained": true,
+        "targetAdoptedSourceID": false,
+        "targetRetainedOriginalID": true,
+        "targetReceivedThirdID": false,
+        "actualTargetDiskInventoryUnchangedBeforeNavigation": true,
+        "cookieCountBeforeTargetNavigation": 0,
+        "localKeyCountBeforeTargetNavigation": 0
+      },
+      {
+        "matchedNoTokenControl": false,
+        "uniqueUncachedEvents": 12,
+        "targetFirst": true,
+        "sourceOriginalIDRetained": true,
+        "targetAdoptedSourceID": true,
+        "targetRetainedOriginalID": false,
+        "targetReceivedThirdID": false,
+        "actualTargetDiskInventoryUnchangedBeforeNavigation": true,
+        "cookieCountBeforeTargetNavigation": 1,
+        "localKeyCountBeforeTargetNavigation": 0
+      },
+      {
+        "matchedNoTokenControl": true,
+        "uniqueUncachedEvents": 12,
+        "targetFirst": true,
+        "sourceOriginalIDRetained": true,
+        "targetAdoptedSourceID": false,
+        "targetRetainedOriginalID": true,
+        "targetReceivedThirdID": false,
+        "actualTargetDiskInventoryUnchangedBeforeNavigation": true,
+        "cookieCountBeforeTargetNavigation": 0,
+        "localKeyCountBeforeTargetNavigation": 0
+      }
+    ],
+    "limit": "A sufficient cookie transfer in this measured condition does not establish every retention path or unique IDs for every new profile."
+  },
+  "nativeCacheEnumerationScope": {
+    "deviceWebKitBundleVersion": "8614.2.9.0.10",
+    "relatedSourceTag": "WebKit-7614.2.9.0.10",
+    "sourceURL": "https://github.com/WebKit/WebKit/blob/WebKit-7614.2.9.0.10/Source/WebKit/NetworkProcess/NetworkProcess.cpp",
+    "finding": "Disk-cache enumeration in fetchWebsiteData loops over every network session in the process. Native DiskCache records are not sufficient to attribute files to the requested store.",
+    "limitation": "Related open-source tag inspected, not disassembly of the exact device binary; actual per-store file inventories are measured separately."
+  },
+  "verifiedBuilds": {
+    "22": {
+      "sourceCommit": "4196fd3060ce9af7282dc6b2c6bf71fcd3e6224d",
+      "runID": 39053162202,
+      "passed": 28,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "11a30b16798d22353ca1d16244de19fa3b52bd4000b2709b0af34bd98f43efa7"
+    },
+    "23": {
+      "sourceCommit": "e0640acd4dc1b03787049dff8dba088727196516",
+      "runID": 39054425468,
+      "passed": 28,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "5963fc5f6c6423a872f8b1e7000e61c8a2e6fa8ef7f306db2473b213fde94b14"
+    },
+    "24": {
+      "sourceCommit": "63b7e001315d7c571b4b3d109e70e2eaebe50956",
+      "runID": 39056791684,
+      "passed": 29,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "14325f7a3adde30f2313d80d341cf31b5a0abe26a0b16434fe7489f597ddf1a0"
+    },
+    "26": {
+      "sourceCommit": "1b3545035e32d32d07b059410d8dc4414c24f810",
+      "runID": 39058743002,
+      "passed": 30,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "9ce9416469532543921f665449afcd9fb872d020a3f0f1d770886f2f6fd7256a"
+    },
+    "27": {
+      "sourceCommit": "03238654105cc474126eb12af808f324048b7b0f",
+      "runID": 39060947512,
+      "passed": 30,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "92c23654fd11d780d380510b8ababb63d065b5d26f97ddbe0bd77fb1815cc077"
+    },
+    "28": {
+      "sourceCommit": "e837aca3120fe682d211dadcb103c22c714b9019",
+      "runID": 39062532151,
+      "passed": 30,
+      "skipped": 1,
+      "failures": 0,
+      "ipaSHA256": "969b1509945cf132cc3fa7b794e8d3c98d234184ebcf38a05663fd0bf601e18f"
+    }
+  }
+}
