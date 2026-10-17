@@ -108,6 +108,7 @@ enum DiagnosticSiteState {
         var clearTargetFirst: Bool?
         var clearAllTargetWebsiteData: Bool?
         var restartTargetNetworkBeforeCopy: Bool?
+        var omitTokenForControl: Bool?
     }
     static let identityKeys: Set<String> = ["_vid_t", "_iidt", "_vid_s", "_vid_lr"]
 
@@ -124,6 +125,9 @@ enum DiagnosticSiteState {
         if request.restartTargetNetworkBeforeCopy == true,
            request.clearTargetFirst != true || request.clearAllTargetWebsiteData != true {
             throw BrowserError.invalid("A cold copy requires full public target clearing before its network restart.")
+        }
+        if request.omitTokenForControl == true, request.restartTargetNetworkBeforeCopy != true {
+            throw BrowserError.invalid("The no-token control requires the same cold target protocol.")
         }
     }
 
@@ -158,7 +162,7 @@ enum DiagnosticSiteState {
         SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
-    static func snapshot(store: WKWebsiteDataStore) async throws -> [String: Any] {
+    static func snapshot(store: WKWebsiteDataStore, requireNativeRecords: Bool = false) async throws -> [String: Any] {
         let document = try await originDocument(store: store)
         defer { document.close() }
         let local = try await localValues(document)
@@ -174,11 +178,14 @@ enum DiagnosticSiteState {
         // Store-record enumeration can stall on background simulator processes.
         // It is optional metadata: a timeout is explicitly unknown, never empty.
         do {
-            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(15)) { done in
+            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(requireNativeRecords ? 60 : 15)) { done in
                 store.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { done(.success($0)) }
             }
             result["nativeDataRecords"] = records.map { ["name": $0.displayName, "types": $0.dataTypes.sorted()] }
-        } catch { result["nativeDataRecordsError"] = error.localizedDescription }
+        } catch {
+            if requireNativeRecords { throw error }
+            result["nativeDataRecordsError"] = error.localizedDescription
+        }
         return result
     }
 
@@ -188,29 +195,36 @@ enum DiagnosticSiteState {
         try validateCopy(request, source: source, target: target)
         let before = try await snapshot(store: targetStore)
         var cleared: [String: Any] = [:]
+        let cold = request.restartTargetNetworkBeforeCopy == true
+        if cold {
+            // Finish pending session writes before target removal.
+            _ = try await networkPID(in: sourceStore); try await flushNetwork(sourceStore)
+            _ = try await networkPID(in: targetStore); try await flushNetwork(targetStore)
+        }
         if request.clearTargetFirst == true {
             let types = request.clearAllTargetWebsiteData == true ? WKWebsiteDataStore.allWebsiteDataTypes() : Reset.cookiesAndLocalStorage.dataTypes
             try await remove(types: types, from: targetStore)
             cleared = try await snapshot(store: targetStore)
         }
         var networkBefore: Int32 = 0, networkAfter: Int32 = 0
-        if request.restartTargetNetworkBeforeCopy == true {
-            _ = try await networkPID(in: sourceStore)
-            try await flushNetwork(sourceStore)
-            _ = try await networkPID(in: targetStore)
-            try await flushNetwork(targetStore)
+        if cold {
             networkBefore = try await networkPID(in: targetStore)
             try LegacyWebKitBridge.restartDiagnosticNetwork(targetStore)
             networkAfter = try await networkPID(in: targetStore, differentFrom: networkBefore)
-            // Restart while the target is empty. Install tokens only in the new
-            // session so a fresh cookie database cannot lose an uncommitted copy.
-            cleared = try await snapshot(store: targetStore)
+            // Remove again in the new session; require actual empty records.
+            try await remove(types: WKWebsiteDataStore.allWebsiteDataTypes(), from: targetStore)
+            cleared = try await snapshot(store: targetStore, requireNativeRecords: true)
+            guard let records = cleared["nativeDataRecords"] as? [[String: Any]], records.isEmpty,
+                  cleared["cookieCount"] as? Int == 0,
+                  (cleared["localStorageKeyNames"] as? [String])?.isEmpty == true else {
+                throw BrowserError.invalid("Cold target was not verified empty after network restart.")
+            }
         }
         let sourceDocument = try await originDocument(store: sourceStore)
         let targetDocument = try await originDocument(store: targetStore)
         defer { sourceDocument.close(); targetDocument.close() }
         var count = 0
-        switch request.kind {
+        if request.omitTokenForControl != true { switch request.kind {
         case .cookies:
             let names: Set<String> = request.key == "_vid_t+_iidt" ? ["_vid_t", "_iidt"] : [request.key]
             let sourceCookies = try await cookies(in: sourceStore).filter { names.contains($0.name) }
@@ -230,13 +244,15 @@ enum DiagnosticSiteState {
             _ = try await targetDocument.webView.callAsyncJavaScript("localStorage.setItem(key,value); return true;",
                 arguments: ["key": request.key, "value": value], in: nil, contentWorld: .page)
             count = 1
-        }
+        } }
         return ["sourceProfileID": source.id.uuidString, "targetProfileID": target.id.uuidString,
             "kind": request.kind.rawValue, "key": request.key, "copiedValueCount": count,
             "allTargetWebsiteDataRemovalRequested": request.clearAllTargetWebsiteData == true,
             "targetNetworkPIDBefore": networkBefore, "targetNetworkPIDAfter": networkAfter,
             "networkRestartBeforeTokenInstallation": request.restartTargetNetworkBeforeCopy == true,
             "persistentStateFlushCompleted": request.restartTargetNetworkBeforeCopy == true,
+            "flushBeforeTargetRemoval": cold, "targetPublicRecordsVerifiedEmptyBeforeCopy": cold,
+            "omittedTokenForMatchedControl": request.omitTokenForControl == true,
             "targetBefore": before, "targetAfterClear": cleared, "targetAfter": try await snapshot(store: targetStore),
             "source": try await snapshot(store: sourceStore)]
         #else
@@ -257,19 +273,23 @@ enum DiagnosticSiteState {
         let types = try selectedTypes(action, custom: customDataTypes)
         let stateBefore = try await snapshot(store: store)
         let before = try await cookies(in: store)
-        if !types.isEmpty { try await remove(types: types, from: store) }
         let restartsNetwork = restartNetwork || [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
         let processBefore: Int32
         if restartsNetwork {
             _ = try await networkPID(in: store)
             try await flushNetwork(store)
             processBefore = try await networkPID(in: store)
+            if !types.isEmpty { try await remove(types: types, from: store) }
             try LegacyWebKitBridge.restartDiagnosticNetwork(store)
-        } else { processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store) }
-        let stateAfter = try await snapshot(store: store)
+        } else {
+            processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store)
+            if !types.isEmpty { try await remove(types: types, from: store) }
+        }
         let processAfter: Int32
         if restartsNetwork { processAfter = try await networkPID(in: store, differentFrom: processBefore) }
         else { processAfter = LegacyWebKitBridge.diagnosticNetworkPID(store) }
+        if restartsNetwork && !types.isEmpty { try await remove(types: types, from: store) }
+        let stateAfter = try await snapshot(store: store)
         if restartsNetwork, processBefore <= 0 || processAfter <= 0 || processBefore == processAfter {
             throw BrowserError.invalid("The diagnostic network process did not restart.")
         }
@@ -279,6 +299,8 @@ enum DiagnosticSiteState {
             "requestedNativeDataTypes": types.sorted(),
             "networkRestartRequested": restartsNetwork,
             "persistentStateFlushCompleted": restartsNetwork,
+            "flushBeforeNativeRemoval": restartsNetwork,
+            "repeatedNativeRemovalAfterRestart": restartsNetwork && !types.isEmpty,
             "networkPIDBefore": processBefore, "networkPIDAfter": processAfter,
             "stateBefore": stateBefore, "stateAfter": stateAfter]
         #else
