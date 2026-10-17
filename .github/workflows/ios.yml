@@ -94,15 +94,20 @@ jobs:
         timeout-minutes: 15
         run: |
           set -o pipefail
-          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
       - name: Export sanitized live-probe summary
         if: always() && contains(github.event.head_commit.message, '[live-probe]')
         run: |
-          APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_ID" app.lekapro.browser data)
-          SUMMARY="$APP_DATA/Library/Caches/Lekapro-live-probe/sanitized-summary.json"
-          if [ -f "$SUMMARY" ]; then
-            cp "$SUMMARY" build/live-probe-summary.json
-          fi
+          python3 - <<'PY'
+          import pathlib, shutil
+          # XCTest can stop its simulator before the following Actions step.
+          # Read only this explicitly sanitized file, never the app's raw evidence.
+          devices = pathlib.Path.home() / 'Library/Developer/CoreSimulator/Devices'
+          candidates = list(devices.glob('*/data/Containers/Data/Application/*/Library/Caches/Lekapro-live-probe/sanitized-summary.json'))
+          if not candidates:
+              raise SystemExit('No live-probe summary was produced')
+          shutil.copyfile(max(candidates, key=lambda p: p.stat().st_mtime), 'build/live-probe-summary.json')
+          PY
       - name: Upload diagnostics and test results
         if: always()
         uses: actions/upload-artifact@v4

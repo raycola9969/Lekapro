@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 import WebKit
 @testable import Lekapro
 
@@ -177,8 +178,23 @@ final class BrowserTests: XCTestCase {
         try store.save(fixture)
         let session = try BrowserSession(profile: fixture, store: store)
         await session.start()
-        defer { session.close() }
         let tab = try XCTUnwrap(session.selectedTab)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousWindow = scene.windows.first { $0.isKeyWindow }
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = UIViewController()
+        window.makeKeyAndVisible()
+        tab.webView.frame = try XCTUnwrap(window.rootViewController).view.bounds
+        window.rootViewController?.view.addSubview(tab.webView)
+        defer {
+            tab.webView.removeFromSuperview(); session.close()
+            window.isHidden = true; previousWindow?.makeKeyAndVisible()
+        }
+        let blankDeadline = Date().addingTimeInterval(30)
+        while tab.webView.url == nil || tab.webView.isLoading {
+            guard Date() < blankDeadline else { throw BrowserError.invalid("Context blank page did not load.") }
+            try await Task.sleep(for: .milliseconds(100))
+        }
         let html = #"""
         <!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">
         <span id="sample" style="font-size:1px;font-family:sans-serif!important">Measurement</span><script>

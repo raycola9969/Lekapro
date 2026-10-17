@@ -25,6 +25,7 @@ final class LiveFingerprintTests: XCTestCase {
         window.makeKeyAndVisible()
         defer { window.isHidden = true; previousWindow?.makeKeyAndVisible() }
         var report: [String: Any] = ["actualOS": UIDevice.current.systemVersion,
+            "build": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown",
             "environment": "iOS Simulator; not the user's ExitAnty device",
             "target": "https://fingerprint.com/demo/", "completed": false,
             "timestamp": ISO8601DateFormatter().string(from: Date())]
@@ -43,7 +44,7 @@ final class LiveFingerprintTests: XCTestCase {
             do {
                 for index in 0..<2 {
                     var profile = BrowserProfile()
-                    profile.homeURL = "about:blank"
+                    profile.tabs = [SavedTab(url: "about:blank", title: "Live probe start")]
                     profile.userAgent = index == 0 ? UserAgentPreset.ios172.value : UserAgentPreset.ios1879.value
                     profile.privacy.blockTrackers = false
                     profile.privacy.audioNoise = fineAudio
