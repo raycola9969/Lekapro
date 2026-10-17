@@ -10,6 +10,7 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 - Kho proxy SOCKS5 và HTTP CONNECT; HTTPS CONNECT tới proxy được hỗ trợ từ iOS 17. Mật khẩu lưu trong Keychain.
 - iOS 17+: `allowFailover = false`. iOS 16 dùng cấu hình proxy riêng của WebKit; phép thử với SOCKS5 tại cổng không có máy chủ đã trả lỗi kết nối, không tải trang trực tiếp. Chưa đo DNS/UDP hoặc mọi tình huống thay đổi mạng.
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
+- User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
 - Nhập/xuất cookie JSON hoặc Netscape TXT; sao lưu/nhập cấu hình.
 - Tải file qua WebKit, chia sẻ và mở liên kết ngoài app.
 - GitHub Actions build IPA chưa ký và chạy XCTest bằng SDK iOS thật.
@@ -40,6 +41,8 @@ Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhon
 Build Debug tự chạy kiểm tra trong hai kho dữ liệu chẩn đoán riêng của Lekapro, sử dụng HTML cục bộ. Báo cáo được ghi tại Documents/Lekapro-device-check.json. Báo cáo kiểm tra cookie, localStorage, IndexedDB, cách ly hai kho và lưu dữ liệu qua lần mở app tiếp theo. Cờ `PersistedFromPreviousLaunch` có thể false ở lần chạy đầu; cần đóng/mở app thêm lần nữa.
 
 Thông tin SSH và mật khẩu thiết bị không được đưa vào repository hoặc workflow.
+
+Bản 0.3 bổ sung lựa chọn User-Agent theo hồ sơ. Để QA trên thiết bị, build Debug đọc yêu cầu một lần từ Documents/Lekapro-ua-request.json chứa hai UUID hồ sơ thử riêng. Phép thử dùng giao diện trình duyệt bình thường, cùng kết nối trực tiếp và các API Canvas/Audio nguyên bản: hai UA 18.7.9 → A đổi sang 17.2 → A trở lại 18.7.9, mỗi điều kiện tải đầu và tải lại. UUID kho dữ liệu giữ nguyên. Chỉ ghi nhận khi Visitor ID và event của agent khớp phản hồi server. Kết quả thô nằm trong sandbox và không được đưa vào repo public. Các kết quả build 6 dưới đây là dữ liệu lịch sử trước khi thêm UA.
 
 Bản 0.2.0 (build 6, nguồn `72d36b3`) đã cài và mở bằng TrollStore trên iPhone 11 Pro Max chạy iOS 16.1.1. Kiểm tra bằng hai kho chẩn đoán và HTML cục bộ xác nhận cookie, localStorage và IndexedDB được cách ly; cả ba còn nguyên sau khi kết thúc tiến trình rồi mở app lại. Xem [báo cáo lưu trữ](verification/ios-16.1.1-storage.json).
 

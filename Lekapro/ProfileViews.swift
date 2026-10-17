@@ -108,6 +108,21 @@ struct ProfileEditor: View {
                     TextField("https://example.com", text: $profile.homeURL).keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                     Toggle("Yêu cầu giao diện máy tính", isOn: $profile.desktopMode)
                 }
+                Section {
+                    Picker("User-Agent", selection: Binding(get: {
+                        UserAgentPreset.matching(profile.userAgent)
+                    }, set: { preset in
+                        profile.userAgent = preset == .custom ? "" : preset.value
+                    })) {
+                        ForEach(UserAgentPreset.allCases) { Text($0.title).tag($0) }
+                    }
+                    if UserAgentPreset.matching(profile.userAgent) == .custom {
+                        TextField("Mozilla/5.0 …", text: Binding(get: { profile.userAgent ?? "" }, set: { profile.userAgent = $0 }), axis: .vertical)
+                            .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    }
+                } header: { Text("Nhận diện trình duyệt") } footer: {
+                    Text("User-Agent thay thông tin trình duyệt gửi website. iOS và WebKit thực vẫn theo phiên bản trên máy.")
+                }
                 Section("Kết nối") {
                     Picker("Proxy", selection: $profile.proxyID) {
                         Text("Kết nối trực tiếp").tag(UUID?.none)

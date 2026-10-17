@@ -48,6 +48,7 @@ final class ProfileStore: ObservableObject {
                 throw BrowserError.invalid("Tên hồ sơ không được để trống.")
             }
             try AddressInput.validateHome(profile.homeURL)
+            try UserAgentPreset.validate(profile.userAgent)
             if let id = profile.proxyID, !database.proxies.contains(where: { $0.id == id }) {
                 throw BrowserError.invalid("Không tìm thấy proxy của hồ sơ.")
             }

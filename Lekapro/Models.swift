@@ -20,6 +20,40 @@ struct PageRecord: Codable, Identifiable, Equatable {
     var date = Date()
 }
 
+enum UserAgentPreset: String, CaseIterable, Identifiable {
+    case automatic, ios172, ios1879, custom
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .automatic: return "Tự động theo WebKit"
+        case .ios172: return "iPhone iOS 17.2 Safari"
+        case .ios1879: return "iPhone iOS 18.7.9 Safari"
+        case .custom: return "Tùy chỉnh"
+        }
+    }
+    var value: String? {
+        switch self {
+        case .ios172:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+        case .ios1879:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_9 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.7 Mobile/15E148 Safari/604.1"
+        case .automatic, .custom: return nil
+        }
+    }
+    static func matching(_ value: String?) -> Self {
+        guard let value else { return .automatic }
+        return [UserAgentPreset.ios172, .ios1879].first { $0.value == value } ?? .custom
+    }
+    static func validate(_ value: String?) throws {
+        guard let value else { return }
+        guard !value.trimmingCharacters(in: .whitespaces).isEmpty,
+              value.utf8.count <= 512,
+              value.unicodeScalars.allSatisfy({ (32...126).contains($0.value) }) else {
+            throw BrowserError.invalid("User-Agent cần 1–512 ký tự ASCII hiển thị, không có xuống dòng.")
+        }
+    }
+}
+
 struct BrowserProfile: Codable, Identifiable, Equatable {
     var id = UUID()
     var dataStoreID = UUID()
@@ -29,6 +63,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var color = "mint"
     var homeURL = "https://www.google.com"
     var desktopMode = false
+    var userAgent: String?
     var proxyID: UUID?
     var privacy = PrivacySettings()
     var tabs: [SavedTab] = []

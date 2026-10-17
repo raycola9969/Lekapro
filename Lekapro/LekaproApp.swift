@@ -19,6 +19,7 @@ struct LekaproApp: App {
                 await DeviceDiagnostics.runOnce()
                 await DeviceNetworkDiagnostics.runIfRequested(store: store, workspace: workspace)
                 DevicePageDiagnostics.startIfRequested(store: store, workspace: workspace)
+                DeviceUserAgentDiagnostics.startIfRequested(store: store, workspace: workspace)
             }
             .fullScreenCover(item: $workspace.diagnosticSession) {
                 BrowserView(session: $0).environmentObject(store).environmentObject(workspace)

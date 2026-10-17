@@ -24,11 +24,12 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     private var dialogCompletion: ((Bool, String?) -> Void)?
     private var proxy: ProxyRecord?
 
-    init(id: UUID = UUID(), configuration: WKWebViewConfiguration, proxy: ProxyRecord? = nil) {
+    init(id: UUID = UUID(), configuration: WKWebViewConfiguration, proxy: ProxyRecord? = nil, userAgent: String? = nil) {
         self.id = id
         self.proxy = proxy
         self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
+        webView.customUserAgent = userAgent
         webView.navigationDelegate = self
         webView.uiDelegate = self
         webView.allowsBackForwardNavigationGestures = true

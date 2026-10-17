@@ -25,6 +25,50 @@ final class BrowserTests: XCTestCase {
         XCTAssertTrue(duplicate.history.isEmpty)
         XCTAssertEqual(duplicate.privacy, profile.privacy)
     }
+    func testProfilesBeforeUserAgentSettingStillLoadAndRetainData() throws {
+        var profile = BrowserProfile()
+        profile.userAgent = UserAgentPreset.ios172.value
+        profile.history = [PageRecord(title: "Existing history", url: "https://example.com")]
+        var old = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(profile)) as? [String: Any])
+        old.removeValue(forKey: "userAgent")
+        let decoded = try JSONDecoder().decode(BrowserProfile.self, from: JSONSerialization.data(withJSONObject: old))
+        XCTAssertNil(decoded.userAgent)
+        XCTAssertEqual(decoded.id, profile.id)
+        XCTAssertEqual(decoded.dataStoreID, profile.dataStoreID)
+        XCTAssertEqual(decoded.history, profile.history)
+        let store = ProfileStore(fileURL: temporaryFile())
+        try store.save(profile)
+        var changed = try XCTUnwrap(store.profile(profile.id))
+        changed.userAgent = UserAgentPreset.ios1879.value
+        try store.save(changed)
+        XCTAssertEqual(store.profile(profile.id)?.dataStoreID, profile.dataStoreID)
+        XCTAssertEqual(store.profile(profile.id)?.history, profile.history)
+        changed.userAgent = "Bad\r\nInjected: value"
+        XCTAssertThrowsError(try store.save(changed))
+        XCTAssertEqual(store.profile(profile.id)?.userAgent, UserAgentPreset.ios1879.value)
+    }
+    func testProfileUserAgentReachesJavaScriptAndNewTabs() async throws {
+        let store = ProfileStore(fileURL: temporaryFile())
+        var profile = BrowserProfile()
+        profile.userAgent = UserAgentPreset.ios172.value
+        profile.privacy.blockTrackers = false
+        profile.tabs = [SavedTab(url: "about:blank", title: "QA")]
+        try store.save(profile)
+        let session = try BrowserSession(profile: profile, store: store)
+        await session.start()
+        defer { session.close() }
+        session.addTab(url: URL(string: "about:blank"))
+        for tab in session.tabs {
+            let deadline = Date().addingTimeInterval(15)
+            while tab.webView.url == nil || tab.webView.isLoading {
+                guard Date() < deadline else { XCTFail("WebKit did not finish loading"); return }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            let value = try await tab.webView.evaluateJavaScript("navigator.userAgent") as? String
+            XCTAssertEqual(value, UserAgentPreset.ios172.value)
+            XCTAssertTrue(tab.webView.configuration.websiteDataStore === session.dataStore)
+        }
+    }
     func testConfigurationImportCreatesNewIDsAndKeepsExistingProfiles() throws {
         let file = temporaryFile()
         let store = ProfileStore(fileURL: file)

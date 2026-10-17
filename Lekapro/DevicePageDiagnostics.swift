@@ -99,16 +99,45 @@ enum DevicePageDiagnostics {
       for (const pattern of patterns) for (const match of text.matchAll(pattern)) candidates.push(match[1]);
       const ids = [...new Set(candidates)];
       const id = ids.length === 1 ? ids[0] : null;
+      function responseAfter(label) {
+        const at = text.toUpperCase().indexOf(label);
+        if (at < 0) return null;
+        const start = text.indexOf('{', at + label.length);
+        if (start < 0) return null;
+        let depth = 0, quoted = false, escaped = false;
+        for (let i = start; i < text.length; i++) {
+          const ch = text[i];
+          if (quoted) {
+            if (escaped) escaped = false;
+            else if (ch === '\\') escaped = true;
+            else if (ch === '"') quoted = false;
+          } else if (ch === '"') quoted = true;
+          else if (ch === '{') depth++;
+          else if (ch === '}' && --depth === 0) {
+            try { return JSON.parse(text.slice(start, i + 1)); } catch (_) { return null; }
+          }
+        }
+        return null;
+      }
+      const agent = responseAfter('JAVASCRIPT AGENT RESPONSE');
+      const server = responseAfter('SERVER API RESPONSE');
+      const agentID = agent?.visitor_id ?? agent?.visitorId;
+      const serverID = server?.identification?.visitor_id ?? server?.products?.identification?.data?.visitorId;
+      const agentEvent = agent?.event_id ?? agent?.requestId;
+      const serverEvent = server?.event_id ?? server?.requestId;
       const node = id ? [...document.querySelectorAll('body *')].find(el =>
         el.childElementCount === 0 && el.textContent.trim() === id && el.getBoundingClientRect().height > 0) : null;
       return {bodyText: text, visitorID: id, candidates: ids,
+        agentResponse: agent, serverResponse: server,
+        serverReady: !!(id && agentID === id && serverID === id && agentEvent && agentEvent === serverEvent),
+        javascriptUserAgent: navigator.userAgent,
         timeOrigin: performance.timeOrigin, url: location.href, title: document.title,
         viewportWidth: innerWidth, viewportHeight: innerHeight,
         visitorY: node ? node.getBoundingClientRect().top + scrollY : 0};
     })()
     """#
 
-    private static func observe(tab: BrowserTab, previousOrigin: Double?, prefix: String, evidence: URL) async throws -> [String: Any] {
+    static func observe(tab: BrowserTab, previousOrigin: Double?, prefix: String, evidence: URL) async throws -> [String: Any] {
         let end = Date().addingTimeInterval(75)
         var last: [String: Any] = [:]
         while Date() < end {
@@ -117,7 +146,7 @@ enum DevicePageDiagnostics {
                let page = try await tab.webView.evaluateJavaScript(readPage) as? [String: Any],
                let origin = page["timeOrigin"] as? Double, previousOrigin == nil || previousOrigin != origin {
                 last = page
-                if page["visitorID"] is String { break }
+                if page["serverReady"] as? Bool == true { break }
             }
             try await Task.sleep(for: .milliseconds(500))
         }
