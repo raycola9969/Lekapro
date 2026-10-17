@@ -140,11 +140,21 @@ final class BrowserTests: XCTestCase {
         let coldCopy = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
         XCTAssertEqual(coldCopy["persistentStateFlushCompleted"] as? Bool, true)
         XCTAssertEqual(coldCopy["networkRestartBeforeTokenInstallation"] as? Bool, true)
+        XCTAssertEqual(coldCopy["targetPublicRecordsVerifiedEmptyBeforeCopy"] as? Bool, true)
+        XCTAssertEqual(coldCopy["flushBeforeTargetRemoval"] as? Bool, true)
         XCTAssertNotEqual(coldCopy["targetNetworkPIDBefore"] as? Int32, coldCopy["targetNetworkPIDAfter"] as? Int32)
         let copiedCookies = await CookieService.all(in: b)
         XCTAssertTrue(copiedCookies.contains { $0.name == "_vid_t" && $0.value == "cookie-A" })
         XCTAssertTrue(copiedCookies.contains { $0.name == "_iidt" && $0.value == "cookie-A-second" })
         XCTAssertEqual(coldCopy["copiedValueCount"] as? Int, 2)
+        request.omitTokenForControl = true
+        let control = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+        XCTAssertEqual(control["copiedValueCount"] as? Int, 0)
+        XCTAssertEqual(control["omittedTokenForMatchedControl"] as? Bool, true)
+        let controlCookies = await CookieService.all(in: b)
+        XCTAssertFalse(controlCookies.contains { ["_vid_t", "_iidt"].contains($0.name) })
+        let controlState = try XCTUnwrap(control["targetAfterClear"] as? [String: Any])
+        XCTAssertEqual((controlState["nativeDataRecords"] as? [NSDictionary])?.count, 0)
         var ordinary = target; ordinary.tags = "ordinary"
         XCTAssertThrowsError(try DiagnosticSiteState.validateCopy(request, source: source, target: ordinary))
         var wrongKey = request; wrongKey.key = "account_session"
