@@ -111,6 +111,13 @@ enum DevicePageDiagnostics {
                     var applied = result["siteStateResets"] as? [[String: Any]] ?? []
                     applied.append(reset); result["siteStateResets"] = applied; save()
                 }
+                if request.identityStateCopy != nil {
+                    try DiagnosticSiteState.validateTarget(profile)
+                    let state = try await DiagnosticSiteState.snapshot(store: session.dataStore, requireNativeRecords: true)
+                    var before = result["beforeProfileNavigations"] as? [[String: Any]] ?? []
+                    before.append(["profileID": id.uuidString, "navigationIndex": index, "state": state])
+                    result["beforeProfileNavigations"] = before; save()
+                }
                 await session.start()
                 guard let tab = session.selectedTab else { throw BrowserError.invalid("No browser tab was created.") }
                 try await DeviceBrowserPresentation.show(session, store: store, workspace: workspace)
