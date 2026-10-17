@@ -185,7 +185,8 @@ enum DiagnosticSiteState {
         }
     }
 
-    static func reset(_ action: Reset, profile: BrowserProfile, store: WKWebsiteDataStore) async throws -> [String: Any] {
+    static func reset(_ action: Reset, profile: BrowserProfile, store: WKWebsiteDataStore,
+                      restartNetwork: Bool = false) async throws -> [String: Any] {
         #if DEBUG
         try validateTarget(profile)
         let stateBefore = try await snapshot(store: store)
@@ -195,7 +196,7 @@ enum DiagnosticSiteState {
             types = try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
         } else { types = action.dataTypes }
         if !types.isEmpty { try await remove(types: types, from: store) }
-        let restartsNetwork = [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
+        let restartsNetwork = restartNetwork || [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
         let processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store)
         if restartsNetwork { try LegacyWebKitBridge.restartDiagnosticNetwork(store) }
         let stateAfter = try await snapshot(store: store)
@@ -207,6 +208,7 @@ enum DiagnosticSiteState {
         return ["profileID": profile.id.uuidString, "action": action.rawValue,
             "cookieCountBefore": before.count, "cookieCountAfter": after.count,
             "requestedNativeDataTypes": types.sorted(),
+            "networkRestartRequested": restartsNetwork,
             "networkPIDBefore": processBefore, "networkPIDAfter": processAfter,
             "stateBefore": stateBefore, "stateAfter": stateAfter]
         #else

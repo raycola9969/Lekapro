@@ -178,6 +178,12 @@ final class BrowserTests: XCTestCase {
         let afterPID = try XCTUnwrap(result["networkPIDAfter"] as? Int32)
         XCTAssertGreaterThan(beforePID, 0); XCTAssertGreaterThan(afterPID, 0); XCTAssertNotEqual(beforePID, afterPID)
         XCTAssertEqual(after["cookieCount"] as? Int, 1)
+        let cookieOnly = try await DiagnosticSiteState.reset(.cookies, profile: profile, store: dataStore, restartNetwork: true)
+        let afterCookie = try XCTUnwrap(cookieOnly["stateAfter"] as? NSDictionary)
+        XCTAssertEqual(afterCookie["cookieCount"] as? Int, 0)
+        XCTAssertEqual(afterCookie["localIdentityTokens"] as? NSDictionary, after["localIdentityTokens"] as? NSDictionary)
+        XCTAssertEqual(cookieOnly["networkRestartRequested"] as? Bool, true)
+        XCTAssertNotEqual(cookieOnly["networkPIDBefore"] as? Int32, cookieOnly["networkPIDAfter"] as? Int32)
     }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()

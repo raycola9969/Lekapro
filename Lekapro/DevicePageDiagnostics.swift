@@ -10,6 +10,7 @@ enum DevicePageDiagnostics {
         var profileIDs: [UUID]
         var engineOptionsByProfileID: [String: DiagnosticEngineOptions]?
         var stateResetByProfileID: [String: DiagnosticSiteState.Reset]?
+        var restartNetworkAfterStateResetProfileIDs: [UUID]?
         var identityStateCopy: DiagnosticSiteState.CopyRequest?
     }
     private static var task: Task<Void, Never>?
@@ -61,6 +62,10 @@ enum DevicePageDiagnostics {
                 try DiagnosticSiteState.validateTarget(profile)
                 resets[id] = action
             }
+            let networkRestarts = Set(request.restartNetworkAfterStateResetProfileIDs ?? [])
+            guard networkRestarts.allSatisfy({ request.profileIDs.contains($0) && resets[$0] != nil }) else {
+                throw BrowserError.invalid("Network restarts require a selected disposable state-reset target.")
+            }
             for (key, options) in request.engineOptionsByProfileID ?? [:] {
                 guard let id = UUID(uuidString: key), request.profileIDs.contains(id) else {
                     throw BrowserError.invalid("Engine options must name one of the two requested QA profiles.")
@@ -92,7 +97,8 @@ enum DevicePageDiagnostics {
                 guard let profile = store.profile(id) else { throw BrowserError.invalid("Test profile was not found.") }
                 let session = try workspace.session(for: profile, store: store)
                 if let action = resets[id] {
-                    let reset = try await DiagnosticSiteState.reset(action, profile: profile, store: session.dataStore)
+                    let reset = try await DiagnosticSiteState.reset(action, profile: profile, store: session.dataStore,
+                        restartNetwork: networkRestarts.contains(id))
                     var applied = result["siteStateResets"] as? [[String: Any]] ?? []
                     applied.append(reset); result["siteStateResets"] = applied; save()
                 }
