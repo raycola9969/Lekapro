@@ -44,7 +44,15 @@ open Lekapro.xcodeproj
 
 Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhone. Trên iOS 16.1.1 jailbreak có thể cài IPA bằng TrollStore. Nhánh iOS 16 dùng API WebKit private, không dành cho phân phối App Store. Không cần thay đổi proxy toàn hệ thống hoặc cài tweak vào Safari.
 
-## Kiểm tra iOS 16 trên thiết bị
+## Kiểm tra trên thiết bị
+
+**Build 17 đã xác nhận hai Visitor ID khác nhau trên iPhone 13 Pro iOS 18.7.8.** Hồ sơ A dùng UA iOS 17.2 Safari, nhiễu Canvas và Audio mức tiêu chuẩn; hồ sơ B dùng UA WebKit thật và API gốc. Cả hai kết nối trực tiếp, cùng IP. Tám event mới trong hai lượt mở tiến trình, mỗi hồ sơ tải đầu và tải lại, đều khớp ID/event giữa giao diện, agent và Server API Response; hai ID giữ nguyên sau khi đóng/mở app. UUID hồ sơ/kho không đổi, agent không dùng cache. Xem [báo cáo thiết bị iOS 18](verification/ios18-stock-build17.json).
+
+Đây là kết quả của một cấu hình kết hợp trên một thiết bị, chưa xác định API nào riêng lẻ là nguyên nhân và không chứng minh cơ chế nội bộ ExitAnty 2.2.2. Trên cùng iPhone iOS 18, phép thử chỉ đổi UA (12 event), hai kho mới khác UA ngay lần đầu (4 event), và hai biến thể Audio rất nhỏ thêm UA (8 event) vẫn cùng ID. Tổng 32 event thiết bị iOS 18 đã đối chiếu, tách khỏi số đo simulator.
+
+Đã thử đúng cấu hình đạt ở trên trên iPhone 11 Pro Max iOS 16.1.1, build 15: thêm 4 event hợp lệ nhưng vẫn một ID, dù server ghi nhận Canvas/Audio thay đổi. Tổng thiết bị iOS 16 là 128 event; chưa đạt hai ID trên máy này. Xem [đối chứng iOS 16](verification/ios16-native-control-build15.json).
+
+[CI build 17](https://github.com/raycola9969/Lekapro/actions/runs/39036041400) đạt: 25 kiểm thử chạy thành công, một live network test bỏ qua vì không bật opt-in. Có kiểm thử thực việc trình bày hai trình duyệt liên tiếp. Bộ đo trên thiết bị chờ cửa sổ sẵn sàng, trình bày browser bằng UIKit và khôi phục trạng thái tự khóa sau khi đo. Công cụ tạo hồ sơ QA bên ngoài cũng đã sửa lỗi đặt `about:blank` nhầm vào trang chủ: trang chủ giữ HTTP/HTTPS hợp lệ, tab ban đầu được phép trống. Những lượt lỗi này không tính vào số đo hợp lệ.
 
 Build 16 cũng qua 25/25 XCTest. Tổ hợp hai quota tổng hợp gần 38 GB, UA và Audio nhỏ đã tạo 4 event độc lập mới, xác nhận quota native áp dụng, nhưng vẫn cùng ID trên simulator (tổng 24 event simulator). Xem [báo cáo build 16](verification/fingerprint-simulator-build16.json). Trên iPhone iOS 16.1.1, build 15 đã cài và đo lại cùng hai kho qua lượt mở app mới: thêm 4 event, tổng 124 lượt thiết bị, ID giữ nguyên và API Storage estimate không có. Xem [báo cáo mở lại](verification/ios16-build15-relaunch.json).
 
@@ -82,7 +90,7 @@ Trên [Fingerprint demo](https://fingerprint.com/demo/), hai hồ sơ thật hi�
 
 Cấu hình nằm trong Application Support với file protection. Mật khẩu proxy nằm trong Keychain `ThisDeviceOnly`. Nhân bản hồ sơ chỉ sao chép cấu hình, tạo UUID kho mới và không sao chép phiên đăng nhập. Nhập cấu hình cũng tạo UUID mới. Bản sao lưu chứa lịch sử/dấu trang và thông tin proxy, không chứa mật khẩu proxy hoặc dữ liệu WebKit. File cookie xuất có thể chứa token đăng nhập.
 
-Xóa hồ sơ đóng các WebView trước khi xóa dữ liệu. Các tùy chọn chặn JavaScript áp dụng trong trang và iframe, chưa bao phủ mọi Worker. Danh sách chặn tracker hiện chỉ có một số domain phổ biến. Proxy cấu hình riêng theo từng kho WebKit; chưa có packet capture để chứng minh không rò DNS/UDP. Popup tạo cửa sổ được mở thành tab mới; luồng phụ thuộc `window.opener` cần kiểm thử thêm. Chưa có tùy chỉnh ngôn ngữ; múi giờ dùng cấu hình WebKit SPI đã mô tả ở trên. Nhiễu đọc Canvas/Audio đang thử nghiệm và chưa xác minh được khả năng tách Visitor ID.
+Xóa hồ sơ đóng các WebView trước khi xóa dữ liệu. Các tùy chọn chặn JavaScript áp dụng trong trang và iframe, chưa bao phủ mọi Worker. Danh sách chặn tracker hiện chỉ có một số domain phổ biến. Proxy cấu hình riêng theo từng kho WebKit; chưa có packet capture để chứng minh không rò DNS/UDP. Popup tạo cửa sổ được mở thành tab mới; luồng phụ thuộc `window.opener` cần kiểm thử thêm. Chưa có tùy chỉnh ngôn ngữ; múi giờ dùng cấu hình WebKit SPI đã mô tả ở trên. Nhiễu đọc Canvas/Audio đang thử nghiệm; cấu hình kết hợp ở trên đã đạt hai ID trên một iPhone iOS 18.7.8 nhưng chưa đạt trên iOS 16.1.1 và không bảo đảm kết quả ở mọi môi trường.
 
 Nguồn API: [WebKit profiles](https://webkit.org/blog/14423/building-profiles-with-new-webkit-api/), [WebKit SPI trước iOS 16.1](https://github.com/WebKit/WebKit/blob/1c25190c9ac675b28f04ff6fc65ef11047fff348/Source/WebKit/UIProcess/API/Cocoa/_WKWebsiteDataStoreConfiguration.h), [ProxyConfiguration](https://developer.apple.com/documentation/network/proxyconfiguration), [WKDownloadDelegate](https://developer.apple.com/documentation/webkit/wkdownloaddelegate).
 
