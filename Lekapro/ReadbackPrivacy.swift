@@ -13,6 +13,7 @@ enum ReadbackPrivacy {
           'use strict';
           const canvasEnabled = CANVAS_OPTION;
           const audioEnabled = AUDIO_OPTION;
+          const audioAmplitude = AUDIO_AMPLITUDE;
           const identity = 'PROFILE_SEED' + '|' + location.origin;
           function hash(text) {
             let value = 2166136261;
@@ -75,7 +76,7 @@ enum ReadbackPrivacy {
               if (!channels) { channels = new Set(); visited.set(buffer, channels); }
               channels.add(index);
               for (let i = 0; i < values.length; i += 128) {
-                values[i] += (unit(i, index + 17) - 0.5) * 0.00001;
+                values[i] += (unit(i, index + 17) - 0.5) * audioAmplitude;
               }
               return values;
             }
@@ -89,6 +90,7 @@ enum ReadbackPrivacy {
         """#
             .replacingOccurrences(of: "CANVAS_OPTION", with: canvas ? "true" : "false")
             .replacingOccurrences(of: "AUDIO_OPTION", with: audio ? "true" : "false")
+            .replacingOccurrences(of: "AUDIO_AMPLITUDE", with: String((profile.privacy.audioNoiseScale ?? .standard).amplitude))
             .replacingOccurrences(of: "PROFILE_SEED", with: seed)
         controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
     }

@@ -54,6 +54,8 @@ final class BrowserTests: XCTestCase {
         XCTAssertNil(privacy.audioNoise)
         XCTAssertNil(privacy.blockWebGL)
         XCTAssertNil(privacy.reduceHardwareInfo)
+        XCTAssertNil(privacy.protectBlobWorkers)
+        XCTAssertNil(privacy.audioNoiseScale)
         XCTAssertEqual(privacy, PrivacySettings())
     }
     func testContextOptionsValidateAndOldProfilesKeepDeviceDefaults() throws {
@@ -155,6 +157,19 @@ final class BrowserTests: XCTestCase {
         """#) as? [Bool]
         XCTAssertEqual(values, [true,true,true,true])
     }
+    func testBlobWorkerPrivacyPreservesStrictModeOptionsAndPayloadAfterRevocation() async throws {
+        var profile = BrowserProfile()
+        profile.privacy.reduceHardwareInfo = true
+        profile.privacy.protectBlobWorkers = true
+        let value = try await sampleContext(profile)
+        XCTAssertEqual(value["workerCPU"] as? Int, value["cpu"] as? Int)
+        XCTAssertEqual(value["workerStrict"] as? Bool, true)
+        XCTAssertEqual(value["workerName"] as? String, "context-fixture")
+        XCTAssertEqual(value["workerInstance"] as? Bool, true)
+        let payload = try XCTUnwrap(value["untouched"] as? [String: Any])
+        XCTAssertEqual(payload["hardwareConcurrency"] as? Int, 99)
+        XCTAssertEqual(payload["userAgent"] as? String, "literal payload")
+    }
     private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile; fixture.privacy.blockTrackers = false
@@ -179,10 +194,12 @@ final class BrowserTests: XCTestCase {
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
           frameFontFamily:frame.contentWindow.getComputedStyle(frame.contentDocument.querySelector('span')).fontFamily,
           textHeight:document.querySelector('#sample').getBoundingClientRect().height};
-        const code = "const d=new Date('2026-01-15T12:00:00Z');postMessage({workerZone:Intl.DateTimeFormat().resolvedOptions().timeZone,workerOffset:d.getTimezoneOffset()})";
+        const code = "'use strict';const d=new Date('2026-01-15T12:00:00Z');postMessage({workerZone:Intl.DateTimeFormat().resolvedOptions().timeZone,workerOffset:d.getTimezoneOffset(),workerCPU:navigator.hardwareConcurrency,workerStrict:(function(){return this})()===undefined,workerName:self.name,untouched:{hardwareConcurrency:99,userAgent:'literal payload'}})";
         const url = URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
-        const worker = new Worker(url);
-        worker.onmessage = event => {window.qaValue=JSON.stringify({...result,...event.data});worker.terminate();URL.revokeObjectURL(url)};
+        const worker = new Worker(url,{name:'context-fixture'});
+        URL.revokeObjectURL(url);
+        result.workerInstance=worker instanceof Worker;
+        worker.onmessage = event => {window.qaValue=JSON.stringify({...result,...event.data});worker.terminate()};
         worker.onerror = event => {window.qaError=String(event.message)};
         })().catch(error=>{window.qaError=String(error)});
         </script>
@@ -222,6 +239,20 @@ final class BrowserTests: XCTestCase {
         let original = try await sampleReadback(native)
         XCTAssertNotEqual(a, original)
     }
+    func testFineAudioVariationIsStableAndUsesSmallerSampleChanges() async throws {
+        var profile = BrowserProfile(); profile.privacy.audioNoise = true
+        profile.privacy.audioNoiseScale = .fine
+        let first = try await sampleReadback(profile)
+        let repeated = try await sampleReadback(profile)
+        XCTAssertEqual(first, repeated)
+        let value = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(first.utf8)) as? [String: Any])
+        let arrays = try XCTUnwrap(value["audio"] as? [[Double]])
+        XCTAssertEqual(arrays[0], arrays[1]); XCTAssertEqual(arrays[0], arrays[2])
+        XCTAssertTrue(arrays[0].contains { $0 != 0.25 })
+        XCTAssertTrue(arrays[0].allSatisfy { abs($0 - 0.25) < 0.0000001 })
+        let other = try await sampleReadback(profile.duplicated())
+        XCTAssertNotEqual(first, other)
+    }
     private func sampleReadback(_ profile: BrowserProfile) async throws -> String {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile
@@ -235,12 +266,12 @@ final class BrowserTests: XCTestCase {
         <!doctype html><script>
         const c = document.createElement('canvas'); c.width = 64; c.height = 64;
         const ctx = c.getContext('2d'); ctx.fillStyle = '#723b81'; ctx.fillRect(0,0,64,64);
-        const buffer = new AudioBuffer({length:512,sampleRate:44100});
+        const buffer = new AudioBuffer({length:4096,sampleRate:44100});
         buffer.getChannelData(0).fill(0.25);
         const first = Array.from(buffer.getChannelData(0));
         const second = Array.from(buffer.getChannelData(0));
-        const copy = new Float32Array(512); buffer.copyFromChannel(copy,0);
-        const pick = values => [values[0],values[128],values[256],values[384]];
+        const copy = new Float32Array(4096); buffer.copyFromChannel(copy,0);
+        const pick = values => Array.from({length:32},(_,i)=>values[i*128]);
         window.qaValue = JSON.stringify({png:[c.toDataURL(),c.toDataURL()],audio:[pick(first),pick(second),pick(copy)]});
         </script>
         """#

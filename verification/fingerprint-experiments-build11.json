@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-17",
+  "appVersion": "0.3.0",
+  "build": 11,
+  "sourceCommit": "687a0d0e2516d5ab9d893fad2f4d453bffbce440",
+  "workflowRun": 39029463773,
+  "simulatorCIPassed": true,
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOS": "16.1.1",
+  "target": "https://fingerprint.com/demo/",
+  "experiments": [
+    {
+      "case": "hardware",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": false,
+      "changedRawAttributes": [
+        "screen_resolution",
+        "hardware_concurrency",
+        "canvas"
+      ]
+    },
+    {
+      "case": "webgl",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "webgl_basics",
+        "canvas",
+        "webgl_extensions"
+      ]
+    },
+    {
+      "case": "hardware-webgl",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": false,
+      "changedRawAttributes": [
+        "hardware_concurrency",
+        "canvas",
+        "screen_resolution",
+        "webgl_extensions",
+        "webgl_basics"
+      ]
+    },
+    {
+      "case": "hardware-full",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 2,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": false,
+      "changedRawAttributes": [
+        "audio",
+        "canvas",
+        "webgl_extensions",
+        "font_hash",
+        "hardware_concurrency",
+        "font_preferences",
+        "emoji",
+        "timezone",
+        "fonts",
+        "webgl_basics",
+        "timezone_offset",
+        "screen_resolution"
+      ]
+    }
+  ],
+  "goalAchieved": false,
+  "verifiedPagesThisBuild": 16,
+  "verifiedPagesTotalThroughThisBuild": 96,
+  "interpretation": "WebGL and main/frame CPU/screen values changed in server attributes, but Worker CPU remained native where reduction was enabled. All cases kept the same Visitor ID. The full combination changed 12 reported attribute groups and still linked to the same ID.",
+  "privacy": "Raw visitor IDs, event IDs, IPs, credentials and screenshots stay outside public repo."
+}

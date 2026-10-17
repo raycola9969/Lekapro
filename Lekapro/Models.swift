@@ -7,8 +7,17 @@ struct PrivacySettings: Codable, Equatable {
     var blockWebRTC = false
     var canvasNoise: Bool?
     var audioNoise: Bool?
+    var audioNoiseScale: AudioNoiseScale?
     var blockWebGL: Bool?
     var reduceHardwareInfo: Bool?
+    var protectBlobWorkers: Bool?
+}
+
+enum AudioNoiseScale: String, Codable, CaseIterable, Identifiable {
+    case fine, standard
+    var id: String { rawValue }
+    var title: String { self == .fine ? "Rất nhỏ" : "Tiêu chuẩn" }
+    var amplitude: Double { self == .fine ? 0.0000001 : 0.00001 }
 }
 
 struct SavedTab: Codable, Identifiable, Equatable {

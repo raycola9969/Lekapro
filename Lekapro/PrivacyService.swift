@@ -47,7 +47,7 @@ enum PrivacyService {
               if (!descriptor?.get || !descriptor.configurable) return;
               Object.defineProperty(proto, key, {...descriptor, get: function() {return transform(descriptor.get.call(this))}});
             };
-            reduce(globalThis.Navigator?.prototype, 'hardwareConcurrency', value => Math.min(2, value));
+            reduce(globalThis.Navigator?.prototype ?? globalThis.WorkerNavigator?.prototype, 'hardwareConcurrency', value => Math.min(2, value));
             for (const key of ['width', 'height', 'availWidth', 'availHeight']) {
               reduce(globalThis.Screen?.prototype, key, value => Math.max(200, Math.floor(value / 200) * 200));
             }
@@ -74,5 +74,8 @@ enum PrivacyService {
         })();
         """
         controller.addUserScript(WKUserScript(source: source, injectionTime: .atDocumentStart, forMainFrameOnly: false))
+        if privacy.protectBlobWorkers == true && (privacy.reduceHardwareInfo == true || privacy.blockWebGL == true) {
+            WorkerPrivacy.install(source: source, controller: controller)
+        }
     }
 }
