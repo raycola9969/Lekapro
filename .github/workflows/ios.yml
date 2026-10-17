@@ -49,6 +49,8 @@ jobs:
             build/ipa/BUILD-INFO.txt
           retention-days: 7
       - name: Select simulator
+        env:
+          LIVE_FINGERPRINT: ${{ contains(github.event.head_commit.message, '[live-probe]') && '1' || '0' }}
         run: |
           xcrun simctl list devices available -j > build/simulators.json
           xcrun simctl list runtimes -j > build/runtimes.json
@@ -73,23 +75,34 @@ jobs:
           entry = next(item for item in json.load(open('build/runtimes.json'))['runtimes'] if item['identifier'] == runtime)
           runtime_root = pathlib.Path(entry.get('runtimeRoot') or pathlib.Path(entry['bundlePath']) / 'Contents/Resources/RuntimeRoot')
           overlay = runtime_root / 'System/Cryptexes/OS/usr/lib/swift'
+          scheme = pathlib.Path('Lekapro.xcodeproj/xcshareddata/xcschemes/Lekapro.xcscheme')
+          tree = ET.parse(scheme)
+          action = tree.getroot().find('TestAction')
+          action.set('shouldUseLaunchSchemeArgsEnv', 'NO')
+          variables = action.find('EnvironmentVariables')
+          if variables is None:
+              variables = ET.SubElement(action, 'EnvironmentVariables')
           if (overlay / 'libswiftWebKit.dylib').is_file():
-              scheme = pathlib.Path('Lekapro.xcodeproj/xcshareddata/xcschemes/Lekapro.xcscheme')
-              tree = ET.parse(scheme)
-              action = tree.getroot().find('TestAction')
-              action.set('shouldUseLaunchSchemeArgsEnv', 'NO')
-              variables = action.find('EnvironmentVariables')
-              if variables is None:
-                  variables = ET.SubElement(action, 'EnvironmentVariables')
               ET.SubElement(variables, 'EnvironmentVariable', key='DYLD_FALLBACK_LIBRARY_PATH', value=str(overlay), isEnabled='YES')
-              tree.write(scheme, encoding='utf-8', xml_declaration=True)
               print('Configured WebKit Swift overlay for simulator XCTest')
+          if os.environ.get('LIVE_FINGERPRINT') == '1':
+              ET.SubElement(variables, 'EnvironmentVariable', key='LEKAPRO_LIVE_FINGERPRINT', value='1', isEnabled='YES')
+              print('Enabled live demo observations; only sanitized summary will be exported')
+          tree.write(scheme, encoding='utf-8', xml_declaration=True)
           PY
       - name: Run simulator tests
         timeout-minutes: 15
         run: |
           set -o pipefail
           xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+      - name: Export sanitized live-probe summary
+        if: always() && contains(github.event.head_commit.message, '[live-probe]')
+        run: |
+          APP_DATA=$(xcrun simctl get_app_container "$SIMULATOR_ID" app.lekapro.browser data)
+          SUMMARY="$APP_DATA/Library/Caches/Lekapro-live-probe/sanitized-summary.json"
+          if [ -f "$SUMMARY" ]; then
+            cp "$SUMMARY" build/live-probe-summary.json
+          fi
       - name: Upload diagnostics and test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -97,6 +110,7 @@ jobs:
           name: build-diagnostics
           path: |
             build/*.log
+            build/live-probe-summary.json
             build/TestResults.xcresult
           if-no-files-found: ignore
           retention-days: 7

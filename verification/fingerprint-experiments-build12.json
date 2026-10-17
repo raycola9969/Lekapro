@@ -1,0 +1,351 @@
+{
+  "date": "2026-10-17",
+  "appVersion": "0.3.0",
+  "build": 12,
+  "sourceCommit": "cf9fe0e904f5894a8a7643cc32ae6b5d39167770",
+  "workflowRun": 39030685455,
+  "simulatorCIStatus": "failed",
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOS": "16.1.1",
+  "target": "https://fingerprint.com/demo/",
+  "experiments": [
+    {
+      "case": "fine-audio-pair",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "canvas",
+        "audio"
+      ],
+      "audioStableAcrossReloads": [
+        true,
+        true
+      ],
+      "audioDifferenceAcrossProfiles": 5.21540641784668e-08,
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ]
+    },
+    {
+      "case": "fine-audio-ua",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "audio",
+        "canvas"
+      ],
+      "audioStableAcrossReloads": [
+        true,
+        true
+      ],
+      "audioDifferenceAcrossProfiles": 2.2351741790771484e-08,
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ]
+    },
+    {
+      "case": "workers-hardware",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 1,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "hardware_concurrency",
+        "screen_resolution",
+        "canvas"
+      ]
+    },
+    {
+      "case": "workers-full",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 2,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "fonts",
+        "font_preferences",
+        "hardware_concurrency",
+        "audio",
+        "emoji",
+        "canvas",
+        "screen_resolution",
+        "timezone",
+        "timezone_offset",
+        "webgl_basics",
+        "font_hash",
+        "webgl_extensions"
+      ]
+    },
+    {
+      "case": "fine-audio-proxy",
+      "status": "finished",
+      "completed": true,
+      "error": null,
+      "pageCount": 4,
+      "allResponsesVerified": true,
+      "uniqueVisitorCount": 1,
+      "uniqueServerIPCount": 2,
+      "differentVisitorIDs": false,
+      "stableProfiles": [
+        true,
+        true
+      ],
+      "rows": [
+        {
+          "profileIndex": 0,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 0,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP1",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "initial",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        },
+        {
+          "profileIndex": 1,
+          "stage": "reload",
+          "visitorAlias": "ID1",
+          "ipAlias": "IP2",
+          "verified": true,
+          "uncached": true
+        }
+      ],
+      "workerTimeZonesMatchMainContext": true,
+      "workerUserAgentsMatchMainContext": true,
+      "workerCPUMatchesMainContext": true,
+      "changedRawAttributes": [
+        "audio",
+        "canvas"
+      ],
+      "audioStableAcrossReloads": [
+        true,
+        true
+      ],
+      "audioDifferenceAcrossProfiles": 6.705522537231445e-08,
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ]
+    }
+  ],
+  "goalAchieved": false,
+  "rawEvidence": "Kept locally outside the public repository.",
+  "verifiedPagesThisBuild": 20,
+  "verifiedPagesTotal": 112,
+  "interpretation": "Fine Audio produced stable tiny attribute differences, including comparisons with different UA and server IP. Worker CPU consistency was fixed for covered classic Blob Workers. None of these completed comparisons separated Visitor IDs on iOS 16.1.1. Newer WebKit is a hypothesis, not an established cause.",
+  "simulatorCIPassed": false,
+  "simulatorTestResult": {
+    "total": 22,
+    "passed": 21,
+    "failed": 1,
+    "failure": "CancellationError while WebKit launch was delayed; no claim of a clean CI pass."
+  },
+  "verifiedPagesTotalThroughThisBuild": 116,
+  "partialAttempt": {
+    "case": "fine-audio-proxy",
+    "verifiedPages": 2,
+    "completed": false,
+    "error": "Frame load interrupted",
+    "excludedFromCompletedPairPageTotal": true,
+    "retryUsedSameProfilesAndStores": true
+  },
+  "exitantyReferenceActualOS": "18.7.9 (user confirmed); unavailable for installing this unsigned IPA",
+  "privacy": "Raw identifiers, IPs, credentials, complete supplied JSON and screenshots remain outside the public repository."
+}

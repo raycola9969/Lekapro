@@ -16,6 +16,10 @@ struct LekaproApp: App {
             .environmentObject(store)
             .environmentObject(workspace)
             .task {
+                // The XCTest host runs its own fixtures. Do not start a second
+                // set of WebKit processes and storage checks in parallel.
+                guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil,
+                      NSClassFromString("XCTestCase") == nil else { return }
                 await DeviceDiagnostics.runOnce()
                 await DeviceNetworkDiagnostics.runIfRequested(store: store, workspace: workspace)
                 DevicePageDiagnostics.startIfRequested(store: store, workspace: workspace)
