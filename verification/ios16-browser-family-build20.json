@@ -1,0 +1,29 @@
+{
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "build": "20",
+  "sourceCommit": "6921f39d1a43cbe78363bf0a7732bbe8883ba4ef",
+  "differentVisitorIDs": true,
+  "allPageAgentServerIDsAndEventsMatch": true,
+  "uncachedUniqueEvents": 12,
+  "sameIP": true,
+  "bothNavigatorPlatforms": "iPhone",
+  "profileA": "iPhone Chrome119 User-Agent, native WebKit APIs",
+  "profileB": "Native iPhone WebKit User-Agent and APIs",
+  "freshPairStableOnReloadAndProcessRelaunch": true,
+  "existingPairIDsPreservedAcrossBuild19To20Update": true,
+  "engineExperimentsRequested": false,
+  "instrumented": false,
+  "ci": {
+    "runID": 39045021797,
+    "passed": 26,
+    "skipped": 1,
+    "failures": 0
+  },
+  "limits": [
+    "Same Chrome UA in two fresh profiles was a one-ID control on build19.",
+    "A separate ID for every new profile UUID is not established.",
+    "Safari17.2 versus Safari18.7.9 remained one ID in the controlled iOS16 comparison.",
+    "No claim of ExitAnty2.2.2 equivalence or all-site identification isolation."
+  ]
+}
