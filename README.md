@@ -2,25 +2,31 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
-## Kết quả mới trên iOS 16.1.1
+## Kết quả hiện tại trên iOS 16.1.1
 
-Build 21 đã cài trên iPhone 11 Pro Max iOS 16.1.1 và xác nhận **ba hồ sơ cùng UA Safari 17.2 giữ ba Visitor ID khác nhau** sau tải lại và đóng/mở app. Các hồ sơ đã lưu trên máy là `03 - Safari 17.2 A`, `04 - Safari 17.2 B`, `05 - Safari 17.2 C`. A được đo lần đầu bằng UA iPhone Chrome 119, B bằng UA WebKit mặc định, C bằng chuỗi UA Windows Firefox 119; sau đó A/C đổi về Safari 17.2, giữ nguyên kho của từng hồ sơ. Engine thật vẫn là WebKit iOS 16.1.1. UA trong trang, Worker và phản hồi server đều khớp cấu hình cuối.
+**Bảy hồ sơ đã lưu giữ bảy Visitor ID khác nhau tại fingerprint.com/demo, cùng UA Safari 17.2. Chưa bảo đảm một ID mới cho mọi hồ sơ tạo thêm.** Build 28 đã cài trên iPhone 11 Pro Max iOS 16.1.1; engine thật vẫn là WebKit của iOS 16.1.1. UA trong trang, Worker và phản hồi server khớp cấu hình. Không sửa ID trên giao diện, SDK hoặc phản hồi server.
 
-Đợt build 21 có 72 event mới, không dùng cache, đối chiếu ID/event giữa trang, agent và server trên cùng IP. Ba đối chứng riêng ở hồ sơ thử dùng một lần cho thấy: xóa cookie native (24→0), xóa localStorage, hoặc gọi WebKit xóa tất cả loại dữ liệu website công khai đều chưa làm hai ID đang có nhập lại. Việc xóa cookie được đếm trực tiếp; chưa kiểm kê độc lập mọi trạng thái nội bộ hay trạng thái ở server. Các nhóm thuộc tính thiết bị thô bằng nhau giữa các hồ sơ ở lượt tải lại cuối. UA Android Chrome và Windows Chrome không tạo ID mới ngoài cặp đã có. Xem [báo cáo build 21 đã loại dữ liệu định danh](verification/ios16-site-state-build21.json). [CI build 21](https://github.com/raycola9969/Lekapro/actions/runs/39051220994) đạt 27 bài kiểm thử, một bài đo mạng bỏ qua.
+| Hồ sơ trên máy thử | UA khi đo lần đầu | UA hiện tại |
+| --- | --- | --- |
+| 03 - Safari 17.2 A | iPhone Chrome 119 | Safari 17.2 |
+| 04 - Safari 17.2 B | WebKit mặc định | Safari 17.2 |
+| 05 - Safari 17.2 C | Windows Firefox 119 | Safari 17.2 |
+| 06 - Safari 17.2 Edge | Windows Edge 119 | Safari 17.2 |
+| 07 - Safari 17.2 Opera | Windows Opera 105 | Safari 17.2 |
+| 08 - Safari 17.2 Samsung Internet | Android Samsung Internet 23 | Safari 17.2 |
+| 09 - Safari 17.2 UC Browser | Android UC Browser 13.4 | Safari 17.2 |
 
-Trên iPhone 11 Pro Max chạy iOS 16.1.1, build 20 đã được cài và kiểm chứng hai Visitor ID khác nhau tại fingerprint.com/demo: hồ sơ A dùng UA iPhone Chrome 119, hồ sơ B dùng UA WebKit mặc định. Cả hai vẫn báo nền tảng iPhone, kết nối trực tiếp cùng IP, tắt chặn tracker, dùng Canvas/Audio và các API nguyên bản. Mười hai event mới không dùng cache xác nhận ID hiển thị khớp phản hồi JavaScript và máy chủ: cặp đã đo giữ ID qua cập nhật 19→20, một cặp mới ổn định khi tải lại và sau khi kết thúc/mở lại app. Không dùng tùy chọn engine chẩn đoán, Frida hoặc sửa kết quả website. Xem [báo cáo đã loại dữ liệu định danh](verification/ios16-browser-family-build20.json). [CI build 20](https://github.com/raycola9969/Lekapro/actions/runs/39045021797) đạt 26 bài kiểm thử, bỏ qua một bài đo mạng chưa bật trong CI.
+Bảy hồ sơ giữ nguyên UUID hồ sơ và UUID kho dữ liệu. Bốn hồ sơ mới được đo qua hai lần mở tiến trình app, tải đầu và tải lại; ba hồ sơ cũ cũng được kiểm tra lại sau cập nhật. Đợt xác nhận gồm 24 event mới, rồi thêm 16 event kiểm tra lại cả bảy sau đối chứng cuối. Agent không dùng cache, ID/event trên trang khớp agent và server, cùng IP và môi trường server. Các hồ sơ này đã tách khỏi nhóm QA có quyền xóa dữ liệu.
 
-Đã kiểm chứng thêm 48 event trên build 20: khởi tạo hai ID bằng cặp UA Chrome/mặc định, rồi đổi đúng hai hồ sơ sang cùng UA Safari 17.2 vẫn giữ hai ID qua tải lại và mở lại app. Cặp Safari 17.2/18.7.9 cũng giữ được ID theo cách này. Khi đổi UA, giữ cùng kho dữ liệu. Các thuộc tính thiết bị thô bằng nhau ở lượt tải lại. Hồ sơ mới tạo trực tiếp với cùng UA Safari hoặc cặp Safari 17.2/18.7.9 vẫn cho một ID. Xem [đối chứng chuyển UA và lưu trạng thái](verification/ios16-state-retention-build20.json).
+Tạo sáu kho mới với các họ UA Edge/Opera, Samsung/UC, Vivaldi/Yandex đã cho bốn ID mới ngoài ba ID cũ. Tuy nhiên hai kho mới lặp đúng UA Edge/Opera lại nhận hai ID đã có. Trước đó, sáu kho mới cùng họ Firefox, kể cả hậu tố UUID khác nhau, vẫn nhận một ID; thay seed Canvas/Audio cũng chưa tách được. Vì vậy danh sách trên là bảy lịch sử hồ sơ đã kiểm chứng, không phải công thức tạo ID không giới hạn.
 
-Đây là kết quả nhận diện phụ thuộc lịch sử truy cập đã quan sát; nguyên nhân lưu giữ cụ thể chưa được tách riêng. Chưa chứng minh dấu vân tay phần cứng khác nhau hoặc ID riêng cho mọi UUID hồ sơ. Đối chứng hai hồ sơ mới cùng UA Chrome cũng cho cùng ID. Đổi riêng nền tảng sang iPad không tách được ID; UA iPad tách được trong phép thử riêng. Chưa xác định cơ chế nội bộ ExitAnty 2.2.2.
+Đã xác nhận trạng thái kho có vai trò: giữ nguyên UUID/cấu hình hồ sơ và gắn kho cũ → mới → cũ làm ID đổi rồi trở lại. Xóa riêng cookie/localStorage hoặc một số nhóm dữ liệu vẫn giữ ID; một số tổ hợp xóa toàn bộ và khởi động lại tiến trình mạng làm mất ID cũ. Các phép thử này chưa tách hết mọi đường phục hồi ID.
 
-Để lặp lại hồ sơ C trong đợt thử: tạo kho mới, tắt các tùy chọn bảo vệ để dùng API gốc, đặt UA tùy chỉnh dưới đây, mở demo và đo; sau đó sửa chính hồ sơ đó sang preset Safari 17.2. Việc đổi UA áp dụng khi đóng/mở trình duyệt hồ sơ. Đây là cấu hình đã đo trên máy này; chưa bảo đảm một ID mới cho mỗi hồ sơ C tạo thêm. App chỉ truy cập demo khi người dùng hoặc bộ đo DEBUG yêu cầu.
+Đối chứng bổ sung dùng seed Edge/Opera để ID nguồn khác ID đích trong lượt không chuyển token. Hai lượt đối chứng không chuyển token, ở trước và sau lượt chuyển, giữ ID đích ban đầu. Chỉ lượt đặt cookie `_vid_t` có sẵn từ nguồn vào đích đã làm đích nhận ID nguồn; hash cookie khớp trước khi nạp trang, đích không có localStorage và được mở trước nguồn. Cả ba cặp đều giữ ID khi tải lại. Đây là bằng chứng cookie này có thể mang ID trong điều kiện đã đo; không chứng minh nó là đường lưu giữ duy nhất.
 
-```text
-Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:119.0) Gecko/20100101 Firefox/119.0
-```
+Kết quả về thứ tự mở cần giới hạn: build 27 có đối chứng mở đích trước giữ ID đích, nhưng build 28 với seed Chrome/native vẫn nhập ID ngay cả khi không chuyển token và mở đích trước. Quy trình build 28 đo thêm trạng thái ngay trước mỗi lượt mở. Liệt kê DiskCache có thể bao gồm nhiều network session trong [mã nguồn WebKit nhánh 614.2.9](https://github.com/WebKit/WebKit/blob/WebKit-7614.2.9.0.10/Source/WebKit/NetworkProcess/NetworkProcess.cpp#L1343); danh sách record không đủ để quy cache cho một hồ sơ. Ở phép thử tương ứng, tệp cache thực của đích không tăng trước khi mở. Chưa xác định đầy đủ cơ chế giữ ID hoặc cơ chế nội bộ ExitAnty 2.2.2.
 
-Build 20 đưa các chuỗi đã thử vào menu User-Agent: iPhone Chrome 119, iPhone Firefox 119 và iPad Safari 16.1. Đây là lựa chọn chuỗi UA; app tiếp tục dùng WebKit của hệ điều hành. Để lặp lại cặp đã xác nhận, chọn Chrome ở A, Tự động theo WebKit ở B và tắt chặn tracker trong cả hai.
+Báo cáo điều tra hiện có **648 event thiết bị độc lập** đã kiểm tra từ build 21 trở đi, tách khỏi các đợt cũ và số đo simulator. Xem [báo cáo đã loại dữ liệu định danh](verification/ios16-retention-investigation-build28.json) và [ma trận đối chứng](verification/ios16-retention-matrix-build28.md). [CI build 28](https://github.com/raycola9969/Lekapro/actions/runs/39062532151) đạt 30 kiểm thử, một live network test bỏ qua, không có lỗi. Checksum IPA và commit nguồn nằm trong báo cáo.
 
 ## Đã triển khai
 
@@ -64,7 +70,7 @@ open Lekapro.xcodeproj
 
 Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhone. Trên iOS 16.1.1 jailbreak có thể cài IPA bằng TrollStore. Nhánh iOS 16 dùng API WebKit private, không dành cho phân phối App Store. Không cần thay đổi proxy toàn hệ thống hoặc cài tweak vào Safari.
 
-## Kiểm tra trên thiết bị
+## Các mốc kiểm thử trước build 20
 
 **Build 17 đã xác nhận hai Visitor ID khác nhau trên iPhone 13 Pro iOS 18.7.8.** Hồ sơ A dùng UA iOS 17.2 Safari, nhiễu Canvas và Audio mức tiêu chuẩn; hồ sơ B dùng UA WebKit thật và API gốc. Cả hai kết nối trực tiếp, cùng IP. Tám event mới trong hai lượt mở tiến trình, mỗi hồ sơ tải đầu và tải lại, đều khớp ID/event giữa giao diện, agent và Server API Response; hai ID giữ nguyên sau khi đóng/mở app. UUID hồ sơ/kho không đổi, agent không dùng cache. Xem [báo cáo thiết bị iOS 18](verification/ios18-stock-build17.json).
 
