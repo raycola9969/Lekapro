@@ -63,6 +63,7 @@ jobs:
           print('Using', runtime, device['name'])
           PY
       - name: Run simulator tests
+        timeout-minutes: 15
         run: |
           set -o pipefail
           xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
