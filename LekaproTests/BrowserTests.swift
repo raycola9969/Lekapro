@@ -80,6 +80,56 @@ final class BrowserTests: XCTestCase {
         profile.minimumFontSize = 33
         XCTAssertThrowsError(try store.save(profile))
     }
+    func testClosingSessionKeepsTabsAfterPendingSaveDeadline() async throws {
+        let file = temporaryFile()
+        let store = ProfileStore(fileURL: file)
+        var profile = BrowserProfile()
+        profile.privacy.blockTrackers = false
+        profile.tabs = [SavedTab(url: "about:blank", title: "One")]
+        try store.save(profile)
+        let session = try BrowserSession(profile: profile, store: store)
+        await session.start()
+        session.addTab(url: URL(string: "about:blank"))
+        session.close()
+        try await Task.sleep(for: .milliseconds(800))
+        XCTAssertEqual(store.profile(profile.id)?.tabs.count, 2)
+        XCTAssertEqual(ProfileStore(fileURL: file).profile(profile.id)?.tabs.count, 2)
+    }
+    func testNativeStorageLimitReachesMainAndWorkerWithoutJavaScriptOverrides() async throws {
+        guard #available(iOS 17, *) else { throw XCTSkip("Storage estimate requires newer WebKit.") }
+        for size in [1, 2] {
+            let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            let configuration = WKWebViewConfiguration()
+            configuration.websiteDataStore = try LegacyWebKitBridge.makeQuotaStore(at: folder, quota: UInt(size) * 1024 * 1024 * 1024)
+            let tab = BrowserTab(configuration: configuration)
+            defer { tab.close() }
+            tab.webView.loadHTMLString("<!doctype html><title>Native quota fixture</title>", baseURL: URL(string: "https://quota.lekapro.invalid/"))
+            let deadline = Date().addingTimeInterval(30)
+            while tab.webView.isLoading || tab.webView.url == nil {
+                guard Date() < deadline else { throw BrowserError.invalid("Quota fixture did not load.") }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+            let value = try await tab.webView.callAsyncJavaScript(#"""
+            const main = await navigator.storage.estimate();
+            const worker = await new Promise((resolve, reject) => {
+              let worker, url;
+              const finish = (value, error) => {clearTimeout(timer);worker?.terminate();if(url)URL.revokeObjectURL(url);error ? reject(error) : resolve(value)};
+              const timer=setTimeout(()=>finish(null,new Error('Quota Worker timed out')),5000);
+              try {
+                url=URL.createObjectURL(new Blob(["navigator.storage.estimate().then(v=>postMessage(v.quota))"],{type:'text/javascript'}));
+                worker=new Worker(url);
+                worker.onmessage=e=>finish(e.data);
+                worker.onerror=()=>finish(null,new Error('Quota Worker failed'));
+              } catch(error){finish(null,error)}
+            });
+            return {main:main.quota,worker,secure:isSecureContext};
+            """#, arguments: [:], in: nil, contentWorld: .page) as? [String: Any]
+            XCTAssertEqual(value?["secure"] as? Bool, true)
+            XCTAssertEqual((value?["main"] as? NSNumber)?.uint64Value, UInt64(size) * 1024 * 1024 * 1024)
+            XCTAssertEqual((value?["worker"] as? NSNumber)?.uint64Value, UInt64(size) * 1024 * 1024 * 1024)
+            XCTAssertEqual(tab.webView.configuration.userContentController.userScripts.count, 0)
+        }
+    }
     func testNativeTimeZonesStaySeparateAcrossProfilesAndWorkers() async throws {
         var tokyo = BrowserProfile()
         tokyo.timeZoneID = "Asia/Tokyo"

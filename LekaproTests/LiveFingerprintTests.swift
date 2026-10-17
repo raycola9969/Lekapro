@@ -36,25 +36,39 @@ final class LiveFingerprintTests: XCTestCase {
                 .write(to: output.appendingPathComponent("sanitized-summary.json"), options: .atomic)
         }
         try save()
-        for fineAudio in [false, true] {
+        for testCase in ["native-ua", "fine-audio-ua", "native-quota"] {
+            let fineAudio = testCase == "fine-audio-ua"
+            let quotaCase = testCase == "native-quota"
             var pages: [[String: Any]] = []
             var profiles: [BrowserProfile] = []
-            var current: [String: Any] = ["case": fineAudio ? "fine-audio-ua" : "native-ua",
+            var current: [String: Any] = ["case": testCase,
                 "completed": false]
             do {
                 for index in 0..<2 {
                     var profile = BrowserProfile()
                     profile.tabs = [SavedTab(url: "about:blank", title: "Live probe start")]
-                    profile.userAgent = index == 0 ? UserAgentPreset.ios172.value : UserAgentPreset.ios1879.value
+                    profile.userAgent = quotaCase ? nil : (index == 0 ? UserAgentPreset.ios172.value : UserAgentPreset.ios1879.value)
                     profile.privacy.blockTrackers = false
                     profile.privacy.audioNoise = fineAudio
                     profile.privacy.audioNoiseScale = .fine
                     try store.save(profile)
                     profiles.append(profile)
-                    let session = try BrowserSession(profile: profile, store: store)
-                    await session.start()
-                    let tab = try XCTUnwrap(session.selectedTab)
-                    defer { tab.webView.removeFromSuperview(); session.close() }
+                    let session: BrowserSession?
+                    let tab: BrowserTab
+                    if quotaCase {
+                        session = nil
+                        let config = WKWebViewConfiguration()
+                        config.websiteDataStore = try LegacyWebKitBridge.makeQuotaStore(
+                            at: root.appendingPathComponent(UUID().uuidString), quota: UInt(index + 1) * 1024 * 1024 * 1024)
+                        tab = BrowserTab(configuration: config)
+                        tab.navigate(URL(string: "about:blank")!)
+                    } else {
+                        let created = try BrowserSession(profile: profile, store: store)
+                        session = created
+                        await created.start()
+                        tab = try XCTUnwrap(created.selectedTab)
+                    }
+                    defer { tab.webView.removeFromSuperview(); if let session { session.close() } else { tab.close() } }
                     let blankDeadline = Date().addingTimeInterval(30)
                     while tab.webView.url == nil || tab.webView.isLoading {
                         guard Date() < blankDeadline else { throw BrowserError.invalid("Initial blank page did not load.") }
@@ -66,12 +80,14 @@ final class LiveFingerprintTests: XCTestCase {
                     let first = try await DevicePageDiagnostics.observe(tab: tab, previousOrigin: nil,
                         prefix: "\(fineAudio)-\(index)-initial", evidence: root)
                     try verify(first)
+                    if quotaCase { try verifyQuota(first, index: index) }
                     pages.append(first)
                     let origin = try XCTUnwrap(first["timeOrigin"] as? Double)
                     tab.webView.reloadFromOrigin()
                     let reload = try await DevicePageDiagnostics.observe(tab: tab, previousOrigin: origin,
                         prefix: "\(fineAudio)-\(index)-reload", evidence: root)
                     try verify(reload)
+                    if quotaCase { try verifyQuota(reload, index: index) }
                     pages.append(reload)
                 }
                 let ids = pages.compactMap { $0["visitorID"] as? String }
@@ -89,6 +105,7 @@ final class LiveFingerprintTests: XCTestCase {
                 current["allAgentResponsesUncached"] = agents.allSatisfy { $0["cache_hit"] as? Bool == false }
                 current["uniqueVisitorCount"] = Set(ids).count
                 current["differentVisitorIDs"] = ids[0] != ids[2]
+                if quotaCase { current["nativeQuotaAppliedOnEveryVisit"] = true }
                 current["stableOnReload"] = [ids[0] == ids[1], ids[2] == ids[3]]
                 current["changedRawAttributesAfterReload"] = Set(attributes[1].keys).union(attributes[3].keys).filter {
                     !NSDictionary(dictionary: ["v": attributes[1][$0] ?? NSNull()])
@@ -124,6 +141,15 @@ final class LiveFingerprintTests: XCTestCase {
               agent["cache_hit"] as? Bool == false,
               server["user_agent"] as? String == page["javascriptUserAgent"] as? String else {
             throw BrowserError.invalid("Visible page, agent and server could not be independently matched.")
+        }
+    }
+
+    private func verifyQuota(_ page: [String: Any], index: Int) throws {
+        let context = page["storageContext"] as? [String: Any] ?? [:]
+        let estimate = context["estimate"] as? [String: Any] ?? [:]
+        guard context["secureContext"] as? Bool == true,
+              (estimate["quota"] as? NSNumber)?.uint64Value == UInt64(index + 1) * 1024 * 1024 * 1024 else {
+            throw BrowserError.invalid("The configured native quota was not observed on the HTTPS page.")
         }
     }
 }

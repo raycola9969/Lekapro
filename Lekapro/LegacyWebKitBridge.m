@@ -49,6 +49,12 @@
     };
 }
 + (WKWebsiteDataStore *)makeStoreAtURL:(NSURL *)directory proxyConfiguration:(NSDictionary *)proxy error:(NSError **)error {
+    return [self makeConfiguredStoreAtURL:directory proxyConfiguration:proxy quota:nil error:error];
+}
++ (WKWebsiteDataStore *)makeQuotaStoreAtURL:(NSURL *)directory quota:(NSUInteger)quota error:(NSError **)error {
+    return [self makeConfiguredStoreAtURL:directory proxyConfiguration:nil quota:@(quota) error:error];
+}
++ (WKWebsiteDataStore *)makeConfiguredStoreAtURL:(NSURL *)directory proxyConfiguration:(NSDictionary *)proxy quota:(NSNumber *)quota error:(NSError **)error {
     @try {
         Class cls = NSClassFromString(@"_WKWebsiteDataStoreConfiguration");
         SEL initializer = NSSelectorFromString(@"_initWithConfiguration:");
@@ -56,6 +62,19 @@
             @throw [NSException exceptionWithName:@"UnsupportedWebKit" reason:@"WebKit does not expose isolated storage configuration on this OS." userInfo:nil];
         }
         id configuration = [[cls alloc] init];
+        if (quota) {
+            SEL setter = NSSelectorFromString(@"setPerOriginStorageQuota:");
+            if (quota.unsignedLongLongValue < 16 * 1024 * 1024 || quota.unsignedLongLongValue > 64ULL * 1024 * 1024 * 1024 || ![configuration respondsToSelector:setter]) {
+                @throw [NSException exceptionWithName:@"UnsupportedQuota" reason:@"WebKit cannot apply the requested storage limit." userInfo:nil];
+            }
+            ((void (*)(id, SEL, NSUInteger))objc_msgSend)(configuration, setter, quota.unsignedIntegerValue);
+            // Use the actual fixed origin limit rather than a ratio of disk size
+            // or a standard reported volume. No StorageManager JS replacement.
+            for (NSString *name in @[@"setOriginQuotaRatio:", @"setStandardVolumeCapacity:"]) {
+                SEL optionalSetter = NSSelectorFromString(name);
+                if ([configuration respondsToSelector:optionalSetter]) ((void (*)(id, SEL, id))objc_msgSend)(configuration, optionalSetter, nil);
+            }
+        }
         NSArray<NSArray<NSString *> *> *paths = @[
             @[@"_setWebStorageDirectory:", @"LocalStorage"],
             @[@"_setIndexedDBDatabaseDirectory:", @"IndexedDB"],

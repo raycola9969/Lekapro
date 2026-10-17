@@ -14,7 +14,7 @@ final class BrowserSession: ObservableObject, Identifiable {
     @Published var downloads: [URL] = []
     private var started = false
     private var blocker: WKContentRuleList?
-    private var saveTask: Task<Void, Never>?
+    private var saveRevision = 0
     private let processPool: WKProcessPool?
     private let fontStyle: NSObject?
     var selectedTab: BrowserTab? { tabs.first { $0.id == selectedTabID } }
@@ -83,10 +83,11 @@ final class BrowserSession: ObservableObject, Identifiable {
         persist()
     }
     private func scheduleSave() {
-        saveTask?.cancel()
-        saveTask = Task { [weak self] in
-            do { try await Task.sleep(for: .milliseconds(500)) } catch { return }
-            self?.persist()
+        saveRevision &+= 1
+        let revision = saveRevision
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { [weak self] in
+            guard let self, self.saveRevision == revision else { return }
+            self.persist()
         }
     }
     func persist() {
@@ -95,7 +96,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         store.update(id) { $0.tabs = snapshot; $0.selectedTabID = selectedTabID }
     }
     func close() {
-        saveTask?.cancel(); persist()
+        saveRevision &+= 1; persist()
         tabs.forEach { $0.close() }; tabs = []; selectedTabID = nil
         DataStoreFactory.release(id: profile.dataStoreID)
     }

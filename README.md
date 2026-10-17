@@ -30,7 +30,7 @@ Push lên `main` chạy workflow **iOS build**. Mở Actions → lần chạy �
 - `Lekapro-unsigned`: IPA chưa ký, SHA-256 và commit nguồn.
 - `build-diagnostics`: log biên dịch và kết quả XCTest.
 
-Commit có nhãn `[live-probe]` còn chạy hai phép đo thật trên Fingerprint demo bằng simulator hiện có: UA 17.2/18.7.9 với API nguyên bản, và cùng cặp UA thêm Audio rất nhỏ. Đối chiếu giao diện/agent/server, event độc lập và tải lại; chỉ xuất số lượng, tính bằng nhau và tên nhóm thuộc tính, không xuất ID/event/IP hay ảnh trang. Kết quả simulator không thay thế phép thử trên iPhone thật. Các lần CI thông thường bỏ qua phép đo mạng này.
+Commit có nhãn `[live-probe]` còn chạy các phép đo thật trên Fingerprint demo bằng simulator hiện có: UA 17.2/18.7.9 với API nguyên bản, cùng cặp UA thêm Audio rất nhỏ, và hai kho thử có hạn mức lưu trữ native 1/2 GiB với cùng UA thật. Đối chiếu giao diện/agent/server, event độc lập và tải lại; chỉ xuất số lượng, tính bằng nhau và tên nhóm thuộc tính, không xuất ID/event/IP hay ảnh trang. Kết quả simulator không thay thế phép thử trên iPhone thật. Các lần CI thông thường bỏ qua phép đo mạng này.
 
 IPA chưa ký cần được ký bằng công cụ sideload phù hợp trước khi cài lên iPhone. Đăng nhập GitHub không cung cấp chứng chỉ Apple. Workflow không nhận Apple ID hay chứng chỉ ký. Bản build thành công chỉ xác nhận biên dịch và các kiểm thử đã chạy; proxy thật, DNS/UDP, camera của website và tương thích website vẫn cần kiểm thử thiết bị.
 
@@ -46,7 +46,11 @@ Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhon
 
 ## Kiểm tra iOS 16 trên thiết bị
 
-Build 12 đã hoàn tất năm phép so sánh trên iOS 16.1.1: hai hồ sơ cùng dùng Audio rất nhỏ, thêm UA, thêm proxy, bảo vệ CPU trong Blob Worker, và tổ hợp các tùy chọn. Cả 20 lượt tải trong năm phép so sánh đều khớp giao diện/agent/server, vẫn cùng Visitor ID (tổng 116 lượt hoàn chỉnh qua các bản). Lượt proxy đầu bị ngắt tải sau hai quan sát được lưu riêng; chạy lại cùng hồ sơ/kho đã hoàn tất. CI bản 12 có 21/22 XCTest đạt, một lỗi CancellationError giữa lúc WebKit khởi động chậm; bản sau tách tự chẩn đoán lúc mở app khỏi XCTest và chạy lại toàn bộ. Xem [báo cáo build 12](verification/fingerprint-experiments-build12.json).
+Simulator iOS 18.5, build 14 đã hoàn tất hai phép so sánh UA và Audio nhỏ: 8 event độc lập, khớp giao diện/agent/server, vẫn cùng ID giữa hai hồ sơ. Live test đạt; CI tổng còn một lỗi CancellationError ở tác vụ lưu trì hoãn. Bản sau đổi cách gộp lưu sang hàng đợi chính có số phiên bản để bỏ lần lưu cũ, giữ nguyên các kiểm tra về dữ liệu. Xem [báo cáo simulator build 14](verification/fingerprint-simulator-build14.json).
+
+Phép thử quota chỉ dùng kho QA mới: đặt giới hạn native thực sự trong cấu hình WebKit, kiểm tra trang và Worker đọc đúng giới hạn, rồi mới so sánh Fingerprint. Không thay API JavaScript hoặc bổ sung StorageManager giả trên iOS 16; chưa có tùy chọn quota trong giao diện sản phẩm.
+
+Build 12 đã hoàn tất sáu phép so sánh trên iOS 16.1.1: hai hồ sơ cùng dùng Audio rất nhỏ, thêm UA, thêm proxy, bảo vệ CPU trong Blob Worker, tổ hợp các tùy chọn, và đối chứng UA thật/API nguyên bản của iOS 16.1.1. Cả 24 lượt tải trong sáu phép so sánh đều khớp giao diện/agent/server, vẫn cùng Visitor ID (tổng 120 lượt hoàn chỉnh qua các bản). Lượt proxy đầu bị ngắt tải sau hai quan sát được lưu riêng; chạy lại cùng hồ sơ/kho đã hoàn tất. CI bản 12 có 21/22 XCTest đạt, một lỗi CancellationError giữa lúc WebKit khởi động chậm; bản sau tách tự chẩn đoán lúc mở app khỏi XCTest và chạy lại toàn bộ. Xem [báo cáo build 12](verification/fingerprint-experiments-build12.json).
 
 Build 11 thêm 16 lượt đo (tổng 96), vẫn cùng Visitor ID trên cấu hình đã thử. Giảm CPU/màn hình và chặn WebGL thay các thuộc tính mà server đo được; CPU trong Worker còn nguyên, nên phần bảo vệ Worker được bổ sung riêng ở bản sau. Build và XCTest simulator đều qua. Xem [báo cáo build 11](verification/fingerprint-experiments-build11.json).
 
@@ -74,7 +78,7 @@ Trên [Fingerprint demo](https://fingerprint.com/demo/), hai hồ sơ thật hi�
 
 Cấu hình nằm trong Application Support với file protection. Mật khẩu proxy nằm trong Keychain `ThisDeviceOnly`. Nhân bản hồ sơ chỉ sao chép cấu hình, tạo UUID kho mới và không sao chép phiên đăng nhập. Nhập cấu hình cũng tạo UUID mới. Bản sao lưu chứa lịch sử/dấu trang và thông tin proxy, không chứa mật khẩu proxy hoặc dữ liệu WebKit. File cookie xuất có thể chứa token đăng nhập.
 
-Xóa hồ sơ đóng các WebView trước khi xóa dữ liệu. Các tùy chọn chặn JavaScript áp dụng trong trang và iframe, chưa bao phủ mọi Worker. Danh sách chặn tracker hiện chỉ có một số domain phổ biến. Proxy cấu hình riêng theo từng kho WebKit; chưa có packet capture để chứng minh không rò DNS/UDP. Popup tạo cửa sổ được mở thành tab mới; luồng phụ thuộc `window.opener` cần kiểm thử thêm. Chưa có tùy chỉnh ngôn ngữ/timezone. Nhiễu đọc Canvas/Audio đang thử nghiệm và chưa xác minh được khả năng tách Visitor ID.
+Xóa hồ sơ đóng các WebView trước khi xóa dữ liệu. Các tùy chọn chặn JavaScript áp dụng trong trang và iframe, chưa bao phủ mọi Worker. Danh sách chặn tracker hiện chỉ có một số domain phổ biến. Proxy cấu hình riêng theo từng kho WebKit; chưa có packet capture để chứng minh không rò DNS/UDP. Popup tạo cửa sổ được mở thành tab mới; luồng phụ thuộc `window.opener` cần kiểm thử thêm. Chưa có tùy chỉnh ngôn ngữ; múi giờ dùng cấu hình WebKit SPI đã mô tả ở trên. Nhiễu đọc Canvas/Audio đang thử nghiệm và chưa xác minh được khả năng tách Visitor ID.
 
 Nguồn API: [WebKit profiles](https://webkit.org/blog/14423/building-profiles-with-new-webkit-api/), [WebKit SPI trước iOS 16.1](https://github.com/WebKit/WebKit/blob/1c25190c9ac675b28f04ff6fc65ef11047fff348/Source/WebKit/UIProcess/API/Cocoa/_WKWebsiteDataStoreConfiguration.h), [ProxyConfiguration](https://developer.apple.com/documentation/network/proxyconfiguration), [WKDownloadDelegate](https://developer.apple.com/documentation/webkit/wkdownloaddelegate).
 

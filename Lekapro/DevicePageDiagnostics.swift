@@ -157,6 +157,12 @@ enum DevicePageDiagnostics {
         }
         let body = last.removeValue(forKey: "bodyText") as? String ?? ""
         do {
+            last["storageContext"] = try await tab.webView.callAsyncJavaScript("""
+            return {secureContext:isSecureContext, estimateSupported:typeof navigator.storage?.estimate === 'function',
+              estimate:typeof navigator.storage?.estimate === 'function' ? await navigator.storage.estimate() : null};
+            """, arguments: [:], in: nil, contentWorld: .page)
+        } catch { last["storageContextError"] = (error as NSError).code }
+        do {
             last["workerContext"] = try await tab.webView.callAsyncJavaScript(#"""
             return await new Promise(resolve => {
               let worker, url;

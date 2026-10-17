@@ -1,0 +1,52 @@
+{
+  "actualOS": "18.5",
+  "build": "14",
+  "completed": true,
+  "environment": "iOS Simulator; not the user's ExitAnty device",
+  "experiments": [
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "native-ua",
+      "changedRawAttributesAfterReload": [],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    },
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "fine-audio-ua",
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    }
+  ],
+  "target": "https://fingerprint.com/demo/",
+  "timestamp": "2026-10-17T12:27:07Z",
+  "sourceCommit": "bd558313ebd7b85a218bf5092bcc77e6a3aceef6",
+  "workflowRun": 39032176989,
+  "simulatorCIPassed": false,
+  "unitTestResult": {
+    "passed": 21,
+    "total": 22,
+    "failure": "CancellationError in a scheduled save task"
+  },
+  "liveProbeTestPassed": true,
+  "goalAchieved": false,
+  "verifiedSimulatorPages": 8,
+  "verifiedDevicePages": 120
+}

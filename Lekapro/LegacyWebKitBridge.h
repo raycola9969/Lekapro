@@ -8,6 +8,10 @@ NS_ASSUME_NONNULL_BEGIN
                            proxyConfiguration:(nullable NSDictionary *)proxy
                                         error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(makeStore(at:proxy:));
++ (nullable WKWebsiteDataStore *)makeQuotaStoreAtURL:(NSURL *)directory
+                                              quota:(NSUInteger)quota
+                                              error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(makeQuotaStore(at:quota:));
 + (NSDictionary<NSString *, NSNumber *> *)capabilities;
 + (nullable WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone
                                                 error:(NSError * _Nullable * _Nullable)error
