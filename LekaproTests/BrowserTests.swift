@@ -54,6 +54,90 @@ final class BrowserTests: XCTestCase {
         XCTAssertNil(privacy.audioNoise)
         XCTAssertEqual(privacy, PrivacySettings())
     }
+    func testContextOptionsValidateAndOldProfilesKeepDeviceDefaults() throws {
+        let file = temporaryFile()
+        let store = ProfileStore(fileURL: file)
+        var profile = BrowserProfile()
+        let decoded = try JSONDecoder().decode(BrowserProfile.self, from: JSONEncoder().encode(profile))
+        XCTAssertNil(decoded.timeZoneID)
+        XCTAssertNil(decoded.minimumFontSize)
+        profile.timeZoneID = "Asia/Tokyo"; profile.minimumFontSize = 32
+        try store.save(profile)
+        let reopened = ProfileStore(fileURL: file)
+        XCTAssertFalse(reopened.isReadOnly)
+        XCTAssertEqual(reopened.profile(profile.id)?.timeZoneID, "Asia/Tokyo")
+        XCTAssertEqual(reopened.profile(profile.id)?.minimumFontSize, 32)
+        profile.timeZoneID = "Invalid/Not_A_Zone"
+        XCTAssertThrowsError(try store.save(profile))
+        profile.timeZoneID = nil; profile.minimumFontSize = -1
+        XCTAssertThrowsError(try store.save(profile))
+        profile.minimumFontSize = 33
+        XCTAssertThrowsError(try store.save(profile))
+    }
+    func testNativeTimeZonesStaySeparateAcrossProfilesAndWorkers() async throws {
+        var tokyo = BrowserProfile()
+        tokyo.timeZoneID = "Asia/Tokyo"
+        var utc = tokyo.duplicated(); utc.timeZoneID = "UTC"
+        let first = try await sampleContext(tokyo)
+        let second = try await sampleContext(utc)
+        let repeated = try await sampleContext(tokyo)
+        for value in [first, repeated] {
+            XCTAssertEqual(value["zone"] as? String, "Asia/Tokyo")
+            XCTAssertEqual(value["offset"] as? Int, -540)
+            XCTAssertEqual(value["hour"] as? Int, 21)
+            XCTAssertEqual(value["workerZone"] as? String, "Asia/Tokyo")
+            XCTAssertEqual(value["workerOffset"] as? Int, -540)
+        }
+        XCTAssertEqual(second["zone"] as? String, "UTC")
+        XCTAssertEqual(second["offset"] as? Int, 0)
+        XCTAssertEqual(second["hour"] as? Int, 12)
+        XCTAssertEqual(second["workerZone"] as? String, "UTC")
+        XCTAssertEqual(second["workerOffset"] as? Int, 0)
+    }
+    func testMinimumFontSizeChangesActualLayout() async throws {
+        let native = try await sampleContext(BrowserProfile())
+        var large = BrowserProfile(); large.minimumFontSize = 32
+        let changed = try await sampleContext(large)
+        let smallHeight = try XCTUnwrap(native["textHeight"] as? Double)
+        let largeHeight = try XCTUnwrap(changed["textHeight"] as? Double)
+        XCTAssertGreaterThan(largeHeight, smallHeight)
+    }
+    private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
+        let store = ProfileStore(fileURL: temporaryFile())
+        var fixture = profile; fixture.privacy.blockTrackers = false
+        fixture.tabs = [SavedTab(url: "about:blank", title: "Context fixture")]
+        try store.save(fixture)
+        let session = try BrowserSession(profile: fixture, store: store)
+        await session.start()
+        defer { session.close() }
+        let tab = try XCTUnwrap(session.selectedTab)
+        let html = #"""
+        <!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">
+        <span id="sample" style="font-size:1px">Measurement</span><script>
+        const d = new Date('2026-01-15T12:00:00Z');
+        const result = {zone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+          offset:d.getTimezoneOffset(),hour:d.getHours(),
+          textHeight:document.querySelector('#sample').getBoundingClientRect().height};
+        const code = "const d=new Date('2026-01-15T12:00:00Z');postMessage({workerZone:Intl.DateTimeFormat().resolvedOptions().timeZone,workerOffset:d.getTimezoneOffset()})";
+        const url = URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
+        const worker = new Worker(url);
+        worker.onmessage = event => {window.qaValue=JSON.stringify({...result,...event.data});worker.terminate();URL.revokeObjectURL(url)};
+        worker.onerror = event => {window.qaError=String(event.message)};
+        </script>
+        """#
+        tab.webView.loadHTMLString(html, baseURL: URL(string: "https://context.lekapro.invalid"))
+        let deadline = Date().addingTimeInterval(20)
+        while Date() < deadline {
+            if let value = try? await tab.webView.evaluateJavaScript("window.qaValue"), let text = value as? String {
+                return try XCTUnwrap(JSONSerialization.jsonObject(with: Data(text.utf8)) as? [String: Any])
+            }
+            if let error = try? await tab.webView.evaluateJavaScript("window.qaError"), let message = error as? String {
+                throw BrowserError.invalid(message)
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        throw BrowserError.invalid("Context fixture did not finish.")
+    }
     func testReadbackVariationIsStableDistinctAndKeepsAudioCopiesConsistent() async throws {
         var first = BrowserProfile()
         first.privacy.blockTrackers = false
