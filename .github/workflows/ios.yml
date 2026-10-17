@@ -77,6 +77,7 @@ jobs:
               scheme = pathlib.Path('Lekapro.xcodeproj/xcshareddata/xcschemes/Lekapro.xcscheme')
               tree = ET.parse(scheme)
               action = tree.getroot().find('TestAction')
+              action.set('shouldUseLaunchSchemeArgsEnv', 'NO')
               variables = action.find('EnvironmentVariables')
               if variables is None:
                   variables = ET.SubElement(action, 'EnvironmentVariables')
