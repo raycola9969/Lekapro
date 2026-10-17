@@ -24,6 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
                  configuration:(WKWebViewConfiguration *)configuration
                          error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(applyDiagnosticOptions(_:configuration:));
++ (BOOL)applyDiagnosticPlatform:(nullable NSString *)platform
+                    preferences:(WKWebpagePreferences *)preferences
+                          error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(applyDiagnosticPlatform(_:preferences:));
 @end
 
 NS_ASSUME_NONNULL_END

@@ -26,14 +26,23 @@ enum DiagnosticEngineRegistry {
     private static var options: [UUID: DiagnosticEngineOptions] = [:]
     static func set(_ values: [UUID: DiagnosticEngineOptions]) { options = values }
     static func clear() { options = [:] }
+    static func navigatorPlatform(profileID: UUID) -> String? {
+        #if DEBUG
+        return options[profileID]?.navigatorPlatform
+        #else
+        return nil
+        #endif
+    }
     static func apply(profileID: UUID, configuration: WKWebViewConfiguration) throws {
         #if DEBUG
         guard let value = options[profileID] else { return }
         try value.validate()
         let data = try JSONEncoder().encode(value)
-        guard let dictionary = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        guard var dictionary = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             throw BrowserError.invalid("Invalid diagnostic engine options.")
         }
+        // This policy is main-frame-only; default preferences reach subframes.
+        dictionary.removeValue(forKey: "navigatorPlatform")
         try LegacyWebKitBridge.applyDiagnosticOptions(dictionary, configuration: configuration)
         #endif
     }

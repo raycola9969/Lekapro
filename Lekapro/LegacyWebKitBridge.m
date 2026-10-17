@@ -24,20 +24,29 @@
             }
             ((void (*)(id, SEL, BOOL))objc_msgSend)(configuration.preferences, setter, value.boolValue);
         }
-        NSString *platform = options[@"navigatorPlatform"];
-        if (platform) {
-            SEL setter = NSSelectorFromString(@"_setCustomNavigatorPlatform:");
-            if (![@[@"iPhone", @"iPad", @"MacIntel", @"Linux aarch64", @"Win32"] containsObject:platform] || ![configuration.defaultWebpagePreferences respondsToSelector:setter]) {
-                @throw [NSException exceptionWithName:@"UnsupportedDiagnosticPlatform" reason:@"WebKit cannot apply this navigator platform." userInfo:nil];
-            }
-            ((void (*)(id, SEL, id))objc_msgSend)(configuration.defaultWebpagePreferences, setter, platform);
-        }
 #else
         if (options.count) @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Engine experiments require a DEBUG build." userInfo:nil];
 #endif
         return YES;
     } @catch (NSException *exception) {
         if (error) *error = [NSError errorWithDomain:@"Lekapro.EngineDiagnostic" code:1 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Engine diagnostic configuration failed."}];
+        return NO;
+    }
+}
++ (BOOL)applyDiagnosticPlatform:(NSString *)platform preferences:(WKWebpagePreferences *)preferences error:(NSError **)error {
+    @try {
+#if DEBUG
+        SEL setter = NSSelectorFromString(@"_setCustomNavigatorPlatform:");
+        if ((platform && ![@[@"iPhone", @"iPad", @"MacIntel", @"Linux aarch64", @"Win32"] containsObject:platform]) || ![preferences respondsToSelector:setter]) {
+            @throw [NSException exceptionWithName:@"UnsupportedDiagnosticPlatform" reason:@"WebKit cannot apply this navigator platform." userInfo:nil];
+        }
+        ((void (*)(id, SEL, id))objc_msgSend)(preferences, setter, platform);
+#else
+        if (platform) @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Engine experiments require a DEBUG build." userInfo:nil];
+#endif
+        return YES;
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.EngineDiagnostic" code:2 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Navigator platform configuration failed."}];
         return NO;
     }
 }

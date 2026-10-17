@@ -23,10 +23,13 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     private var downloads: [ObjectIdentifier: (WKDownload, URL)] = [:]
     private var dialogCompletion: ((Bool, String?) -> Void)?
     private var proxy: ProxyRecord?
+    private let diagnosticNavigatorPlatform: String?
 
-    init(id: UUID = UUID(), configuration: WKWebViewConfiguration, proxy: ProxyRecord? = nil, userAgent: String? = nil) {
+    init(id: UUID = UUID(), configuration: WKWebViewConfiguration, proxy: ProxyRecord? = nil, userAgent: String? = nil,
+         diagnosticNavigatorPlatform: String? = nil) {
         self.id = id
         self.proxy = proxy
+        self.diagnosticNavigatorPlatform = diagnosticNavigatorPlatform
         self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
         webView.customUserAgent = userAgent
@@ -76,12 +79,22 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         errorMessage = "Tiến trình trang web đã dừng. Bấm tải lại để tiếp tục."
     }
-    func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction, preferences: WKWebpagePreferences,
+                 decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
         guard let url = action.request.url, ["http", "https", "about", "blob", "data"].contains(url.scheme?.lowercased() ?? "") else {
-            decisionHandler(.cancel); errorMessage = "Liên kết này dùng giao thức chưa hỗ trợ."; return
+            decisionHandler(.cancel, preferences); errorMessage = "Liên kết này dùng giao thức chưa hỗ trợ."; return
         }
-        if action.shouldPerformDownload { decisionHandler(.download) }
-        else { decisionHandler(.allow) }
+        if let platform = diagnosticNavigatorPlatform {
+            do {
+                // WebKit requires this field to be nil for subframe policies.
+                try LegacyWebKitBridge.applyDiagnosticPlatform(action.targetFrame?.isMainFrame == true ? platform : nil,
+                    preferences: preferences)
+            } catch {
+                navigationError = error as NSError; errorMessage = error.localizedDescription
+                decisionHandler(.cancel, preferences); return
+            }
+        }
+        decisionHandler(action.shouldPerformDownload ? .download : .allow, preferences)
     }
     func webView(_ webView: WKWebView, decidePolicyFor response: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         decisionHandler(response.canShowMIMEType ? .allow : .download)

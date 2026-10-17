@@ -67,6 +67,7 @@ final class BrowserTests: XCTestCase {
         defer { DiagnosticEngineRegistry.clear() }
         let changed = try await sampleContext(selected)
         XCTAssertEqual(changed["platform"] as? String, "MacIntel")
+        XCTAssertEqual(changed["framePlatform"] as? String, "MacIntel")
         XCTAssertEqual(changed["webAudioAvailable"] as? Bool, false)
         let other = try await sampleContext(defaultProfile)
         XCTAssertEqual(other["platform"] as? String, baseline["platform"] as? String)
@@ -273,7 +274,8 @@ final class BrowserTests: XCTestCase {
         document.body.append(frame); await loaded;
         const d = new Date('2026-01-15T12:00:00Z');
         const result = {zone:Intl.DateTimeFormat().resolvedOptions().timeZone,
-          platform:navigator.platform,webAudioAvailable:typeof OfflineAudioContext==='function'||typeof webkitOfflineAudioContext==='function',
+          platform:navigator.platform,framePlatform:frame.contentWindow.navigator.platform,
+          webAudioAvailable:typeof OfflineAudioContext==='function'||typeof webkitOfflineAudioContext==='function',
           cpu:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
           offset:d.getTimezoneOffset(),hour:d.getHours(),
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
