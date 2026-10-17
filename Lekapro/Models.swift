@@ -34,7 +34,8 @@ struct PageRecord: Codable, Identifiable, Equatable {
 }
 
 enum UserAgentPreset: String, CaseIterable, Identifiable {
-    case automatic, ios172, ios174, ios175, ios176, ios177, ios1879, ipad161, crios119, fxios119, custom
+    case automatic, ios172, ios174, ios175, ios176, ios177, ios1879, ipad161
+    case crios119, crios174, crios175, crios176, fxios119, fxios174, fxios175, fxios176, custom
     var id: String { rawValue }
     var title: String {
         switch self {
@@ -47,7 +48,13 @@ enum UserAgentPreset: String, CaseIterable, Identifiable {
         case .ios1879: return "iPhone iOS 18.7.9 Safari"
         case .ipad161: return "iPad iOS 16.1 Safari · UA"
         case .crios119: return "iPhone Chrome 119 · UA"
+        case .crios174: return "iPhone iOS 17.4 Chrome 119 · UA"
+        case .crios175: return "iPhone iOS 17.5 Chrome 119 · UA"
+        case .crios176: return "iPhone iOS 17.6 Chrome 119 · UA"
         case .fxios119: return "iPhone Firefox 119 · UA"
+        case .fxios174: return "iPhone iOS 17.4 Firefox 119 · UA"
+        case .fxios175: return "iPhone iOS 17.5 Firefox 119 · UA"
+        case .fxios176: return "iPhone iOS 17.6 Firefox 119 · UA"
         case .custom: return "Tùy chỉnh"
         }
     }
@@ -69,8 +76,14 @@ enum UserAgentPreset: String, CaseIterable, Identifiable {
             return "Mozilla/5.0 (iPad; CPU OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1"
         case .crios119:
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+        case .crios174, .crios175, .crios176:
+            let os = self == .crios174 ? "17_4" : self == .crios175 ? "17_5" : "17_6"
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS \(os) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
         case .fxios119:
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+        case .fxios174, .fxios175, .fxios176:
+            let os = self == .fxios174 ? "17_4" : self == .fxios175 ? "17_5" : "17_6"
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS \(os) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
         case .automatic, .custom: return nil
         }
     }
