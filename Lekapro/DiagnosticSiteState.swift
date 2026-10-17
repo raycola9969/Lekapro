@@ -148,10 +148,7 @@ enum DiagnosticSiteState {
         let before = await CookieService.all(in: store)
         let types: Set<String>
         if action == .allNativeData || action == .allNativeDataAndNetwork {
-            guard let native = try LegacyWebKitBridge.diagnosticAllNativeDataTypes() else {
-                throw BrowserError.invalid("Private data types were unavailable.")
-            }
-            types = native
+            types = try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
         } else { types = action.dataTypes }
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             store.removeData(ofTypes: types, modifiedSince: .distantPast) { continuation.resume() }
