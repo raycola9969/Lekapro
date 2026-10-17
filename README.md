@@ -46,6 +46,8 @@ Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhon
 
 ## Kiểm tra iOS 16 trên thiết bị
 
+Build 16 cũng qua 25/25 XCTest. Tổ hợp hai quota tổng hợp gần 38 GB, UA và Audio nhỏ đã tạo 4 event độc lập mới, xác nhận quota native áp dụng, nhưng vẫn cùng ID trên simulator (tổng 24 event simulator). Xem [báo cáo build 16](verification/fingerprint-simulator-build16.json). Trên iPhone iOS 16.1.1, build 15 đã cài và đo lại cùng hai kho qua lượt mở app mới: thêm 4 event, tổng 124 lượt thiết bị, ID giữ nguyên và API Storage estimate không có. Xem [báo cáo mở lại](verification/ios16-build15-relaunch.json).
+
 Build 15 đã qua 25/25 XCTest, gồm giới hạn quota native có hiệu lực trong trang/Worker và kiểm tra lưu tab sau khi đóng. Trên simulator iOS 18.5, 12 event độc lập bổ sung (tổng 20 event simulator) vẫn cùng ID giữa hai hồ sơ trong từng phép so sánh; riêng quota 1/2 GiB được xác nhận áp dụng trong mỗi lượt truy cập HTTPS. Không gộp số đo simulator với 120 lượt thiết bị iOS 16.1.1. Xem [báo cáo build 15](verification/fingerprint-simulator-build15.json).
 
 Simulator iOS 18.5, build 14 đã hoàn tất hai phép so sánh UA và Audio nhỏ: 8 event độc lập, khớp giao diện/agent/server, vẫn cùng ID giữa hai hồ sơ. Live test đạt; CI tổng còn một lỗi CancellationError ở tác vụ lưu trì hoãn. Bản sau đổi cách gộp lưu sang hàng đợi chính có số phiên bản để bỏ lần lưu cũ, giữ nguyên các kiểm tra về dữ liệu. Xem [báo cáo simulator build 14](verification/fingerprint-simulator-build14.json).

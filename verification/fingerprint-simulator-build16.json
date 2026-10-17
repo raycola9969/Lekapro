@@ -1,0 +1,36 @@
+{
+  "actualOS": "18.5",
+  "build": "16",
+  "completed": true,
+  "environment": "iOS Simulator; not the user's ExitAnty device",
+  "experiments": [
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "quota-audio-ua",
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "nativeQuotaAppliedOnEveryVisit": true,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    }
+  ],
+  "target": "https://fingerprint.com/demo/",
+  "timestamp": "2026-10-17T12:43:32Z",
+  "sourceCommit": "fafc40d74d8e5126bb3e3cf831f8e69107791b21",
+  "workflowRun": 39033456800,
+  "simulatorCIPassed": true,
+  "testCount": 25,
+  "testFailures": 0,
+  "verifiedSimulatorPagesThisBuild": 4,
+  "verifiedSimulatorPagesTotal": 24,
+  "verifiedDevicePages": 124,
+  "goalAchieved": false
+}
