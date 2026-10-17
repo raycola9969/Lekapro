@@ -1,6 +1,6 @@
 {
   "appVersion": "0.2.0",
-  "build": "5",
+  "build": "6",
   "completed": true,
   "cookieIsolation": true,
   "cookiePersistedFromPreviousLaunch": true,
@@ -22,5 +22,5 @@
   "osVersion": "16.1.1",
   "persistentStores": true,
   "sameProfileSharesStore": true,
-  "timestamp": "2026-10-17T05:55:51Z"
+  "timestamp": "2026-10-17T06:03:21Z"
 }

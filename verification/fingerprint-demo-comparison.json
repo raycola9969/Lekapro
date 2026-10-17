@@ -1,0 +1,16 @@
+{
+  "appVersion": "0.2.0",
+  "build": "6",
+  "cachedAgentEvents": 0,
+  "differentServerIPsOnReload": true,
+  "directStableOnReload": true,
+  "distinctAgentEvents": 4,
+  "osVersion": "16.1.1",
+  "pageLoads": 4,
+  "profileCount": 2,
+  "proxyStableOnReload": true,
+  "rawEvidence": "Kept locally; visitor IDs, IPs, screenshots and full page data are not published.",
+  "sourceCommit": "72d36b39cf0c099f32997df81d07b9463e3ab3fb",
+  "url": "https://fingerprint.com/demo/",
+  "visitorIDsEqual": true
+}
