@@ -8,7 +8,7 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 - iOS 17+: kho dữ liệu công khai theo UUID. iOS 16.x: cấu hình WebKit SPI với thư mục riêng trong sandbox của Lekapro. Các tab cùng hồ sơ chia sẻ một đối tượng kho dữ liệu.
 - Khôi phục tối đa 30 tab/hồ sơ; dấu trang, lịch sử, nhãn và ghi chú.
 - Kho proxy SOCKS5 và HTTP CONNECT; HTTPS CONNECT tới proxy được hỗ trợ từ iOS 17. Mật khẩu lưu trong Keychain.
-- iOS 17+: `allowFailover = false`. iOS 16 dùng cấu hình proxy riêng của WebKit; chưa khẳng định khả năng chống fallback trước khi kiểm thử mạng trên thiết bị.
+- iOS 17+: `allowFailover = false`. iOS 16 dùng cấu hình proxy riêng của WebKit; phép thử với SOCKS5 tại cổng không có máy chủ đã trả lỗi kết nối, không tải trang trực tiếp. Chưa đo DNS/UDP hoặc mọi tình huống thay đổi mạng.
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
 - Nhập/xuất cookie JSON hoặc Netscape TXT; sao lưu/nhập cấu hình.
 - Tải file qua WebKit, chia sẻ và mở liên kết ngoài app.
@@ -41,7 +41,11 @@ Build Debug tự chạy kiểm tra trong hai kho dữ liệu chẩn đoán riên
 
 Thông tin SSH và mật khẩu thiết bị không được đưa vào repository hoặc workflow.
 
-Bản 0.2.0 (build 3, nguồn `663ff9f`) đã cài và mở bằng TrollStore trên iPhone 11 Pro Max chạy iOS 16.1.1. Kiểm tra bằng hai kho chẩn đoán và HTML cục bộ xác nhận cookie, localStorage và IndexedDB được cách ly; cả ba còn nguyên sau khi kết thúc tiến trình rồi mở app lại. Đây là kiểm tra cơ chế lưu trữ, chưa thay thế kiểm thử đăng nhập website hoặc proxy thực tế. Xem [báo cáo thiết bị](verification/ios-16.1.1-storage.json).
+Bản 0.2.0 (build 5, nguồn `ef99b1d`) đã cài và mở bằng TrollStore trên iPhone 11 Pro Max chạy iOS 16.1.1. Kiểm tra bằng hai kho chẩn đoán và HTML cục bộ xác nhận cookie, localStorage và IndexedDB được cách ly; cả ba còn nguyên sau khi kết thúc tiến trình rồi mở app lại. Xem [báo cáo lưu trữ](verification/ios-16.1.1-storage.json).
+
+Đã tạo hai hồ sơ thật trong app: một kết nối trực tiếp và một dùng SOCKS5 có xác thực. WebKit tải dịch vụ kiểm tra IP và trả hai IP khác nhau; kiểm tra lại hồ sơ trực tiếp sau khi mở hồ sơ proxy cho cùng IP ban đầu. Cookie và localStorage giữa hai hồ sơ được cách ly. Kho thử riêng với SOCKS5 tại cổng không hoạt động trả lỗi kết nối. Báo cáo mạng, endpoint và thông tin xác thực của phép thử được giữ ngoài repository; mật khẩu proxy lưu trong Keychain. Các kết quả này chưa thay thế kiểm thử đăng nhập website, proxy HTTP/HTTPS hoặc packet capture DNS/UDP.
+
+[CI build 5](https://github.com/raycola9969/Lekapro/actions/runs/39007945184): build iPhone thành công, 10 XCTest đạt trên simulator iOS 18.5.
 
 ## Dữ liệu và giới hạn
 
