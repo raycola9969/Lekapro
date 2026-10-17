@@ -138,6 +138,14 @@ struct ProfileEditor: View {
                 } header: { Text("Riêng tư") } footer: {
                     Text("Các tùy chọn chặn có thể ảnh hưởng website, gọi video hoặc nội dung tương tác. App không thay kết quả kiểm tra của website.")
                 }
+                Section {
+                    Toggle("Nhiễu Canvas theo hồ sơ", isOn: Binding(get: { profile.privacy.canvasNoise == true }, set: { profile.privacy.canvasNoise = $0 }))
+                        .disabled(profile.privacy.blockCanvasReadback)
+                    Toggle("Nhiễu Audio theo hồ sơ", isOn: Binding(get: { profile.privacy.audioNoise == true }, set: { profile.privacy.audioNoise = $0 }))
+                        .disabled(profile.privacy.blockAudioReadback)
+                } header: { Text("Bảo vệ đọc dữ liệu · thử nghiệm") } footer: {
+                    Text("Thay đổi nhẹ kết quả đọc ảnh hoặc âm thanh, ổn định theo hồ sơ và website. Có thể ảnh hưởng xuất ảnh và xử lý âm thanh. Không bảo đảm website không liên kết các hồ sơ.")
+                }
             }
             .navigationTitle("Cấu hình hồ sơ").navigationBarTitleDisplayMode(.inline)
             .toolbar {

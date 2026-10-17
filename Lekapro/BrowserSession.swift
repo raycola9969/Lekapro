@@ -47,6 +47,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         configuration.defaultWebpagePreferences.preferredContentMode = profile.desktopMode ? .desktop : .mobile
         if let blocker { configuration.userContentController.add(blocker) }
         PrivacyService.install(profile.privacy, controller: configuration.userContentController)
+        ReadbackPrivacy.install(profile: profile, controller: configuration.userContentController)
         let tab = BrowserTab(id: id, configuration: configuration, proxy: store.proxy(profile.proxyID), userAgent: profile.userAgent)
         tab.onChange = { [weak self] in self?.scheduleSave() }
         tab.onNewTab = { [weak self] url in self?.addTab(url: url) }
