@@ -4,6 +4,42 @@
 // Runtime-checked WebKit SPI for locally installed iOS 16 builds.
 // All paths belong to this app's own Application Support container.
 @implementation LegacyWebKitBridge
++ (NSSet<NSString *> *)diagnosticAllNativeDataTypes:(NSError **)error {
+    @try {
+#if DEBUG
+        SEL selector = NSSelectorFromString(@"_allWebsiteDataTypesIncludingPrivate");
+        if (![WKWebsiteDataStore respondsToSelector:selector]) @throw [NSException exceptionWithName:@"UnsupportedDiagnostic" reason:@"Private data enumeration is unavailable." userInfo:nil];
+        return ((id (*)(id, SEL))objc_msgSend)(WKWebsiteDataStore.class, selector);
+#else
+        @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Private state experiments require DEBUG." userInfo:nil];
+#endif
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.StateDiagnostic" code:1 userInfo:@{NSLocalizedDescriptionKey: exception.reason}];
+        return nil;
+    }
+}
++ (pid_t)diagnosticNetworkPID:(WKWebsiteDataStore *)store {
+#if DEBUG
+    SEL selector = NSSelectorFromString(@"_networkProcessIdentifier");
+    if ([store respondsToSelector:selector]) return ((pid_t (*)(id, SEL))objc_msgSend)(store, selector);
+#endif
+    return 0;
+}
++ (BOOL)restartDiagnosticNetwork:(WKWebsiteDataStore *)store error:(NSError **)error {
+    @try {
+#if DEBUG
+        SEL selector = NSSelectorFromString(@"_terminateNetworkProcess");
+        if (![store respondsToSelector:selector] || [self diagnosticNetworkPID:store] <= 0) @throw [NSException exceptionWithName:@"UnsupportedDiagnostic" reason:@"The selected WebKit network process is unavailable." userInfo:nil];
+        ((void (*)(id, SEL))objc_msgSend)(store, selector);
+        return YES;
+#else
+        @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Private state experiments require DEBUG." userInfo:nil];
+#endif
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.StateDiagnostic" code:2 userInfo:@{NSLocalizedDescriptionKey: exception.reason}];
+        return NO;
+    }
+}
 + (BOOL)applyDiagnosticOptions:(NSDictionary<NSString *, id> *)options configuration:(WKWebViewConfiguration *)configuration error:(NSError **)error {
     @try {
 #if DEBUG

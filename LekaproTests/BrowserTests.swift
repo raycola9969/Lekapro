@@ -148,6 +148,16 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
         let sourceCookies = await CookieService.all(in: a)
         XCTAssertTrue(sourceCookies.contains { $0.value == "cookie-A" })
+        let restarted = try await DiagnosticSiteState.reset(.allNativeDataAndNetwork, profile: target, store: b)
+        let beforePID = try XCTUnwrap(restarted["networkPIDBefore"] as? Int32)
+        let afterPID = try XCTUnwrap(restarted["networkPIDAfter"] as? Int32)
+        XCTAssertGreaterThan(beforePID, 0); XCTAssertGreaterThan(afterPID, 0); XCTAssertNotEqual(beforePID, afterPID)
+        let nativeTypes = try XCTUnwrap(restarted["requestedNativeDataTypes"] as? [String])
+        XCTAssertTrue(Set(nativeTypes).isSuperset(of: WKWebsiteDataStore.allWebsiteDataTypes()))
+        let reopenedSource = try await DiagnosticSiteState.originDocument(store: a)
+        defer { reopenedSource.close() }
+        let preservedValues = try await DiagnosticSiteState.localValues(reopenedSource)
+        XCTAssertEqual(preservedValues["_vid_t"], "fixture-A")
     }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()

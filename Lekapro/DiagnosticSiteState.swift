@@ -8,6 +8,7 @@ import CryptoKit
 enum DiagnosticSiteState {
     enum Reset: String, Codable {
         case cookies, localStorage, indexedDB, caches, allSiteData, cookiesAndLocalStorage
+        case allNativeData, allNativeDataAndNetwork
 
         var dataTypes: Set<String> {
             switch self {
@@ -17,6 +18,7 @@ enum DiagnosticSiteState {
             case .caches: return [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache]
             case .allSiteData: return WKWebsiteDataStore.allWebsiteDataTypes()
             case .cookiesAndLocalStorage: return [WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage]
+            case .allNativeData, .allNativeDataAndNetwork: return WKWebsiteDataStore.allWebsiteDataTypes()
             }
         }
     }
@@ -144,14 +146,29 @@ enum DiagnosticSiteState {
         try validateTarget(profile)
         let stateBefore = try await snapshot(store: store)
         let before = await CookieService.all(in: store)
+        let types: Set<String>
+        if action == .allNativeData || action == .allNativeDataAndNetwork {
+            guard let native = try LegacyWebKitBridge.diagnosticAllNativeDataTypes() else {
+                throw BrowserError.invalid("Private data types were unavailable.")
+            }
+            types = native
+        } else { types = action.dataTypes }
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            store.removeData(ofTypes: action.dataTypes, modifiedSince: .distantPast) { continuation.resume() }
+            store.removeData(ofTypes: types, modifiedSince: .distantPast) { continuation.resume() }
+        }
+        let processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store)
+        if action == .allNativeDataAndNetwork { try LegacyWebKitBridge.restartDiagnosticNetwork(store) }
+        let stateAfter = try await snapshot(store: store)
+        let processAfter = LegacyWebKitBridge.diagnosticNetworkPID(store)
+        if action == .allNativeDataAndNetwork, processBefore <= 0 || processAfter <= 0 || processBefore == processAfter {
+            throw BrowserError.invalid("The diagnostic network process did not restart.")
         }
         let after = await CookieService.all(in: store)
         return ["profileID": profile.id.uuidString, "action": action.rawValue,
             "cookieCountBefore": before.count, "cookieCountAfter": after.count,
-            "requestedNativeDataTypes": action.dataTypes.sorted(),
-            "stateBefore": stateBefore, "stateAfter": try await snapshot(store: store)]
+            "requestedNativeDataTypes": types.sorted(),
+            "networkPIDBefore": processBefore, "networkPIDAfter": processAfter,
+            "stateBefore": stateBefore, "stateAfter": stateAfter]
         #else
         throw BrowserError.invalid("State experiments require a DEBUG build.")
         #endif
