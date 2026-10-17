@@ -21,10 +21,7 @@ final class BrowserSession: ObservableObject, Identifiable {
     init(profile: BrowserProfile, store: ProfileStore) throws {
         self.id = profile.id; self.profile = profile; self.store = store
         if let zone = profile.timeZoneID {
-            guard let pool = try LegacyWebKitBridge.makeProcessPool(timeZone: zone) else {
-                throw BrowserError.invalid("Không tạo được ngữ cảnh múi giờ riêng.")
-            }
-            processPool = pool
+            processPool = try LegacyWebKitBridge.makeProcessPool(timeZone: zone)
         } else { processPool = nil }
         if let proxyID = profile.proxyID, store.proxy(proxyID) == nil { throw BrowserError.invalid("Proxy của hồ sơ không còn tồn tại.") }
         dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID))
