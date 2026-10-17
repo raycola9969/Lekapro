@@ -10,6 +10,7 @@ enum DevicePageDiagnostics {
         var profileIDs: [UUID]
         var engineOptionsByProfileID: [String: DiagnosticEngineOptions]?
         var stateResetByProfileID: [String: DiagnosticSiteState.Reset]?
+        var identityStateCopy: DiagnosticSiteState.CopyRequest?
     }
     private static var task: Task<Void, Never>?
 
@@ -67,10 +68,26 @@ enum DevicePageDiagnostics {
                 try options.validate()
                 experiments[id] = options
             }
+            if let copy = request.identityStateCopy {
+                guard resets.isEmpty, experiments.isEmpty,
+                      request.profileIDs.contains(copy.sourceProfileID), request.profileIDs.contains(copy.targetProfileID),
+                      let source = store.profile(copy.sourceProfileID), let target = store.profile(copy.targetProfileID) else {
+                    throw BrowserError.invalid("Token copy must be the only intervention on the requested QA pair.")
+                }
+                try DiagnosticSiteState.validateCopy(copy, source: source, target: target)
+            }
             DiagnosticEngineRegistry.set(experiments)
             if !experiments.isEmpty { result["nativeEngineExperimentsRequested"] = true }
             try FileManager.default.removeItem(at: input)
             try FileManager.default.createDirectory(at: evidence, withIntermediateDirectories: true)
+            if let copy = request.identityStateCopy, let source = store.profile(copy.sourceProfileID),
+               let target = store.profile(copy.targetProfileID) {
+                let sourceSession = try workspace.session(for: source, store: store)
+                let targetSession = try workspace.session(for: target, store: store)
+                result["identityStateCopy"] = try await DiagnosticSiteState.copy(copy, source: source, target: target,
+                    sourceStore: sourceSession.dataStore, targetStore: targetSession.dataStore)
+                save()
+            }
             for (index, id) in request.profileIDs.enumerated() {
                 guard let profile = store.profile(id) else { throw BrowserError.invalid("Test profile was not found.") }
                 let session = try workspace.session(for: profile, store: store)

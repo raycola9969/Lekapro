@@ -109,6 +109,46 @@ final class BrowserTests: XCTestCase {
         let unchanged = await CookieService.all(in: b)
         XCTAssertTrue(unchanged.contains { $0.name == "qa_state" && $0.value == "B" })
     }
+    func testDisposableIdentityTokenCopyAndVerifiedCombinedReset() async throws {
+        var source = BrowserProfile(), target = BrowserProfile()
+        source.tags = "qa-disposable-site-state"; target.tags = source.tags
+        let a = try DataStoreFactory.make(id: source.dataStoreID, forceLegacy: true)
+        let b = try DataStoreFactory.make(id: target.dataStoreID, forceLegacy: true)
+        let ta = try await DiagnosticSiteState.originDocument(store: a)
+        let tb = try await DiagnosticSiteState.originDocument(store: b)
+        defer {
+            ta.close(); tb.close()
+            DataStoreFactory.release(id: source.dataStoreID); DataStoreFactory.release(id: target.dataStoreID)
+        }
+        _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-A')")
+        _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-B'); localStorage.setItem('unrelated','keep-B')")
+        var request = DiagnosticSiteState.CopyRequest(sourceProfileID: source.id, targetProfileID: target.id,
+            kind: .localStorage, key: "_vid_t")
+        let copied = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+        XCTAssertEqual(copied["copiedValueCount"] as? Int, 1)
+        let values = try await DiagnosticSiteState.localValues(tb)
+        XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
+        let cookie = CookieRecord(name: "_vid_t", value: "cookie-A", domain: "fingerprint.com",
+            expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
+        _ = try await CookieService.importData(JSONEncoder().encode([cookie]), into: a)
+        request.kind = .cookies
+        request.clearTargetFirst = true
+        _ = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+        let copiedCookies = await CookieService.all(in: b)
+        XCTAssertTrue(copiedCookies.contains { $0.name == "_vid_t" && $0.value == "cookie-A" })
+        var ordinary = target; ordinary.tags = "ordinary"
+        XCTAssertThrowsError(try DiagnosticSiteState.validateCopy(request, source: source, target: ordinary))
+        var wrongKey = request; wrongKey.key = "account_session"
+        XCTAssertThrowsError(try DiagnosticSiteState.validateCopy(wrongKey, source: source, target: target))
+        let cleared = try await DiagnosticSiteState.reset(.cookiesAndLocalStorage, profile: target, store: b)
+        let after = try XCTUnwrap(cleared["stateAfter"] as? [String: Any])
+        XCTAssertEqual(after["cookieCount"] as? Int, 0)
+        XCTAssertEqual(after["localStorageKeyNames"] as? [String], [])
+        let sourceValues = try await DiagnosticSiteState.localValues(ta)
+        XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
+        let sourceCookies = await CookieService.all(in: a)
+        XCTAssertTrue(sourceCookies.contains { $0.value == "cookie-A" })
+    }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()
         let baseline = try await sampleContext(defaultProfile)
