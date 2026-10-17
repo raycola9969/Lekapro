@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Đo Storage API</title>
+<style>body{max-width:720px;margin:24px auto;padding:0 18px;background:#f3f5f8;color:#192939;font:17px/1.5 system-ui}h1{font-size:27px}button,select,textarea{font:inherit;padding:12px;border:1px solid #8596a7;border-radius:10px}button{background:#163e72;color:white;cursor:pointer}select{background:white}textarea{box-sizing:border-box;width:100%;height:330px;font:13px/1.5 monospace;background:white;color:#192939}p{margin:16px 0}#status{font-weight:600}</style>
+<h1>Đo Storage API</h1>
+<p>Mở cùng trang này trong từng hồ sơ ExitAnty và Safari để so sánh. Trang chỉ đọc API; không ghi dữ liệu thử, không gửi kết quả lên máy chủ.</p>
+<label>Hồ sơ <select id="slot"><option>A</option><option>B</option><option>Safari</option><option>Lekapro</option></select></label>
+<p><button id="measure">Đo</button> <button id="copy" disabled>Sao chép JSON</button></p>
+<p id="status">Chọn hồ sơ rồi bấm Đo.</p>
+<textarea id="result" readonly aria-label="Kết quả JSON"></textarea>
+<p>Sau lần đo đầu, tải lại trang và đo lần nữa để kiểm tra độ ổn định. Dán hai kết quả A/B về cuộc trò chuyện.</p>
+<script>
+'use strict';
+const el=id=>document.getElementById(id);
+const slot=new URLSearchParams(location.search).get('p');
+if(['A','B','Safari','Lekapro'].includes(slot))el('slot').value=slot;
+async function storageSample(scope){
+  const manager=scope.navigator.storage;
+  const value={secureContext:scope.isSecureContext,available:!!manager,estimateSupported:typeof manager?.estimate==='function'};
+  if(!value.estimateSupported)return value;
+  value.estimates=[];
+  for(let i=0;i<3;i++){
+    let timer;
+    try{value.estimates.push(await Promise.race([manager.estimate(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),3000)})]));}
+    catch(error){value.estimates.push({error:String(error)});}finally{clearTimeout(timer);}
+  }
+  value.ownProperties=Object.getOwnPropertyNames(manager);
+  value.navigatorOwnStorage=Object.hasOwn(scope.navigator,'storage');
+  return value;
+}
+async function workerSample(){
+  return await new Promise(resolve=>{
+    let worker,url,timer;
+    const finish=value=>{clearTimeout(timer);worker?.terminate();if(url)URL.revokeObjectURL(url);resolve(value);};
+    try{
+      const source="'use strict';("+storageSample.toString()+")(globalThis).then(value=>postMessage(value),error=>postMessage({error:String(error)}));";
+      url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
+      worker=new Worker(url);
+      worker.onmessage=event=>finish(event.data);
+      worker.onerror=event=>finish({error:event.message||'Worker error'});
+      timer=setTimeout(()=>finish({error:'Worker timeout'}),11000);
+    }catch(error){finish({error:String(error)});}
+  });
+}
+el('measure').onclick=async()=>{
+  el('measure').disabled=true;el('copy').disabled=true;el('status').textContent='Đang đọc API…';
+  try{
+    const result={schema:1,slot:el('slot').value,timestamp:new Date().toISOString(),
+      userAgent:navigator.userAgent,platform:navigator.platform,languages:navigator.languages,
+      timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+      main:await storageSample(globalThis),worker:await workerSample()};
+    const frame=document.createElement('iframe');frame.hidden=true;document.body.append(frame);
+    try{result.frame=await storageSample(frame.contentWindow);}catch(error){result.frame={error:String(error)};}finally{frame.remove();}
+    el('result').value=JSON.stringify(result,null,2);
+    el('copy').disabled=false;
+    el('status').textContent='Đã đo. Bấm Sao chép JSON rồi dán về cuộc trò chuyện.';
+  }catch(error){el('status').textContent='Lỗi: '+String(error);}finally{el('measure').disabled=false;}
+};
+el('copy').onclick=async()=>{
+  try{await navigator.clipboard.writeText(el('result').value);el('status').textContent='Đã sao chép JSON.';}
+  catch(_){el('result').focus();el('result').select();el('status').textContent='Hãy chọn Sao chép trong menu văn bản.';}
+};
+</script>
+</html>
