@@ -52,6 +52,8 @@ final class BrowserTests: XCTestCase {
         let privacy = try JSONDecoder().decode(PrivacySettings.self, from: old)
         XCTAssertNil(privacy.canvasNoise)
         XCTAssertNil(privacy.audioNoise)
+        XCTAssertNil(privacy.blockWebGL)
+        XCTAssertNil(privacy.reduceHardwareInfo)
         XCTAssertEqual(privacy, PrivacySettings())
     }
     func testContextOptionsValidateAndOldProfilesKeepDeviceDefaults() throws {
@@ -116,6 +118,43 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(original["fontFamily"] as? String, "sans-serif")
         XCTAssertEqual(original["frameFontFamily"] as? String, "sans-serif")
     }
+    func testHardwareReductionIsOptInAndKeepsNativeDefaultsSeparate() async throws {
+        let original = try await sampleContext(BrowserProfile())
+        var reduced = BrowserProfile(); reduced.privacy.reduceHardwareInfo = true
+        let privateContext = try await sampleContext(reduced)
+        let nativeScreen = try XCTUnwrap(original["screen"] as? [Double])
+        let privateScreen = try XCTUnwrap(privateContext["screen"] as? [Double])
+        XCTAssertEqual(privateScreen, nativeScreen.map { max(200, floor($0 / 200) * 200) })
+        let nativeCPU = try XCTUnwrap(original["cpu"] as? Int)
+        XCTAssertEqual(privateContext["cpu"] as? Int, min(2, nativeCPU))
+        let unchanged = try await sampleContext(BrowserProfile())
+        XCTAssertEqual(unchanged["screen"] as? [Double], nativeScreen)
+        XCTAssertEqual(unchanged["cpu"] as? Int, nativeCPU)
+    }
+    func testWebGLBlockingLeaves2DCanvasAvailable() async throws {
+        let store = ProfileStore(fileURL: temporaryFile())
+        var profile = BrowserProfile(); profile.privacy.blockWebGL = true
+        profile.privacy.blockTrackers = false
+        profile.tabs = [SavedTab(url: "about:blank", title: "Graphics fixture")]
+        try store.save(profile)
+        let session = try BrowserSession(profile: profile, store: store)
+        await session.start(); defer { session.close() }
+        let tab = try XCTUnwrap(session.selectedTab)
+        let deadline = Date().addingTimeInterval(15)
+        while tab.webView.url == nil || tab.webView.isLoading {
+            guard Date() < deadline else { XCTFail("Graphics fixture did not load"); return }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        let values = try await tab.webView.evaluateJavaScript(#"""
+        (()=>{
+          const canvas=()=>document.createElement('canvas');
+          const gl=['webgl','webgl2','experimental-webgl'].map(type=>canvas().getContext(type)===null);
+          const ctx=canvas().getContext('2d');ctx.fillRect(0,0,1,1);
+          return [...gl,ctx.getImageData(0,0,1,1).data[3]===255];
+        })()
+        """#) as? [Bool]
+        XCTAssertEqual(values, [true,true,true,true])
+    }
     private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile; fixture.privacy.blockTrackers = false
@@ -135,6 +174,7 @@ final class BrowserTests: XCTestCase {
         document.body.append(frame); await loaded;
         const d = new Date('2026-01-15T12:00:00Z');
         const result = {zone:Intl.DateTimeFormat().resolvedOptions().timeZone,
+          cpu:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
           offset:d.getTimezoneOffset(),hour:d.getHours(),
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
           frameFontFamily:frame.contentWindow.getComputedStyle(frame.contentDocument.querySelector('span')).fontFamily,
