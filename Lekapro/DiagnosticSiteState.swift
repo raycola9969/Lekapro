@@ -87,6 +87,8 @@ enum DiagnosticSiteState {
         var kind: Kind
         var key: String
         var clearTargetFirst: Bool?
+        var clearAllTargetWebsiteData: Bool?
+        var restartTargetNetworkAfterCopy: Bool?
     }
     static let identityKeys: Set<String> = ["_vid_t", "_iidt", "_vid_s", "_vid_lr"]
 
@@ -96,6 +98,9 @@ enum DiagnosticSiteState {
               request.sourceProfileID == source.id, request.targetProfileID == target.id,
               identityKeys.contains(request.key) else {
             throw BrowserError.invalid("Token copies require distinct disposable QA stores and a known identity key.")
+        }
+        if request.clearAllTargetWebsiteData == true, request.clearTargetFirst != true {
+            throw BrowserError.invalid("Full target clearing must be explicitly enabled for the disposable copy target.")
         }
     }
 
@@ -161,7 +166,8 @@ enum DiagnosticSiteState {
         let before = try await snapshot(store: targetStore)
         var cleared: [String: Any] = [:]
         if request.clearTargetFirst == true {
-            try await remove(types: Reset.cookiesAndLocalStorage.dataTypes, from: targetStore)
+            let types = request.clearAllTargetWebsiteData == true ? WKWebsiteDataStore.allWebsiteDataTypes() : Reset.cookiesAndLocalStorage.dataTypes
+            try await remove(types: types, from: targetStore)
             cleared = try await snapshot(store: targetStore)
         }
         let sourceDocument = try await originDocument(store: sourceStore)
@@ -185,8 +191,21 @@ enum DiagnosticSiteState {
                 arguments: ["key": request.key, "value": value], in: nil, contentWorld: .page)
             count = 1
         }
+        var networkBefore: Int32 = 0, networkAfter: Int32 = 0
+        if request.restartTargetNetworkAfterCopy == true {
+            _ = try await networkPID(in: sourceStore)
+            try await flushNetwork(sourceStore)
+            _ = try await networkPID(in: targetStore)
+            try await flushNetwork(targetStore)
+            networkBefore = try await networkPID(in: targetStore)
+            try LegacyWebKitBridge.restartDiagnosticNetwork(targetStore)
+            networkAfter = try await networkPID(in: targetStore, differentFrom: networkBefore)
+        }
         return ["sourceProfileID": source.id.uuidString, "targetProfileID": target.id.uuidString,
             "kind": request.kind.rawValue, "key": request.key, "copiedValueCount": count,
+            "allTargetWebsiteDataRemovalRequested": request.clearAllTargetWebsiteData == true,
+            "targetNetworkPIDBefore": networkBefore, "targetNetworkPIDAfter": networkAfter,
+            "persistentStateFlushCompleted": request.restartTargetNetworkAfterCopy == true,
             "targetBefore": before, "targetAfterClear": cleared, "targetAfter": try await snapshot(store: targetStore),
             "source": try await snapshot(store: sourceStore)]
         #else

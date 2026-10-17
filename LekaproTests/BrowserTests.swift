@@ -133,7 +133,10 @@ final class BrowserTests: XCTestCase {
         _ = try await CookieService.importData(JSONEncoder().encode([cookie]), into: a)
         request.kind = .cookies
         request.clearTargetFirst = true
-        _ = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+        request.clearAllTargetWebsiteData = true; request.restartTargetNetworkAfterCopy = true
+        let coldCopy = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+        XCTAssertEqual(coldCopy["persistentStateFlushCompleted"] as? Bool, true)
+        XCTAssertNotEqual(coldCopy["targetNetworkPIDBefore"] as? Int32, coldCopy["targetNetworkPIDAfter"] as? Int32)
         let copiedCookies = await CookieService.all(in: b)
         XCTAssertTrue(copiedCookies.contains { $0.name == "_vid_t" && $0.value == "cookie-A" })
         var ordinary = target; ordinary.tags = "ordinary"
