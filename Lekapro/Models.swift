@@ -34,13 +34,16 @@ struct PageRecord: Codable, Identifiable, Equatable {
 }
 
 enum UserAgentPreset: String, CaseIterable, Identifiable {
-    case automatic, ios172, ios1879, custom
+    case automatic, ios172, ios1879, ipad161, crios119, fxios119, custom
     var id: String { rawValue }
     var title: String {
         switch self {
         case .automatic: return "Tự động theo WebKit"
         case .ios172: return "iPhone iOS 17.2 Safari"
         case .ios1879: return "iPhone iOS 18.7.9 Safari"
+        case .ipad161: return "iPad iOS 16.1 Safari · UA"
+        case .crios119: return "iPhone Chrome 119 · UA"
+        case .fxios119: return "iPhone Firefox 119 · UA"
         case .custom: return "Tùy chỉnh"
         }
     }
@@ -50,12 +53,18 @@ enum UserAgentPreset: String, CaseIterable, Identifiable {
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
         case .ios1879:
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_9 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.7 Mobile/15E148 Safari/604.1"
+        case .ipad161:
+            return "Mozilla/5.0 (iPad; CPU OS 16_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1"
+        case .crios119:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+        case .fxios119:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
         case .automatic, .custom: return nil
         }
     }
     static func matching(_ value: String?) -> Self {
         guard let value else { return .automatic }
-        return [UserAgentPreset.ios172, .ios1879].first { $0.value == value } ?? .custom
+        return allCases.first { $0.value == value } ?? .custom
     }
     static func validate(_ value: String?) throws {
         guard let value else { return }

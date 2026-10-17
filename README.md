@@ -2,6 +2,14 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Kết quả mới trên iOS 16.1.1
+
+Trên iPhone 11 Pro Max chạy iOS 16.1.1, build 19 đã có hai Visitor ID khác nhau tại fingerprint.com/demo: hồ sơ A dùng UA iPhone Chrome 119, hồ sơ B dùng UA WebKit mặc định. Cả hai vẫn báo nền tảng iPhone, kết nối trực tiếp cùng IP, tắt chặn tracker, dùng Canvas/Audio và các API nguyên bản. Tám event mới không dùng cache xác nhận ID hiển thị khớp phản hồi JavaScript và máy chủ, ổn định khi tải lại và sau khi kết thúc/mở lại app. Không dùng tùy chọn engine chẩn đoán, Frida hoặc sửa kết quả website. Xem [báo cáo đã loại dữ liệu định danh](verification/ios16-browser-family-build19.json).
+
+Đối chứng hai hồ sơ mới dùng cùng UA Chrome vẫn cho cùng ID. Đổi riêng nền tảng sang iPad không tách được ID; UA iPad đã tách được trong phép thử riêng. Kết quả này chứng minh một cấu hình hai ID trên thiết bị đã đo, chưa bảo đảm ID riêng cho từng UUID hồ sơ hoặc hai hồ sơ iPhone Safari chỉ khác phiên bản iOS. Chưa xác định cơ chế nội bộ ExitAnty 2.2.2.
+
+Build 20 đưa các chuỗi đã thử vào menu User-Agent: iPhone Chrome 119, iPhone Firefox 119 và iPad Safari 16.1. Đây là lựa chọn chuỗi UA; app tiếp tục dùng WebKit của hệ điều hành. Để lặp lại cặp đã xác nhận, chọn Chrome ở A, Tự động theo WebKit ở B và tắt chặn tracker trong cả hai.
+
 ## Đã triển khai
 
 - Tạo, sửa, sao chép cấu hình, tìm kiếm và xóa hồ sơ.
@@ -12,7 +20,7 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
 - Tùy chọn chặn tạo ngữ cảnh WebGL và giảm thông tin phần cứng: tối đa 2 luồng được báo cho trang, kích thước màn hình làm tròn xuống theo bậc 200 px. Mặc định tắt; áp dụng trong trang/frame, chưa bao phủ Worker. Có thể ảnh hưởng đồ họa 3D, bố cục và xử lý song song; không bảo đảm tách Visitor ID.
 - Thử nghiệm áp dụng các thiết lập trên cho classic Blob Worker được tạo trong trang qua `URL.createObjectURL`. Mặc định tắt; giữ MIME và kiểm tra CSP, không sửa thông điệp của Worker. Chưa bao phủ module, URL ngoài, Shared/Service Worker hoặc mọi Worker lồng nhau. Địa chỉ Blob Worker thay đổi; CSP có thể chặn việc nạp script bổ sung, khi đó cần tắt tùy chọn này để giữ tương thích.
-- User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
+- User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9, iPad Safari 16.1, iPhone Chrome/Firefox 119 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
 - Chữ tối thiểu theo hồ sơ qua `WKPreferences.minimumFontSize`; múi giờ riêng qua cấu hình process pool WebKit SPI, hỗ trợ từ iOS 16 và kiểm tra khả năng ở runtime. Không thay múi giờ toàn hệ thống hoặc bọc các hàm `Date`/`Intl`. Nếu SPI không hỗ trợ, app báo lỗi thay vì âm thầm dùng múi giờ thiết bị.
 - Tùy chọn dùng một họ phông cho website qua user stylesheet WebKit, mặc định theo website. Thay bố cục chữ thực trong trang/frame, có thể ảnh hưởng phông biểu tượng; không thay các hàm đo chữ JavaScript. Dùng SPI và báo lỗi nếu không hỗ trợ.
 - Thử nghiệm nhiễu Canvas/Audio theo hồ sơ và website, mặc định tắt. Thay đổi dữ liệu đọc từ API, không thay phản hồi của dịch vụ kiểm tra; chưa bảo đảm tách Visitor ID. Chỉ áp dụng trong trang/frame, chưa bao phủ Worker hoặc mọi API đồ họa/âm thanh.

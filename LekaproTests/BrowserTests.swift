@@ -371,25 +371,27 @@ final class BrowserTests: XCTestCase {
         throw BrowserError.invalid("Readback fixture did not finish.")
     }
     func testProfileUserAgentReachesJavaScriptAndNewTabs() async throws {
-        let store = ProfileStore(fileURL: temporaryFile())
-        var profile = BrowserProfile()
-        profile.userAgent = UserAgentPreset.ios172.value
-        profile.privacy.blockTrackers = false
-        profile.tabs = [SavedTab(url: "about:blank", title: "QA")]
-        try store.save(profile)
-        let session = try BrowserSession(profile: profile, store: store)
-        await session.start()
-        defer { session.close() }
-        session.addTab(url: URL(string: "about:blank"))
-        for tab in session.tabs {
-            let deadline = Date().addingTimeInterval(15)
-            while tab.webView.url == nil || tab.webView.isLoading {
-                guard Date() < deadline else { XCTFail("WebKit did not finish loading"); return }
-                try await Task.sleep(for: .milliseconds(100))
+        for preset in [UserAgentPreset.ios172, .crios119] {
+            let store = ProfileStore(fileURL: temporaryFile())
+            var profile = BrowserProfile()
+            profile.userAgent = preset.value
+            profile.privacy.blockTrackers = false
+            profile.tabs = [SavedTab(url: "about:blank", title: "QA")]
+            try store.save(profile)
+            let session = try BrowserSession(profile: profile, store: store)
+            await session.start()
+            defer { session.close() }
+            session.addTab(url: URL(string: "about:blank"))
+            for tab in session.tabs {
+                let deadline = Date().addingTimeInterval(15)
+                while tab.webView.url == nil || tab.webView.isLoading {
+                    guard Date() < deadline else { XCTFail("WebKit did not finish loading"); return }
+                    try await Task.sleep(for: .milliseconds(100))
+                }
+                let value = try await tab.webView.evaluateJavaScript("navigator.userAgent") as? String
+                XCTAssertEqual(value, preset.value)
+                XCTAssertTrue(tab.webView.configuration.websiteDataStore === session.dataStore)
             }
-            let value = try await tab.webView.evaluateJavaScript("navigator.userAgent") as? String
-            XCTAssertEqual(value, UserAgentPreset.ios172.value)
-            XCTAssertTrue(tab.webView.configuration.websiteDataStore === session.dataStore)
         }
     }
     func testConfigurationImportCreatesNewIDsAndKeepsExistingProfiles() throws {

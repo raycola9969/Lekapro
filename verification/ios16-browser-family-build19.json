@@ -1,0 +1,135 @@
+{
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "build": "19",
+  "sourceCommit": "7b24cf43f704f64573226ff0508ef01c48920e3d",
+  "confirmedPair": {
+    "profileA": "iPhone Chrome119 UA, native WebKit APIs",
+    "profileB": "Native iPhone WebKit UA and APIs",
+    "differentVisitorIDs": true,
+    "stableOnReload": true,
+    "stableAfterProcessRelaunch": true,
+    "verifiedUncachedEvents": 8,
+    "sameIP": true,
+    "nativeNavigatorPlatformBoth": "iPhone",
+    "engineOptionsRequested": false,
+    "instrumented": false
+  },
+  "sameChromeUAControl": {
+    "verifiedUncachedEvents": 4,
+    "differentVisitorIDs": false
+  },
+  "completedCases": 13,
+  "allCasesUniqueVerifiedEvents": 52,
+  "cases": [
+    {
+      "case": "native-control",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "native-mac",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-mac-context",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-ipad",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-ipad",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-ipad-ua-only",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "native-ipad-platform-only",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-ipad",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": true
+    },
+    {
+      "case": "native-ipad-ua-only",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "iphone-crios-ua",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "iphone-fxios-ua",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "iphone-crios-ua",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    },
+    {
+      "case": "same-crios-ua",
+      "verifiedUncachedEvents": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": true,
+      "sameIP": true,
+      "engineOptionsRequested": false
+    }
+  ],
+  "limits": [
+    "Same tested Chrome UA in two fresh profiles still yields one ID.",
+    "Different iPhone Safari iOS versions are not proven to split IDs on iOS16.",
+    "No conclusion about ExitAnty2.2.2 internals or all Fingerprint environments."
+  ]
+}
