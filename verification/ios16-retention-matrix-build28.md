@@ -48,6 +48,8 @@ Thiết bị thật: iPhone 11 Pro Max. Kết quả chỉ được ghi khi ID/ev
 | 28 | copy: cookies:_vid_t (cold target) (no-token control) target-first | Có | Có | Không | 12 |
 | 28 | copy: cookies:_vid_t (cold target) target-first | Có | Không | Có | 12 |
 | 28 | copy: cookies:_vid_t (cold target) (no-token control) target-first | Có | Có | Không | 12 |
+| 28 | reset: allSiteDataAndNetwork source-first | Có | Có | Không | 12 |
+| 28 | reset: allNativeDataAndNetwork source-first | Có | Có | Không | 12 |
 
 Build 23 dùng dừng tiến trình mạng đột ngột; kết quả không tách được tác dụng mất dữ liệu mới chưa flush. Build 24 trở đi kiểm tra flush và PID thay đổi.
 

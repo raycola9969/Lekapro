@@ -1,0 +1,141 @@
+{
+  "build": "28",
+  "actualOSVersion": "16.1.1",
+  "uniqueUncachedEvents": 40,
+  "allPageAgentServerIDsAndEventsMatch": true,
+  "allWorkerUAsMatch": true,
+  "sameIPThroughout": true,
+  "sameServerEnvironmentThroughout": true,
+  "testedFreshProfiles": 8,
+  "distinctNewIDsBeyondHistoricalSeven": 0,
+  "profileCollisionsInInitialSix": 6,
+  "rows": [
+    {
+      "case": "edge-version",
+      "freshProfiles": 2,
+      "uniqueUncachedEvents": 12,
+      "distinctIDsInPair": 1,
+      "freshProfilesReusingPreviouslyObservedID": 2,
+      "newIDsOutsidePreviouslyObserved": 0,
+      "bothStableOnReload": true,
+      "serverParsedBrowserNames": [
+        "Edge",
+        "Edge"
+      ],
+      "serverParsedMajorVersions": [
+        "119",
+        "145"
+      ],
+      "serverReportedVisitorFound": [
+        true,
+        true
+      ],
+      "initialConfidenceScores": [
+        0.99,
+        0.99
+      ],
+      "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+    },
+    {
+      "case": "opera-version",
+      "freshProfiles": 2,
+      "uniqueUncachedEvents": 12,
+      "distinctIDsInPair": 1,
+      "freshProfilesReusingPreviouslyObservedID": 2,
+      "newIDsOutsidePreviouslyObserved": 0,
+      "bothStableOnReload": true,
+      "serverParsedBrowserNames": [
+        "Opera",
+        "Opera"
+      ],
+      "serverParsedMajorVersions": [
+        "105",
+        "128"
+      ],
+      "serverReportedVisitorFound": [
+        true,
+        true
+      ],
+      "initialConfidenceScores": [
+        0.99,
+        0.99
+      ],
+      "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+    },
+    {
+      "case": "ios-chrome-version",
+      "freshProfiles": 2,
+      "uniqueUncachedEvents": 12,
+      "distinctIDsInPair": 1,
+      "freshProfilesReusingPreviouslyObservedID": 2,
+      "newIDsOutsidePreviouslyObserved": 0,
+      "bothStableOnReload": true,
+      "serverParsedBrowserNames": [
+        "Chrome Mobile iOS",
+        "Chrome Mobile iOS"
+      ],
+      "serverParsedMajorVersions": [
+        "119",
+        "145"
+      ],
+      "serverReportedVisitorFound": [
+        true,
+        true
+      ],
+      "initialConfidenceScores": [
+        0.98,
+        0.98
+      ],
+      "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+    }
+  ],
+  "checkpointAdmission": {
+    "candidateProfiles": 6,
+    "rejectedDuplicateIDs": 6,
+    "distinctAtMeasuredCheckpoint": 0,
+    "profiles": [
+      {
+        "case": "edge-version",
+        "candidateIndex": 0,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      },
+      {
+        "case": "edge-version",
+        "candidateIndex": 1,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      },
+      {
+        "case": "opera-version",
+        "candidateIndex": 0,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      },
+      {
+        "case": "opera-version",
+        "candidateIndex": 1,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      },
+      {
+        "case": "ios-chrome-version",
+        "candidateIndex": 0,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      },
+      {
+        "case": "ios-chrome-version",
+        "candidateIndex": 1,
+        "verdict": "reject-duplicate-ID",
+        "stableInitialReloadAndAppRelaunch": true
+      }
+    ],
+    "changesAppProfileCreationBehavior": false,
+    "futureUniquenessGuaranteed": false
+  },
+  "repeatEdgePairUsesExactlySameUAInNewUUIDStores": true,
+  "repeatEdgePairReusesOriginalIDs": true,
+  "universalFreshProfileUniquenessEstablished": false,
+  "limit": "Only measured IDs can be compared. UA variation and store UUIDs cannot guarantee a third-party provider will assign a new ID."
+}

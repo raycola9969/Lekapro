@@ -1,7 +1,7 @@
 {
   "actualDevice": "iPhone 11 Pro Max",
   "actualOSVersion": "16.1.1",
-  "uniqueUncachedDeviceEvents": 648,
+  "uniqueUncachedDeviceEvents": 744,
   "eventsByInstalledBuild": {
     "21": 16,
     "22": 72,
@@ -9,7 +9,7 @@
     "24": 92,
     "26": 116,
     "27": 196,
-    "28": 112
+    "28": 208
   },
   "allPageAgentServerIDsAndEventsMatch": true,
   "sameIPAcrossIncludedEvents": true,
@@ -1560,7 +1560,7 @@
   "controlledInterventionsBuild28": {
     "build": "28",
     "actualOSVersion": "16.1.1",
-    "uniqueUncachedEvents": 72,
+    "uniqueUncachedEvents": 96,
     "sameIPThroughout": true,
     "sameServerEnvironmentThroughout": true,
     "allPageAgentServerIDsAndEventsMatch": true,
@@ -1848,6 +1848,100 @@
           "_vid_t"
         ],
         "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allSiteDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
+      },
+      {
+        "uniqueUncachedEvents": 12,
+        "bothFinalUAsSafari17_2": true,
+        "stableOnReload": [
+          true,
+          true
+        ],
+        "AOriginalIDRetained": true,
+        "BOriginalIDRetained": true,
+        "allFourFinalEventsHaveOneID": false,
+        "finalNavigationOrder": "source-first",
+        "rawAttributeGroupsEqualOnFinalReload": true,
+        "operation": "reset",
+        "selection": "allNativeDataAndNetwork",
+        "nativeDataRecordsEmptyBeforeNetworkPage": true,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkProcessChanged": true,
+        "persistentStateFlushCompletedBeforeRestart": true,
+        "flushBeforeNativeRemoval": true,
+        "nativeRemovalRepeatedInNewNetworkSession": true,
+        "cookieCountBefore": 24,
+        "cookieCountAfter": 0,
+        "localKeysBefore": 26,
+        "localKeysAfter": 0,
+        "localIdentityKeysBefore": [
+          "_vid_lr",
+          "_vid_s",
+          "_vid_t"
+        ],
+        "localIdentityKeysAfter": []
       }
     ],
     "excludedCohorts": [],
@@ -2030,6 +2124,278 @@
     "sourceURL": "https://github.com/WebKit/WebKit/blob/WebKit-7614.2.9.0.10/Source/WebKit/NetworkProcess/NetworkProcess.cpp",
     "finding": "Disk-cache enumeration in fetchWebsiteData loops over every network session in the process. Native DiskCache records are not sufficient to attribute files to the requested store.",
     "limitation": "Related open-source tag inspected, not disassembly of the exact device binary; actual per-store file inventories are measured separately."
+  },
+  "prospectiveVersionSeedCollisionTests": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 40,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "testedFreshProfiles": 8,
+    "distinctNewIDsBeyondHistoricalSeven": 0,
+    "profileCollisionsInInitialSix": 6,
+    "rows": [
+      {
+        "case": "edge-version",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 12,
+        "distinctIDsInPair": 1,
+        "freshProfilesReusingPreviouslyObservedID": 2,
+        "newIDsOutsidePreviouslyObserved": 0,
+        "bothStableOnReload": true,
+        "serverParsedBrowserNames": [
+          "Edge",
+          "Edge"
+        ],
+        "serverParsedMajorVersions": [
+          "119",
+          "145"
+        ],
+        "serverReportedVisitorFound": [
+          true,
+          true
+        ],
+        "initialConfidenceScores": [
+          0.99,
+          0.99
+        ],
+        "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+      },
+      {
+        "case": "opera-version",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 12,
+        "distinctIDsInPair": 1,
+        "freshProfilesReusingPreviouslyObservedID": 2,
+        "newIDsOutsidePreviouslyObserved": 0,
+        "bothStableOnReload": true,
+        "serverParsedBrowserNames": [
+          "Opera",
+          "Opera"
+        ],
+        "serverParsedMajorVersions": [
+          "105",
+          "128"
+        ],
+        "serverReportedVisitorFound": [
+          true,
+          true
+        ],
+        "initialConfidenceScores": [
+          0.99,
+          0.99
+        ],
+        "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+      },
+      {
+        "case": "ios-chrome-version",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 12,
+        "distinctIDsInPair": 1,
+        "freshProfilesReusingPreviouslyObservedID": 2,
+        "newIDsOutsidePreviouslyObserved": 0,
+        "bothStableOnReload": true,
+        "serverParsedBrowserNames": [
+          "Chrome Mobile iOS",
+          "Chrome Mobile iOS"
+        ],
+        "serverParsedMajorVersions": [
+          "119",
+          "145"
+        ],
+        "serverReportedVisitorFound": [
+          true,
+          true
+        ],
+        "initialConfidenceScores": [
+          0.98,
+          0.98
+        ],
+        "originalIDsRetainedAfterSameSafariAndAppRelaunch": true
+      }
+    ],
+    "checkpointAdmission": {
+      "candidateProfiles": 6,
+      "rejectedDuplicateIDs": 6,
+      "distinctAtMeasuredCheckpoint": 0,
+      "profiles": [
+        {
+          "case": "edge-version",
+          "candidateIndex": 0,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        },
+        {
+          "case": "edge-version",
+          "candidateIndex": 1,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        },
+        {
+          "case": "opera-version",
+          "candidateIndex": 0,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        },
+        {
+          "case": "opera-version",
+          "candidateIndex": 1,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        },
+        {
+          "case": "ios-chrome-version",
+          "candidateIndex": 0,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        },
+        {
+          "case": "ios-chrome-version",
+          "candidateIndex": 1,
+          "verdict": "reject-duplicate-ID",
+          "stableInitialReloadAndAppRelaunch": true
+        }
+      ],
+      "changesAppProfileCreationBehavior": false,
+      "futureUniquenessGuaranteed": false
+    },
+    "repeatEdgePairUsesExactlySameUAInNewUUIDStores": true,
+    "repeatEdgePairReusesOriginalIDs": true,
+    "universalFreshProfileUniquenessEstablished": false,
+    "limit": "Only measured IDs can be compared. UA variation and store UUIDs cannot guarantee a third-party provider will assign a new ID."
+  },
+  "afterVersionExperimentSevenProfileRecheck": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 16,
+    "distinctPreservedIDs": 7,
+    "allSameSafari17_2UA": true,
+    "originalProfileAndStoreUUIDsPreserved": true,
+    "originalIDsPreserved": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "checkedAfterLastDisposableIntervention": true,
+    "observedStoreCountIncludingHistoricalAuxiliaryControl": 8,
+    "historicalAuxiliaryControlProfiles": 1,
+    "profileNames": [
+      "03 - Safari 17.2 A",
+      "04 - Safari 17.2 B",
+      "05 - Safari 17.2 C",
+      "06 - Safari 17.2 Edge",
+      "07 - Safari 17.2 Opera",
+      "08 - Safari 17.2 Samsung Internet",
+      "09 - Safari 17.2 UC Browser"
+    ],
+    "universalFreshProfileUniquenessEstablished": false,
+    "checkpointSeries": "post-version-seven28"
+  },
+  "sourceSeparatedStateResetControls": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 24,
+    "rows": [
+      {
+        "action": "allSiteDataAndNetwork",
+        "uniqueUncachedEvents": 12,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases"
+        ],
+        "sourceOriginalIDRetained": true,
+        "otherOriginalIDRetained": true,
+        "sourceAdoptedOtherID": false,
+        "sourceReceivedThirdID": false,
+        "bothStableOnReload": true,
+        "cookieCountAfterNativeReset": 0,
+        "localKeysAfterNativeReset": 0,
+        "publicNativeRecordsAfterReset": "empty",
+        "persistentStateFlushVerifiedBeforeRemoval": true,
+        "positiveNetworkPIDChangeVerified": true,
+        "rawAttributeGroupsEqualOnFinalReload": true
+      },
+      {
+        "action": "allNativeDataAndNetwork",
+        "uniqueUncachedEvents": 12,
+        "requestedNativeDataTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "sourceOriginalIDRetained": true,
+        "otherOriginalIDRetained": true,
+        "sourceAdoptedOtherID": false,
+        "sourceReceivedThirdID": false,
+        "bothStableOnReload": true,
+        "cookieCountAfterNativeReset": 0,
+        "localKeysAfterNativeReset": 0,
+        "publicNativeRecordsAfterReset": "empty",
+        "persistentStateFlushVerifiedBeforeRemoval": true,
+        "positiveNetworkPIDChangeVerified": true,
+        "rawAttributeGroupsEqualOnFinalReload": true
+      }
+    ],
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "completeRetentionCauseEstablished": false,
+    "limit": "These are removal-group controls on disposable stores; they do not identify every server or WebKit retention mechanism."
+  },
+  "afterNativeResetSevenProfileRecheck": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 16,
+    "distinctPreservedIDs": 7,
+    "allSameSafari17_2UA": true,
+    "originalProfileAndStoreUUIDsPreserved": true,
+    "originalIDsPreserved": true,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "checkedAfterLastDisposableIntervention": true,
+    "observedStoreCountIncludingHistoricalAuxiliaryControl": 8,
+    "historicalAuxiliaryControlProfiles": 1,
+    "profileNames": [
+      "03 - Safari 17.2 A",
+      "04 - Safari 17.2 B",
+      "05 - Safari 17.2 C",
+      "06 - Safari 17.2 Edge",
+      "07 - Safari 17.2 Opera",
+      "08 - Safari 17.2 Samsung Internet",
+      "09 - Safari 17.2 UC Browser"
+    ],
+    "universalFreshProfileUniquenessEstablished": false,
+    "checkpointSeries": "post-native-seven28"
   },
   "verifiedBuilds": {
     "22": {
