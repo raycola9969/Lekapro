@@ -99,6 +99,7 @@ final class BrowserSession: ObservableObject, Identifiable {
 
 @MainActor
 final class BrowserWorkspace: ObservableObject {
+    @Published var diagnosticSession: BrowserSession?
     private var sessions: [UUID: BrowserSession] = [:]
     func session(for profile: BrowserProfile, store: ProfileStore) throws -> BrowserSession {
         if let session = sessions[profile.id] { return session }

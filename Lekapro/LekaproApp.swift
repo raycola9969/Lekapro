@@ -18,6 +18,10 @@ struct LekaproApp: App {
             .task {
                 await DeviceDiagnostics.runOnce()
                 await DeviceNetworkDiagnostics.runIfRequested(store: store, workspace: workspace)
+                DevicePageDiagnostics.startIfRequested(store: store, workspace: workspace)
+            }
+            .fullScreenCover(item: $workspace.diagnosticSession) {
+                BrowserView(session: $0).environmentObject(store).environmentObject(workspace)
             }
             .alert("Thông báo", isPresented: Binding(get: { store.errorMessage != nil }, set: { if !$0 { store.errorMessage = nil } })) {
                 Button("Đóng") { store.errorMessage = nil }
