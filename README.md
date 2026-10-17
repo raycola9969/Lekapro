@@ -12,6 +12,7 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
 - User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
 - Chữ tối thiểu theo hồ sơ qua `WKPreferences.minimumFontSize`; múi giờ riêng qua cấu hình process pool WebKit SPI, hỗ trợ từ iOS 16 và kiểm tra khả năng ở runtime. Không thay múi giờ toàn hệ thống hoặc bọc các hàm `Date`/`Intl`. Nếu SPI không hỗ trợ, app báo lỗi thay vì âm thầm dùng múi giờ thiết bị.
+- Tùy chọn dùng một họ phông cho website qua user stylesheet WebKit, mặc định theo website. Thay bố cục chữ thực trong trang/frame, có thể ảnh hưởng phông biểu tượng; không thay các hàm đo chữ JavaScript. Dùng SPI và báo lỗi nếu không hỗ trợ.
 - Thử nghiệm nhiễu Canvas/Audio theo hồ sơ và website, mặc định tắt. Thay đổi dữ liệu đọc từ API, không thay phản hồi của dịch vụ kiểm tra; chưa bảo đảm tách Visitor ID. Chỉ áp dụng trong trang/frame, chưa bao phủ Worker hoặc mọi API đồ họa/âm thanh.
 - Nhập/xuất cookie JSON hoặc Netscape TXT; sao lưu/nhập cấu hình.
 - Tải file qua WebKit, chia sẻ và mở liên kết ngoài app.
@@ -39,6 +40,8 @@ open Lekapro.xcodeproj
 Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhone. Trên iOS 16.1.1 jailbreak có thể cài IPA bằng TrollStore. Nhánh iOS 16 dùng API WebKit private, không dành cho phân phối App Store. Không cần thay đổi proxy toàn hệ thống hoặc cài tweak vào Safari.
 
 ## Kiểm tra iOS 16 trên thiết bị
+
+Build 9 thêm 16 lượt tải đã đối chiếu agent/server, nâng tổng lên 68. Múi giờ riêng có hiệu lực trong cả trang và Worker; cỡ chữ tối thiểu làm đổi chỉ số chữ/emoji thực. Các cấu hình này và tổ hợp thêm UA/proxy/nhiễu vẫn chưa tách Visitor ID. Build và XCTest simulator của bản 9 đều qua. Xem [báo cáo build 9](verification/fingerprint-experiments-build9.json).
 
 Build 7–8 đã hoàn tất 11 phép so sánh trên iPhone 11 Pro Max iOS 16.1.1, tổng cộng 52 lượt tải Fingerprint demo. UA, proxy/IP, chặn hoặc nhiễu Canvas/Audio và chế độ desktop đều chưa tạo được hai Visitor ID khác nhau. Mỗi lượt được đối chiếu ID/event giữa giao diện, agent và server; không dùng giá trị cache làm bằng chứng. Xem [báo cáo đã loại dữ liệu riêng tư](verification/fingerprint-experiments-build7-8.json). Đây là kết quả trên cấu hình và thời điểm đã đo, không phải kết luận về mọi phiên bản ExitAnty hoặc mọi thiết bị.
 
