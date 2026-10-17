@@ -1,0 +1,62 @@
+{
+  "case": "noise-both-native-ua",
+  "status": "finished",
+  "completed": true,
+  "error": null,
+  "pageCount": 4,
+  "allResponsesVerified": true,
+  "uniqueVisitorCount": 1,
+  "uniqueServerIPCount": 1,
+  "differentVisitorIDs": false,
+  "stableProfiles": [
+    true,
+    true
+  ],
+  "rows": [
+    {
+      "profileIndex": 0,
+      "stage": "initial",
+      "visitorAlias": "ID1",
+      "ipAlias": "IP1",
+      "verified": true,
+      "uncached": true
+    },
+    {
+      "profileIndex": 0,
+      "stage": "reload",
+      "visitorAlias": "ID1",
+      "ipAlias": "IP1",
+      "verified": true,
+      "uncached": true
+    },
+    {
+      "profileIndex": 1,
+      "stage": "initial",
+      "visitorAlias": "ID1",
+      "ipAlias": "IP1",
+      "verified": true,
+      "uncached": true
+    },
+    {
+      "profileIndex": 1,
+      "stage": "reload",
+      "visitorAlias": "ID1",
+      "ipAlias": "IP1",
+      "verified": true,
+      "uncached": true
+    }
+  ],
+  "workerTimeZonesMatchMainContext": true,
+  "workerUserAgentsMatchMainContext": true,
+  "workerCPUMatchesMainContext": true,
+  "changedRawAttributes": [
+    "audio",
+    "canvas"
+  ],
+  "actualOSVersion": "16.1.1",
+  "deviceModel": "iPhone12,5",
+  "build": "15",
+  "purpose": "Repeat the confirmed iOS18 configuration on the original iOS16 device; all earlier profiles preserved.",
+  "totalVerifiedPageCountOnThisDevice": 128,
+  "sameWinningConfigurationStillNotSeparated": true
+}

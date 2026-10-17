@@ -1,0 +1,86 @@
+{
+  "actualOSVersion": "18.7.8",
+  "deviceModel": "iPhone14,2",
+  "build": "17",
+  "sourceCommit": "0653572a1a03c983bfca9b85cb2519f856a2281f",
+  "verifiedEvents": 8,
+  "distinctEventsAcrossRuns": 8,
+  "uniqueVisitorCount": 2,
+  "sameIPAcrossAllEvents": true,
+  "profileAndStoreIDsUnchanged": true,
+  "stableOnReload": true,
+  "stableAfterProcessRelaunch": true,
+  "allUIAgentServerIDsAndEventsMatch": true,
+  "allAgentEventsUncached": true,
+  "configuredPair": [
+    {
+      "profile": "A",
+      "ua": "iOS17.2 Safari",
+      "audioNoise": "standard",
+      "canvasNoise": true,
+      "proxy": false
+    },
+    {
+      "profile": "B",
+      "ua": "native iOS18.7.8 WebKit",
+      "audioNoise": false,
+      "canvasNoise": false,
+      "proxy": false
+    }
+  ],
+  "doesNotProveExitAntyInternalMechanism": true,
+  "ci": {
+    "run": "https://github.com/raycola9969/Lekapro/actions/runs/39036041400",
+    "success": true,
+    "testsPassed": 25,
+    "testsSkipped": 1,
+    "liveNetworkCITestSkipped": true,
+    "deviceMeasurementsSeparateFromCI": true
+  },
+  "stockDeviceVerifiedPageCountThroughThisRun": 32,
+  "earlierObservedCases": [
+    {
+      "case": "fine-audio-ua",
+      "verifiedPageCount": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "changedRawAttributeGroups": [
+        "audio"
+      ]
+    },
+    {
+      "case": "fine-audio-native",
+      "verifiedPageCount": 4,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "changedRawAttributeGroups": [
+        "audio"
+      ]
+    },
+    {
+      "case": "noise-both",
+      "verifiedPageCount": 4,
+      "differentVisitorIDs": true,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "changedRawAttributeGroups": [
+        "audio",
+        "canvas"
+      ]
+    }
+  ],
+  "limitations": [
+    "One physical iPhone13Pro on iOS18.7.8; no general guarantee across devices or future service changes.",
+    "The successful combined configuration does not isolate an individual causal API.",
+    "The same configuration still returned one ID on iOS16.1.1.",
+    "No proof of ExitAnty2.2.2 internal mechanism."
+  ]
+}
