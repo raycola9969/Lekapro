@@ -18,7 +18,7 @@ enum PrivacyService {
     }
 
     static func install(_ privacy: PrivacySettings, controller: WKUserContentController) {
-        guard privacy.blockCanvasReadback || privacy.blockAudioReadback || privacy.blockWebRTC else { return }
+        guard privacy.blockCanvasReadback || privacy.blockAudioReadback || privacy.blockWebRTC || privacy.blockWebGL == true || privacy.reduceHardwareInfo == true else { return }
         let source = """
         (() => {
           'use strict';
@@ -31,6 +31,27 @@ enum PrivacyService {
               }
             });
           };
+          if (\(privacy.blockWebGL == true)) {
+            for (const proto of [globalThis.HTMLCanvasElement?.prototype, globalThis.OffscreenCanvas?.prototype]) {
+              if (!proto || typeof proto.getContext !== 'function') continue;
+              const original = proto.getContext;
+              proto.getContext = function getContext(type) {
+                if (typeof type === 'string' && /^(webgl2?|experimental-webgl)$/i.test(type)) return null;
+                return original.apply(this, arguments);
+              };
+            }
+          }
+          if (\(privacy.reduceHardwareInfo == true)) {
+            const reduce = (proto, key, transform) => {
+              const descriptor = proto && Object.getOwnPropertyDescriptor(proto, key);
+              if (!descriptor?.get || !descriptor.configurable) return;
+              Object.defineProperty(proto, key, {...descriptor, get: function() {return transform(descriptor.get.call(this))}});
+            };
+            reduce(globalThis.Navigator?.prototype, 'hardwareConcurrency', value => Math.min(2, value));
+            for (const key of ['width', 'height', 'availWidth', 'availHeight']) {
+              reduce(globalThis.Screen?.prototype, key, value => Math.max(200, Math.floor(value / 200) * 200));
+            }
+          }
           if (\(privacy.blockCanvasReadback)) {
             replace(globalThis.HTMLCanvasElement?.prototype, ['toDataURL', 'toBlob']);
             replace(globalThis.CanvasRenderingContext2D?.prototype, ['getImageData']);

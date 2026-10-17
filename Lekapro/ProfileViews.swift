@@ -159,8 +159,10 @@ struct ProfileEditor: View {
                     Toggle("Chặn đọc Canvas", isOn: $profile.privacy.blockCanvasReadback)
                     Toggle("Chặn đọc Audio", isOn: $profile.privacy.blockAudioReadback)
                     Toggle("Chặn WebRTC", isOn: $profile.privacy.blockWebRTC)
+                    Toggle("Chặn WebGL", isOn: Binding(get: { profile.privacy.blockWebGL == true }, set: { profile.privacy.blockWebGL = $0 }))
+                    Toggle("Giảm thông tin CPU/màn hình", isOn: Binding(get: { profile.privacy.reduceHardwareInfo == true }, set: { profile.privacy.reduceHardwareInfo = $0 }))
                 } header: { Text("Riêng tư") } footer: {
-                    Text("Các tùy chọn chặn có thể ảnh hưởng website, gọi video hoặc nội dung tương tác. App không thay kết quả kiểm tra của website.")
+                    Text("Các tùy chọn chặn có thể ảnh hưởng website, gọi video hoặc nội dung tương tác. Giảm thông tin CPU/màn hình có thể ảnh hưởng bố cục và xử lý song song; chưa bao phủ Worker. App không thay kết quả kiểm tra của website.")
                 }
                 Section {
                     Toggle("Nhiễu Canvas theo hồ sơ", isOn: Binding(get: { profile.privacy.canvasNoise == true }, set: { profile.privacy.canvasNoise = $0 }))

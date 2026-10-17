@@ -134,7 +134,8 @@ enum DevicePageDiagnostics {
         javascriptContext: {timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,
           offset:new Date('2026-01-15T12:00:00Z').getTimezoneOffset(),
           hour:new Date('2026-01-15T12:00:00Z').getHours(),
-          locale:Intl.DateTimeFormat().resolvedOptions().locale,language:navigator.language},
+          locale:Intl.DateTimeFormat().resolvedOptions().locale,language:navigator.language,
+          hardwareConcurrency:navigator.hardwareConcurrency,screen:[screen.width,screen.height]},
         timeOrigin: performance.timeOrigin, url: location.href, title: document.title,
         viewportWidth: innerWidth, viewportHeight: innerHeight,
         visitorY: node ? node.getBoundingClientRect().top + scrollY : 0};
@@ -162,7 +163,7 @@ enum DevicePageDiagnostics {
               const finish = value => { clearTimeout(timer); worker?.terminate(); if (url) URL.revokeObjectURL(url); resolve(value); };
               const timer = setTimeout(() => finish({error:'Worker timed out'}), 3000);
               try {
-                const code = "const d=new Date('2026-01-15T12:00:00Z');postMessage({timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,offset:d.getTimezoneOffset(),hour:d.getHours(),language:navigator.language,userAgent:navigator.userAgent})";
+                const code = "const d=new Date('2026-01-15T12:00:00Z');postMessage({timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,offset:d.getTimezoneOffset(),hour:d.getHours(),language:navigator.language,userAgent:navigator.userAgent,hardwareConcurrency:navigator.hardwareConcurrency})";
                 url = URL.createObjectURL(new Blob([code], {type:'text/javascript'}));
                 worker = new Worker(url);
                 worker.onmessage = event => finish(event.data);

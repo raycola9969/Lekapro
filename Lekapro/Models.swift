@@ -7,6 +7,8 @@ struct PrivacySettings: Codable, Equatable {
     var blockWebRTC = false
     var canvasNoise: Bool?
     var audioNoise: Bool?
+    var blockWebGL: Bool?
+    var reduceHardwareInfo: Bool?
 }
 
 struct SavedTab: Codable, Identifiable, Equatable {
