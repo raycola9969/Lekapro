@@ -15,10 +15,11 @@ struct LekaproApp: App {
             .tint(.mint)
             .environmentObject(store)
             .environmentObject(workspace)
+            .task { await DeviceDiagnostics.runOnce() }
             .alert("Thông báo", isPresented: Binding(get: { store.errorMessage != nil }, set: { if !$0 { store.errorMessage = nil } })) {
                 Button("Đóng") { store.errorMessage = nil }
             } message: { Text(store.errorMessage ?? "") }
-            .onChange(of: scenePhase) { _, phase in if phase != .active { workspace.persistAll() } }
+            .onChange(of: scenePhase) { phase in if phase != .active { workspace.persistAll() } }
         }
     }
 }

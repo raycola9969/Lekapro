@@ -28,15 +28,15 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section("Sao lưu cấu hình") {
-                    Button("Xuất hồ sơ và cấu hình proxy", systemImage: "square.and.arrow.up") {
+                    ActionButton("Xuất hồ sơ và cấu hình proxy", systemImage: "square.and.arrow.up") {
                         do { document = JSONDocument(data: try store.exportConfiguration()); exporting = true }
                         catch { store.errorMessage = error.localizedDescription }
                     }
-                    Button("Nhập cấu hình từ file JSON", systemImage: "square.and.arrow.down") { importing = true }
+                    ActionButton("Nhập cấu hình từ file JSON", systemImage: "square.and.arrow.down") { importing = true }
                     Text("Bản sao lưu có lịch sử và dấu trang, không chứa mật khẩu proxy hay dữ liệu website. Nhập file tạo hồ sơ mới; proxy cần nhập lại mật khẩu.").font(.caption).foregroundStyle(.secondary)
                 }
                 Section("Lekapro") {
-                    LabeledContent("Phiên bản", value: "0.1.0")
+                    LabeledContent("Phiên bản", value: "0.2.0")
                     LabeledContent("Lưu trữ", value: "Trên thiết bị")
                     Text("Trình duyệt nhiều hồ sơ dùng WebKit. Bộ chặn tracker cơ bản không thay thế danh sách lọc đầy đủ. Các chế độ chặn API chỉ áp dụng trong trang web, chưa bao phủ mọi loại Worker.").font(.caption).foregroundStyle(.secondary)
                 }

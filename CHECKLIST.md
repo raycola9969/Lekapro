@@ -1,6 +1,7 @@
 # Kiểm tra thiết bị
 
-- [ ] Cài bản đã ký lên iPhone iOS 18+ và mở app.
+- [ ] Cài bản 0.2 lên iPhone iOS 16.1.1 bằng TrollStore và mở app.
+- [ ] Đọc Documents/Lekapro-device-check.json; đóng/mở lại, kiểm tra cả ba loại dữ liệu persisted.
 - [ ] Tạo hồ sơ A, B; đăng nhập website thử nghiệm trong A, kiểm tra B không đăng nhập.
 - [ ] Mở hai tab trong A, kiểm tra cùng cookie/storage.
 - [ ] Tắt app, mở lại: khôi phục đúng tab và cookie của từng hồ sơ.

@@ -56,11 +56,16 @@ final class BrowserTests: XCTestCase {
     }
     func testProxyRequiresCredentialsAndDisallowsDirectFailover() throws {
         var proxy = ProxyRecord(); proxy.host = "127.0.0.1"; proxy.username = "test"
-        XCTAssertThrowsError(try ProxyService.configuration(for: proxy, password: nil))
-        let config = try ProxyService.configuration(for: proxy, password: "example")
-        XCTAssertFalse(config.allowFailover)
+        XCTAssertThrowsError(try ProxyService.legacyConfiguration(for: proxy, password: nil))
+        if #available(iOS 17, *) {
+            let config = try ProxyService.configuration(for: proxy, password: "example")
+            XCTAssertFalse(config.allowFailover)
+        }
+        let legacy = try ProxyService.legacyConfiguration(for: proxy, password: "example")
+        XCTAssertEqual(legacy["SOCKSProxy"] as? String, "127.0.0.1")
+        XCTAssertEqual(legacy["SOCKSPassword"] as? String, "example")
         proxy.port = 70000
-        XCTAssertThrowsError(try ProxyService.configuration(for: proxy, password: "example"))
+        XCTAssertThrowsError(try ProxyService.legacyConfiguration(for: proxy, password: "example"))
     }
     func testNetscapeCookieParsingAndValidation() throws {
         let source = "# Netscape HTTP Cookie File\n#HttpOnly_.example.com\tTRUE\t/\tTRUE\t0\tsession\tvalue\n"
@@ -75,14 +80,14 @@ final class BrowserTests: XCTestCase {
     }
     func testCookiesAreSharedWithinProfileAndIsolatedBetweenProfiles() async throws {
         let idA = UUID(), idB = UUID()
-        let storeA = WKWebsiteDataStore(forIdentifier: idA)
-        let storeB = WKWebsiteDataStore(forIdentifier: idB)
+        let storeA = try DataStoreFactory.make(id: idA)
+        let storeB = try DataStoreFactory.make(id: idB)
         let cookieA = try CookieRecord(name: "account", value: "A", domain: "example.com").cookie()
         let cookieB = try CookieRecord(name: "account", value: "B", domain: "example.com").cookie()
         await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in storeA.httpCookieStore.setCookie(cookieA) { c.resume() } }
         await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in storeB.httpCookieStore.setCookie(cookieB) { c.resume() } }
         let config1 = WKWebViewConfiguration(); config1.websiteDataStore = storeA
-        let config2 = WKWebViewConfiguration(); config2.websiteDataStore = WKWebsiteDataStore(forIdentifier: idA)
+        let config2 = WKWebViewConfiguration(); config2.websiteDataStore = try DataStoreFactory.make(id: idA)
         let tab1 = WKWebView(frame: .zero, configuration: config1)
         let tab2 = WKWebView(frame: .zero, configuration: config2)
         let a1 = await CookieService.all(in: tab1.configuration.websiteDataStore)
@@ -101,5 +106,21 @@ final class BrowserTests: XCTestCase {
     func testTrackerRulesCompileInWebKit() async throws {
         let list = try await PrivacyService.blocker()
         XCTAssertEqual(list.identifier, "Lekapro.Trackers.v1")
+    }
+    func testLegacyStoresShareWithinProfileAndIsolateBetweenProfiles() async throws {
+        let idA = UUID(), idB = UUID()
+        let storeA = try DataStoreFactory.make(id: idA, forceLegacy: true)
+        let storeA2 = try DataStoreFactory.make(id: idA, forceLegacy: true)
+        let storeB = try DataStoreFactory.make(id: idB, forceLegacy: true)
+        XCTAssertTrue(storeA.isPersistent)
+        XCTAssertTrue(storeA === storeA2)
+        let data = Data("[{\"name\":\"legacy\",\"value\":\"A\",\"domain\":\"lekapro.invalid\"}]".utf8)
+        _ = try await CookieService.importData(data, into: storeA)
+        let a = await CookieService.all(in: storeA2)
+        let b = await CookieService.all(in: storeB)
+        XCTAssertEqual(a.first(where: { $0.name == "legacy" })?.value, "A")
+        XCTAssertTrue(b.isEmpty)
+        await CookieService.clear(storeA); await CookieService.clear(storeB)
+        DataStoreFactory.release(id: idA); DataStoreFactory.release(id: idB)
     }
 }

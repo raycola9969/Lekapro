@@ -19,15 +19,15 @@ struct BrowserView: View {
                 Spacer()
                 Button { panel = .tabs } label: { Text("\(session.tabs.count)").font(.caption.bold()).padding(7).overlay(RoundedRectangle(cornerRadius: 6).stroke()) }.accessibilityLabel("Danh sách tab")
                 Menu {
-                    Button("Tab mới", systemImage: "plus") { session.addTab() }
-                    Button("Thêm dấu trang", systemImage: "bookmark") { session.bookmarkCurrentPage() }
-                    Button("Dấu trang và lịch sử", systemImage: "books.vertical") { panel = .library }
-                    Button("Cookie của hồ sơ", systemImage: "externaldrive") { panel = .cookies }
-                    Button("File đã tải", systemImage: "arrow.down.circle") { panel = .downloads }
-                    Button("Kiểm tra IP hiện tại", systemImage: "network") { session.selectedTab?.navigate(URL(string: "https://api.ipify.org?format=json")!) }
+                    ActionButton("Tab mới", systemImage: "plus") { session.addTab() }
+                    ActionButton("Thêm dấu trang", systemImage: "bookmark") { session.bookmarkCurrentPage() }
+                    ActionButton("Dấu trang và lịch sử", systemImage: "books.vertical") { panel = .library }
+                    ActionButton("Cookie của hồ sơ", systemImage: "externaldrive") { panel = .cookies }
+                    ActionButton("File đã tải", systemImage: "arrow.down.circle") { panel = .downloads }
+                    ActionButton("Kiểm tra IP hiện tại", systemImage: "network") { session.selectedTab?.navigate(URL(string: "https://api.ipify.org?format=json")!) }
                     if let url = session.selectedTab?.url, ["https", "http"].contains(url.scheme ?? "") {
                         ShareLink(item: url) { Label("Chia sẻ liên kết", systemImage: "square.and.arrow.up") }
-                        Button("Mở ngoài app", systemImage: "safari") { UIApplication.shared.open(url) }
+                        ActionButton("Mở ngoài app", systemImage: "safari") { UIApplication.shared.open(url) }
                     }
                 } label: { Image(systemName: "ellipsis.circle").font(.title3).padding(8) }
             }.padding(.horizontal, 8).padding(.top, 5).background(.bar)
@@ -86,7 +86,7 @@ struct BrowserPage: View {
             }.padding(.horizontal, 8).background(.bar)
         }
         .onAppear { address = tab.url?.absoluteString ?? "" }
-        .onChange(of: tab.url) { _, url in if !addressFocused { address = url?.absoluteString ?? "" } }
+        .onChange(of: tab.url) { url in if !addressFocused { address = url?.absoluteString ?? "" } }
         .alert("Trang web", isPresented: Binding(get: { tab.dialogMessage != nil }, set: { if !$0 { tab.resolveDialog(accepted: false) } })) {
             if tab.dialogKind == "prompt" { TextField("Nội dung", text: $promptText) }
             Button("Đồng ý") { tab.resolveDialog(accepted: true, text: promptText); promptText = "" }
@@ -121,7 +121,7 @@ struct TabPickerView: View {
             }.navigationTitle("Các tab")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Xong") { dismiss() } }
-                ToolbarItem(placement: .primaryAction) { Button("Tab mới", systemImage: "plus") { session.addTab(); dismiss() } }
+                ToolbarItem(placement: .primaryAction) { ActionButton("Tab mới", systemImage: "plus") { session.addTab(); dismiss() } }
             }
         }
     }
@@ -140,7 +140,7 @@ struct LibraryView: View {
         NavigationStack {
             List {
                 Picker("Danh sách", selection: $bookmarks) { Text("Dấu trang").tag(true); Text("Lịch sử").tag(false) }.pickerStyle(.segmented)
-                if records.isEmpty { ContentUnavailableView("Chưa có mục nào", systemImage: bookmarks ? "bookmark" : "clock") }
+                if records.isEmpty { EmptyStateView("Chưa có mục nào", systemImage: bookmarks ? "bookmark" : "clock") }
                 ForEach(records) { record in
                     Button {
                         if let url = URL(string: record.url) { session.selectedTab?.navigate(url); dismiss() }
@@ -169,7 +169,7 @@ struct DownloadListView: View {
     var body: some View {
         NavigationStack {
             List {
-                if files.isEmpty { ContentUnavailableView("Chưa tải file", systemImage: "arrow.down.circle") }
+                if files.isEmpty { EmptyStateView("Chưa tải file", systemImage: "arrow.down.circle") }
                 ForEach(files, id: \.self) { file in ShareLink(item: file) { Label(file.lastPathComponent, systemImage: "doc").lineLimit(2) } }
             }.navigationTitle("File đã tải").toolbar { Button("Xong") { dismiss() } }
             .onAppear {

@@ -19,9 +19,8 @@ final class BrowserSession: ObservableObject, Identifiable {
 
     init(profile: BrowserProfile, store: ProfileStore) throws {
         self.id = profile.id; self.profile = profile; self.store = store
-        dataStore = WKWebsiteDataStore(forIdentifier: profile.dataStoreID)
         if let proxyID = profile.proxyID, store.proxy(proxyID) == nil { throw BrowserError.invalid("Proxy của hồ sơ không còn tồn tại.") }
-        try ProxyService.apply(store.proxy(profile.proxyID), to: dataStore)
+        dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID))
     }
     func start() async {
         guard !started else { return }; started = true
@@ -48,7 +47,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         configuration.defaultWebpagePreferences.preferredContentMode = profile.desktopMode ? .desktop : .mobile
         if let blocker { configuration.userContentController.add(blocker) }
         PrivacyService.install(profile.privacy, controller: configuration.userContentController)
-        let tab = BrowserTab(id: id, configuration: configuration)
+        let tab = BrowserTab(id: id, configuration: configuration, proxy: store.proxy(profile.proxyID))
         tab.onChange = { [weak self] in self?.scheduleSave() }
         tab.onNewTab = { [weak self] url in self?.addTab(url: url) }
         tab.onVisit = { [weak self] title, url in
@@ -86,6 +85,7 @@ final class BrowserSession: ObservableObject, Identifiable {
     func close() {
         saveTask?.cancel(); persist()
         tabs.forEach { $0.close() }; tabs = []; selectedTabID = nil
+        DataStoreFactory.release(id: profile.dataStoreID)
     }
     func bookmarkCurrentPage() {
         guard let tab = selectedTab, let url = tab.url, ["http", "https"].contains(url.scheme ?? "") else { return }
@@ -111,7 +111,8 @@ final class BrowserWorkspace: ObservableObject {
     func persistAll() { sessions.values.forEach { $0.persist() } }
     func delete(_ profile: BrowserProfile, store: ProfileStore) async throws {
         close(profile.id)
-        await CookieService.clear(WKWebsiteDataStore(forIdentifier: profile.dataStoreID))
+        await CookieService.clear(try DataStoreFactory.make(id: profile.dataStoreID))
+        DataStoreFactory.release(id: profile.dataStoreID)
         try store.removeProfile(profile.id)
     }
 }

@@ -17,8 +17,8 @@ struct CookiePanel: View {
         NavigationStack {
             List {
                 Section {
-                    Button("Nhập cookie JSON / Netscape TXT", systemImage: "square.and.arrow.down") { importing = true }
-                    Button("Xuất cookie JSON", systemImage: "square.and.arrow.up") {
+                    ActionButton("Nhập cookie JSON / Netscape TXT", systemImage: "square.and.arrow.down") { importing = true }
+                    ActionButton("Xuất cookie JSON", systemImage: "square.and.arrow.up") {
                         Task {
                             do { document = JSONDocument(data: try await CookieService.export(from: session.dataStore)); exporting = true }
                             catch { errorMessage = error.localizedDescription }

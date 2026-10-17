@@ -26,7 +26,7 @@ struct ProfileListView: View {
                 }
                 Section("Hồ sơ trình duyệt") {
                     if filtered.isEmpty {
-                        ContentUnavailableView(search.isEmpty ? "Tạo hồ sơ đầu tiên" : "Không tìm thấy hồ sơ", systemImage: "square.stack", description: Text("Mỗi hồ sơ có dữ liệu website riêng."))
+                        EmptyStateView(search.isEmpty ? "Tạo hồ sơ đầu tiên" : "Không tìm thấy hồ sơ", systemImage: "square.stack", description: Text("Mỗi hồ sơ có dữ liệu website riêng."))
                             .listRowBackground(Color.clear)
                     }
                     ForEach(filtered) { profile in
@@ -43,12 +43,12 @@ struct ProfileListView: View {
                             }.padding(.vertical, 6)
                         }
                         .contextMenu {
-                            Button("Mở", systemImage: "globe") { launch(profile) }
-                            Button("Chỉnh sửa", systemImage: "slider.horizontal.3") { editing = profile }
-                            Button("Sao chép cấu hình", systemImage: "doc.on.doc") {
+                            ActionButton("Mở", systemImage: "globe") { launch(profile) }
+                            ActionButton("Chỉnh sửa", systemImage: "slider.horizontal.3") { editing = profile }
+                            ActionButton("Sao chép cấu hình", systemImage: "doc.on.doc") {
                                 do { try store.save(profile.duplicated()) } catch { store.errorMessage = error.localizedDescription }
                             }
-                            Button("Xóa hồ sơ", systemImage: "trash", role: .destructive) { deleting = profile }
+                            ActionButton("Xóa hồ sơ", systemImage: "trash", role: .destructive) { deleting = profile }
                         }
                         .swipeActions {
                             Button("Xóa", role: .destructive) { deleting = profile }
@@ -60,8 +60,8 @@ struct ProfileListView: View {
             .navigationTitle("Lekapro")
             .searchable(text: $search, prompt: "Tên hồ sơ hoặc nhãn")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Tạo hồ sơ", systemImage: "plus") { editing = BrowserProfile() }.disabled(store.isReadOnly || busy)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ActionButton("Tạo hồ sơ", systemImage: "plus") { editing = BrowserProfile() }.disabled(store.isReadOnly || busy)
                 }
             }
             .sheet(item: $editing) { ProfileEditor(profile: $0) }
@@ -113,7 +113,7 @@ struct ProfileEditor: View {
                         Text("Kết nối trực tiếp").tag(UUID?.none)
                         ForEach(store.proxies) { Text($0.name).tag(Optional($0.id)) }
                     }
-                    if profile.proxyID != nil { Text("Khi proxy lỗi, app không cho phép WebKit chuyển sang kết nối trực tiếp.").font(.caption).foregroundStyle(.secondary) }
+                    if profile.proxyID != nil { Text("Proxy áp dụng cho hồ sơ này. Kiểm tra IP sau khi mở và kiểm tra kết nối khi proxy bị ngắt.").font(.caption).foregroundStyle(.secondary) }
                 }
                 Section {
                     Toggle("Chặn tracker cơ bản", isOn: $profile.privacy.blockTrackers)

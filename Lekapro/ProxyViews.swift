@@ -10,7 +10,7 @@ struct ProxyListView: View {
                 Section {
                     Text("Lưu proxy để sử dụng lại trong nhiều hồ sơ. Mật khẩu được giữ trong Keychain của thiết bị.").font(.subheadline).foregroundStyle(.secondary)
                 }
-                if store.proxies.isEmpty { ContentUnavailableView("Chưa có proxy", systemImage: "network", description: Text("Thêm SOCKS5, HTTP hoặc HTTPS CONNECT.")) }
+                if store.proxies.isEmpty { EmptyStateView("Chưa có proxy", systemImage: "network", description: Text("Thêm SOCKS5, HTTP hoặc HTTPS CONNECT.")) }
                 ForEach(store.proxies) { proxy in
                     Button { editing = proxy } label: {
                         VStack(alignment: .leading, spacing: 5) {
@@ -27,7 +27,7 @@ struct ProxyListView: View {
                 }
             }
             .navigationTitle("Kho proxy")
-            .toolbar { Button("Thêm proxy", systemImage: "plus") { editing = ProxyRecord() } }
+            .toolbar { ActionButton("Thêm proxy", systemImage: "plus") { editing = ProxyRecord() } }
             .sheet(item: $editing) { ProxyEditor(proxy: $0) }
         }
     }

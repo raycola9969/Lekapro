@@ -21,15 +21,17 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     private var observations: [NSKeyValueObservation] = []
     private var downloads: [ObjectIdentifier: (WKDownload, URL)] = [:]
     private var dialogCompletion: ((Bool, String?) -> Void)?
+    private var proxy: ProxyRecord?
 
-    init(id: UUID = UUID(), configuration: WKWebViewConfiguration) {
+    init(id: UUID = UUID(), configuration: WKWebViewConfiguration, proxy: ProxyRecord? = nil) {
         self.id = id
+        self.proxy = proxy
         self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
         webView.navigationDelegate = self
         webView.uiDelegate = self
         webView.allowsBackForwardNavigationGestures = true
-        webView.isInspectable = false
+        if #available(iOS 16.4, *) { webView.isInspectable = false }
         observations = [
             webView.observe(\.title, options: [.new]) { [weak self] _, _ in Task { @MainActor in self?.refresh() } },
             webView.observe(\.url, options: [.new]) { [weak self] _, _ in Task { @MainActor in self?.refresh() } },
@@ -60,6 +62,14 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     private func failed(_ error: Error) {
         if (error as NSError).code != NSURLErrorCancelled { errorMessage = error.localizedDescription }
         refresh()
+    }
+    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        if challenge.protectionSpace.isProxy(), let proxy, !proxy.username.isEmpty {
+            guard challenge.previousFailureCount == 0, let password = try? SecretStore.password(for: proxy.id) else {
+                completionHandler(.cancelAuthenticationChallenge, nil); return
+            }
+            completionHandler(.useCredential, URLCredential(user: proxy.username, password: password, persistence: .forSession))
+        } else { completionHandler(.performDefaultHandling, nil) }
     }
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         errorMessage = "Tiến trình trang web đã dừng. Bấm tải lại để tiếp tục."
