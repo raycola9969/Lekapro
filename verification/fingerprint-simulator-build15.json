@@ -1,0 +1,64 @@
+{
+  "actualOS": "18.5",
+  "build": "15",
+  "completed": true,
+  "environment": "iOS Simulator; not the user's ExitAnty device",
+  "experiments": [
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "native-ua",
+      "changedRawAttributesAfterReload": [],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    },
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "fine-audio-ua",
+      "changedRawAttributesAfterReload": [
+        "audio"
+      ],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    },
+    {
+      "allAgentResponsesUncached": true,
+      "allEventsUnique": true,
+      "case": "native-quota",
+      "changedRawAttributesAfterReload": [],
+      "completed": true,
+      "differentVisitorIDs": false,
+      "nativeQuotaAppliedOnEveryVisit": true,
+      "stableOnReload": [
+        true,
+        true
+      ],
+      "uniqueVisitorCount": 1,
+      "verifiedPages": 4
+    }
+  ],
+  "target": "https://fingerprint.com/demo/",
+  "timestamp": "2026-10-17T12:35:55Z",
+  "sourceCommit": "cf19a870e1fb723c886d8014cb2ce71fcefefd4e",
+  "workflowRun": 39032973317,
+  "simulatorCIPassed": true,
+  "testCount": 25,
+  "testFailures": 0,
+  "verifiedSimulatorPagesThisBuild": 12,
+  "verifiedSimulatorPagesTotal": 20,
+  "verifiedDevicePages": 120,
+  "goalAchieved": false
+}

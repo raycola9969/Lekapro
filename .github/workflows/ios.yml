@@ -51,6 +51,7 @@ jobs:
       - name: Select simulator
         env:
           LIVE_FINGERPRINT: ${{ contains(github.event.head_commit.message, '[live-probe]') && '1' || '0' }}
+          LIVE_CASES: ${{ contains(github.event.head_commit.message, '[quota-joint]') && 'quota-audio-ua' || '' }}
         run: |
           xcrun simctl list devices available -j > build/simulators.json
           xcrun simctl list runtimes -j > build/runtimes.json
@@ -87,6 +88,8 @@ jobs:
               print('Configured WebKit Swift overlay for simulator XCTest')
           if os.environ.get('LIVE_FINGERPRINT') == '1':
               ET.SubElement(variables, 'EnvironmentVariable', key='LEKAPRO_LIVE_FINGERPRINT', value='1', isEnabled='YES')
+              if os.environ.get('LIVE_CASES'):
+                  ET.SubElement(variables, 'EnvironmentVariable', key='LEKAPRO_LIVE_CASES', value=os.environ['LIVE_CASES'], isEnabled='YES')
               print('Enabled live demo observations; only sanitized summary will be exported')
           tree.write(scheme, encoding='utf-8', xml_declaration=True)
           PY

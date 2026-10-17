@@ -36,9 +36,16 @@ final class LiveFingerprintTests: XCTestCase {
                 .write(to: output.appendingPathComponent("sanitized-summary.json"), options: .atomic)
         }
         try save()
-        for testCase in ["native-ua", "fine-audio-ua", "native-quota"] {
-            let fineAudio = testCase == "fine-audio-ua"
-            let quotaCase = testCase == "native-quota"
+        let availableCases = ["native-ua", "fine-audio-ua", "native-quota", "quota-audio-ua"]
+        let selected = ProcessInfo.processInfo.environment["LEKAPRO_LIVE_CASES"]?
+            .split(separator: ",").map(String.init) ?? availableCases
+        guard !selected.isEmpty, selected.allSatisfy({ availableCases.contains($0) }) else {
+            throw BrowserError.invalid("Unknown live observation case.")
+        }
+        for testCase in selected {
+            let jointCase = testCase == "quota-audio-ua"
+            let fineAudio = testCase == "fine-audio-ua" || jointCase
+            let quotaCase = testCase == "native-quota" || jointCase
             var pages: [[String: Any]] = []
             var profiles: [BrowserProfile] = []
             var current: [String: Any] = ["case": testCase,
@@ -48,6 +55,11 @@ final class LiveFingerprintTests: XCTestCase {
                     var profile = BrowserProfile()
                     profile.tabs = [SavedTab(url: "about:blank", title: "Live probe start")]
                     profile.userAgent = quotaCase ? nil : (index == 0 ? UserAgentPreset.ios172.value : UserAgentPreset.ios1879.value)
+                    if jointCase {
+                        profile.userAgent = index == 1 ? UserAgentPreset.ios1879.value : UserAgentPreset.ios172.value?
+                            .replacingOccurrences(of: "17_2", with: "18_4")
+                            .replacingOccurrences(of: "Version/17.2", with: "Version/18.4")
+                    }
                     profile.privacy.blockTrackers = false
                     profile.privacy.audioNoise = fineAudio
                     profile.privacy.audioNoiseScale = .fine
@@ -59,8 +71,9 @@ final class LiveFingerprintTests: XCTestCase {
                         session = nil
                         let config = WKWebViewConfiguration()
                         config.websiteDataStore = try LegacyWebKitBridge.makeQuotaStore(
-                            at: root.appendingPathComponent(UUID().uuidString), quota: UInt(index + 1) * 1024 * 1024 * 1024)
-                        tab = BrowserTab(configuration: config)
+                            at: root.appendingPathComponent(UUID().uuidString), quota: quota(testCase, index: index))
+                        ReadbackPrivacy.install(profile: profile, controller: config.userContentController)
+                        tab = BrowserTab(configuration: config, userAgent: profile.userAgent)
                         tab.navigate(URL(string: "about:blank")!)
                     } else {
                         let created = try BrowserSession(profile: profile, store: store)
@@ -80,14 +93,14 @@ final class LiveFingerprintTests: XCTestCase {
                     let first = try await DevicePageDiagnostics.observe(tab: tab, previousOrigin: nil,
                         prefix: "\(fineAudio)-\(index)-initial", evidence: root)
                     try verify(first)
-                    if quotaCase { try verifyQuota(first, index: index) }
+                    if quotaCase { try verifyQuota(first, testCase: testCase, index: index) }
                     pages.append(first)
                     let origin = try XCTUnwrap(first["timeOrigin"] as? Double)
                     tab.webView.reloadFromOrigin()
                     let reload = try await DevicePageDiagnostics.observe(tab: tab, previousOrigin: origin,
                         prefix: "\(fineAudio)-\(index)-reload", evidence: root)
                     try verify(reload)
-                    if quotaCase { try verifyQuota(reload, index: index) }
+                    if quotaCase { try verifyQuota(reload, testCase: testCase, index: index) }
                     pages.append(reload)
                 }
                 let ids = pages.compactMap { $0["visitorID"] as? String }
@@ -144,11 +157,16 @@ final class LiveFingerprintTests: XCTestCase {
         }
     }
 
-    private func verifyQuota(_ page: [String: Any], index: Int) throws {
+    private func quota(_ testCase: String, index: Int) -> UInt {
+        // Synthetic test limits; no user's measured device values are published.
+        testCase == "quota-audio-ua" ? [37_700_000_000, 38_000_000_000][index] : UInt(index + 1) * 1024 * 1024 * 1024
+    }
+
+    private func verifyQuota(_ page: [String: Any], testCase: String, index: Int) throws {
         let context = page["storageContext"] as? [String: Any] ?? [:]
         let estimate = context["estimate"] as? [String: Any] ?? [:]
         guard context["secureContext"] as? Bool == true,
-              (estimate["quota"] as? NSNumber)?.uint64Value == UInt64(index + 1) * 1024 * 1024 * 1024 else {
+              (estimate["quota"] as? NSNumber)?.uint64Value == UInt64(quota(testCase, index: index)) else {
             throw BrowserError.invalid("The configured native quota was not observed on the HTTPS page.")
         }
     }

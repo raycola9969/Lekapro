@@ -30,7 +30,7 @@ Push lên `main` chạy workflow **iOS build**. Mở Actions → lần chạy �
 - `Lekapro-unsigned`: IPA chưa ký, SHA-256 và commit nguồn.
 - `build-diagnostics`: log biên dịch và kết quả XCTest.
 
-Commit có nhãn `[live-probe]` còn chạy các phép đo thật trên Fingerprint demo bằng simulator hiện có: UA 17.2/18.7.9 với API nguyên bản, cùng cặp UA thêm Audio rất nhỏ, và hai kho thử có hạn mức lưu trữ native 1/2 GiB với cùng UA thật. Đối chiếu giao diện/agent/server, event độc lập và tải lại; chỉ xuất số lượng, tính bằng nhau và tên nhóm thuộc tính, không xuất ID/event/IP hay ảnh trang. Kết quả simulator không thay thế phép thử trên iPhone thật. Các lần CI thông thường bỏ qua phép đo mạng này.
+Commit có nhãn `[live-probe]` còn chạy các phép đo thật trên Fingerprint demo bằng simulator hiện có: UA 17.2/18.7.9 với API nguyên bản, cùng cặp UA thêm Audio rất nhỏ, và hai kho thử có hạn mức lưu trữ native 1/2 GiB với cùng UA thật. Đối chiếu giao diện/agent/server, event độc lập và tải lại; chỉ xuất số lượng, tính bằng nhau và tên nhóm thuộc tính, không xuất ID/event/IP hay ảnh trang. Kết quả simulator không thay thế phép thử trên iPhone thật. Nhãn `[quota-joint]` chọn riêng phép so sánh quota gần 38 GB cùng UA 18.4/18.7.9 và Audio nhỏ, để không lặp lại các phép đo đã xong. Các lần CI thông thường bỏ qua phép đo mạng này.
 
 IPA chưa ký cần được ký bằng công cụ sideload phù hợp trước khi cài lên iPhone. Đăng nhập GitHub không cung cấp chứng chỉ Apple. Workflow không nhận Apple ID hay chứng chỉ ký. Bản build thành công chỉ xác nhận biên dịch và các kiểm thử đã chạy; proxy thật, DNS/UDP, camera của website và tương thích website vẫn cần kiểm thử thiết bị.
 
@@ -45,6 +45,8 @@ open Lekapro.xcodeproj
 Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhone. Trên iOS 16.1.1 jailbreak có thể cài IPA bằng TrollStore. Nhánh iOS 16 dùng API WebKit private, không dành cho phân phối App Store. Không cần thay đổi proxy toàn hệ thống hoặc cài tweak vào Safari.
 
 ## Kiểm tra iOS 16 trên thiết bị
+
+Build 15 đã qua 25/25 XCTest, gồm giới hạn quota native có hiệu lực trong trang/Worker và kiểm tra lưu tab sau khi đóng. Trên simulator iOS 18.5, 12 event độc lập bổ sung (tổng 20 event simulator) vẫn cùng ID giữa hai hồ sơ trong từng phép so sánh; riêng quota 1/2 GiB được xác nhận áp dụng trong mỗi lượt truy cập HTTPS. Không gộp số đo simulator với 120 lượt thiết bị iOS 16.1.1. Xem [báo cáo build 15](verification/fingerprint-simulator-build15.json).
 
 Simulator iOS 18.5, build 14 đã hoàn tất hai phép so sánh UA và Audio nhỏ: 8 event độc lập, khớp giao diện/agent/server, vẫn cùng ID giữa hai hồ sơ. Live test đạt; CI tổng còn một lỗi CancellationError ở tác vụ lưu trì hoãn. Bản sau đổi cách gộp lưu sang hàng đợi chính có số phiên bản để bỏ lần lưu cũ, giữ nguyên các kiểm tra về dữ liệu. Xem [báo cáo simulator build 14](verification/fingerprint-simulator-build14.json).
 
