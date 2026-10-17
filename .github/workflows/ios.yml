@@ -51,13 +51,18 @@ jobs:
       - name: Select simulator
         run: |
           xcrun simctl list devices available -j > build/simulators.json
+          export SIMULATOR_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
           python3 - <<'PY'
-          import json, os
+          import json, os, re
           data = json.load(open('build/simulators.json'))
-          candidates = [(runtime, device) for runtime, devices in data['devices'].items() if 'iOS' in runtime for device in devices if device['isAvailable'] and device['name'].startswith('iPhone')]
+          sdk = tuple(map(int, os.environ['SIMULATOR_SDK_VERSION'].split('.')))
+          def version(runtime):
+              match = re.search(r'iOS-(\d+)-(\d+)', runtime)
+              return tuple(map(int, match.groups())) if match else (0, 0)
+          candidates = [(runtime, device) for runtime, devices in data['devices'].items() if 'iOS' in runtime and version(runtime) <= sdk for device in devices if device['isAvailable'] and device['name'].startswith('iPhone')]
           if not candidates:
               raise SystemExit('No available iPhone simulator')
-          runtime, device = sorted(candidates, key=lambda item: (item[0], item[1]['name']), reverse=True)[0]
+          runtime, device = max(candidates, key=lambda item: (version(item[0]), item[1]['name']))
           with open(os.environ['GITHUB_ENV'], 'a') as output:
               output.write('SIMULATOR_ID=' + device['udid'] + '\n')
           print('Using', runtime, device['name'])

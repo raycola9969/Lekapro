@@ -11,20 +11,14 @@ enum DeviceDiagnostics {
         #if DEBUG
         var result: [String: Any] = ["osVersion": UIDevice.current.systemVersion,
             "timestamp": ISO8601DateFormatter().string(from: Date()),
+            "appVersion": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
+            "build": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown",
             "legacyCapabilities": LegacyWebKitBridge.capabilities()]
         do {
             let idA = UUID(uuidString: "4D93CDB1-1636-4FBE-8C22-C28D1660DA01")!
             let idB = UUID(uuidString: "4D93CDB1-1636-4FBE-8C22-C28D1660DA02")!
             let storeA = try DataStoreFactory.make(id: idA, forceLegacy: true)
             let storeB = try DataStoreFactory.make(id: idB, forceLegacy: true)
-            let previous = await CookieService.all(in: storeB)
-            result["cookiePersistedFromPreviousLaunch"] = previous.contains { $0.name == "lekapro_diagnostic" && $0.value == "B" }
-            let expires = Date().addingTimeInterval(86400).timeIntervalSince1970
-            let encoder = JSONEncoder()
-            _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "lekapro_diagnostic", value: "A", domain: "lekapro.invalid", expirationDate: expires)]), into: storeA)
-            _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "lekapro_diagnostic", value: "B", domain: "lekapro.invalid", expirationDate: expires)]), into: storeB)
-            let a = await CookieService.all(in: storeA), b = await CookieService.all(in: storeB)
-            result["cookieIsolation"] = a.contains { $0.name == "lekapro_diagnostic" && $0.value == "A" } && b.contains { $0.name == "lekapro_diagnostic" && $0.value == "B" }
             result["sameProfileSharesStore"] = try DataStoreFactory.make(id: idA, forceLegacy: true) === storeA
             result["persistentStores"] = storeA.isPersistent && storeB.isPersistent
             let navA = DiagnosticNavigation(), navB = DiagnosticNavigation()
@@ -33,6 +27,15 @@ enum DeviceDiagnostics {
             let viewA = WKWebView(frame: CGRect(x: 0, y: 0, width: 320, height: 480), configuration: configA)
             let viewB = WKWebView(frame: CGRect(x: 0, y: 0, width: 320, height: 480), configuration: configB)
             try await navA.load(viewA); try await navB.load(viewB)
+            // Start the store's WebKit session before asking for persisted cookies.
+            let previous = await CookieService.all(in: storeB)
+            result["cookiePersistedFromPreviousLaunch"] = previous.contains { $0.name == "lekapro_diagnostic" && $0.value == "B" }
+            let expires = Date().addingTimeInterval(86400).timeIntervalSince1970
+            let encoder = JSONEncoder()
+            _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "lekapro_diagnostic", value: "A", domain: "lekapro.invalid", expirationDate: expires)]), into: storeA)
+            _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "lekapro_diagnostic", value: "B", domain: "lekapro.invalid", expirationDate: expires)]), into: storeB)
+            let a = await CookieService.all(in: storeA), b = await CookieService.all(in: storeB)
+            result["cookieIsolation"] = a.contains { $0.name == "lekapro_diagnostic" && $0.value == "A" } && b.contains { $0.name == "lekapro_diagnostic" && $0.value == "B" }
             let oldStorage = try await viewB.evaluateJavaScript("localStorage.getItem('lekapro_diagnostic')")
             result["localStoragePersistedFromPreviousLaunch"] = oldStorage as? String == "B"
             _ = try await viewA.evaluateJavaScript("localStorage.setItem('lekapro_diagnostic','A')")
@@ -61,12 +64,13 @@ enum DeviceDiagnostics {
             db.close();
             return previous;
             """
-            _ = try await viewA.callAsyncJavaScript(databaseScript, arguments: ["value": "A"], in: nil, in: .page)
-            let oldB = try await viewB.callAsyncJavaScript(databaseScript, arguments: ["value": "B"], in: nil, in: .page)
+            _ = try await execute(databaseScript, value: "A", in: viewA)
+            let oldB = try await execute(databaseScript, value: "B", in: viewB)
             result["indexedDBPersistedFromPreviousLaunch"] = oldB as? String == "B"
-            let valueA = try await viewA.callAsyncJavaScript(databaseScript, arguments: ["value": "A"], in: nil, in: .page)
-            let valueB = try await viewB.callAsyncJavaScript(databaseScript, arguments: ["value": "B"], in: nil, in: .page)
+            let valueA = try await execute(databaseScript, value: "A", in: viewA)
+            let valueB = try await execute(databaseScript, value: "B", in: viewB)
             result["indexedDBIsolation"] = valueA as? String == "A" && valueB as? String == "B"
+            result["indexedDBReadBack"] = ["A": String(describing: valueA), "B": String(describing: valueB)]
             viewA.stopLoading(); viewB.stopLoading()
             result["completed"] = true
         } catch { result["error"] = error.localizedDescription; result["completed"] = false }
@@ -74,6 +78,16 @@ enum DeviceDiagnostics {
         do { try JSONSerialization.data(withJSONObject: result, options: [.prettyPrinted, .sortedKeys]).write(to: path, options: .atomic) }
         catch { NSLog("Lekapro diagnostic report could not be saved: %@", error.localizedDescription) }
         #endif
+    }
+
+    static func execute(_ script: String, value: String, in view: WKWebView) async throws -> Any {
+        // The SDK's optional completion overload returns Void; explicitly await
+        // its Result so an unfinished IndexedDB transaction cannot look complete.
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Any, Error>) in
+            view.callAsyncJavaScript(script, arguments: ["value": value], in: nil, in: .page) { result in
+                continuation.resume(with: result)
+            }
+        }
     }
 }
 
