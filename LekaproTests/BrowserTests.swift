@@ -531,7 +531,7 @@ final class BrowserTests: XCTestCase {
         throw BrowserError.invalid("Readback fixture did not finish.")
     }
     func testProfileUserAgentReachesJavaScriptAndNewTabs() async throws {
-        for preset in [UserAgentPreset.ios172, .crios119] {
+        for preset in [UserAgentPreset.ios172, .ios174, .ios175, .ios176, .ios177, .crios119] {
             let store = ProfileStore(fileURL: temporaryFile())
             var profile = BrowserProfile()
             profile.userAgent = preset.value

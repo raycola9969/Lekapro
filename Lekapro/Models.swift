@@ -34,12 +34,16 @@ struct PageRecord: Codable, Identifiable, Equatable {
 }
 
 enum UserAgentPreset: String, CaseIterable, Identifiable {
-    case automatic, ios172, ios1879, ipad161, crios119, fxios119, custom
+    case automatic, ios172, ios174, ios175, ios176, ios177, ios1879, ipad161, crios119, fxios119, custom
     var id: String { rawValue }
     var title: String {
         switch self {
         case .automatic: return "Tự động theo WebKit"
         case .ios172: return "iPhone iOS 17.2 Safari"
+        case .ios174: return "iPhone iOS 17.4 Safari"
+        case .ios175: return "iPhone iOS 17.5 Safari"
+        case .ios176: return "iPhone iOS 17.6 Safari"
+        case .ios177: return "iPhone iOS 17.7 Safari"
         case .ios1879: return "iPhone iOS 18.7.9 Safari"
         case .ipad161: return "iPad iOS 16.1 Safari · UA"
         case .crios119: return "iPhone Chrome 119 · UA"
@@ -51,6 +55,14 @@ enum UserAgentPreset: String, CaseIterable, Identifiable {
         switch self {
         case .ios172:
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+        case .ios174:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1"
+        case .ios175:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
+        case .ios176:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1"
+        case .ios177:
+            return "Mozilla/5.0 (iPhone; CPU iPhone OS 17_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.7 Mobile/15E148 Safari/604.1"
         case .ios1879:
             return "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7_9 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.7 Mobile/15E148 Safari/604.1"
         case .ipad161:
