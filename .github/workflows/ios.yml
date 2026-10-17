@@ -51,9 +51,10 @@ jobs:
       - name: Select simulator
         run: |
           xcrun simctl list devices available -j > build/simulators.json
+          xcrun simctl list runtimes -j > build/runtimes.json
           export SIMULATOR_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
           python3 - <<'PY'
-          import json, os, re
+          import json, os, re, pathlib, xml.etree.ElementTree as ET
           data = json.load(open('build/simulators.json'))
           sdk = tuple(map(int, os.environ['SIMULATOR_SDK_VERSION'].split('.')))
           def version(runtime):
@@ -66,6 +67,22 @@ jobs:
           with open(os.environ['GITHUB_ENV'], 'a') as output:
               output.write('SIMULATOR_ID=' + device['udid'] + '\n')
           print('Using', runtime, device['name'])
+          # WebKit bug 293831: iOS 18.5 stores its Swift overlay in Cryptexes.
+          # Apply the upstream test-only workaround without changing the IPA.
+          # https://bugs.webkit.org/show_bug.cgi?id=293831#c2
+          entry = next(item for item in json.load(open('build/runtimes.json'))['runtimes'] if item['identifier'] == runtime)
+          runtime_root = pathlib.Path(entry.get('runtimeRoot') or pathlib.Path(entry['bundlePath']) / 'Contents/Resources/RuntimeRoot')
+          overlay = runtime_root / 'System/Cryptexes/OS/usr/lib/swift'
+          if (overlay / 'libswiftWebKit.dylib').is_file():
+              scheme = pathlib.Path('Lekapro.xcodeproj/xcshareddata/xcschemes/Lekapro.xcscheme')
+              tree = ET.parse(scheme)
+              action = tree.getroot().find('TestAction')
+              variables = action.find('EnvironmentVariables')
+              if variables is None:
+                  variables = ET.SubElement(action, 'EnvironmentVariables')
+              ET.SubElement(variables, 'EnvironmentVariable', key='DYLD_FALLBACK_LIBRARY_PATH', value=str(overlay), isEnabled='YES')
+              tree.write(scheme, encoding='utf-8', xml_declaration=True)
+              print('Configured WebKit Swift overlay for simulator XCTest')
           PY
       - name: Run simulator tests
         timeout-minutes: 15

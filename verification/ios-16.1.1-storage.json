@@ -1,0 +1,26 @@
+{
+  "appVersion": "0.2.0",
+  "build": "3",
+  "completed": true,
+  "cookieIsolation": true,
+  "cookiePersistedFromPreviousLaunch": true,
+  "indexedDBIsolation": true,
+  "indexedDBPersistedFromPreviousLaunch": true,
+  "indexedDBReadBack": {
+    "A": "A",
+    "B": "B"
+  },
+  "legacyCapabilities": {
+    "configurationClass": 1,
+    "customCookies": 1,
+    "customPaths": 1,
+    "proxyConfiguration": 1,
+    "storeInitializer": true
+  },
+  "localStorageIsolation": true,
+  "localStoragePersistedFromPreviousLaunch": true,
+  "osVersion": "16.1.1",
+  "persistentStores": true,
+  "sameProfileSharesStore": true,
+  "timestamp": "2026-10-17T05:33:47Z"
+}
