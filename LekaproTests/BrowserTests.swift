@@ -61,6 +61,7 @@ final class BrowserTests: XCTestCase {
         let decoded = try JSONDecoder().decode(BrowserProfile.self, from: JSONEncoder().encode(profile))
         XCTAssertNil(decoded.timeZoneID)
         XCTAssertNil(decoded.minimumFontSize)
+        XCTAssertNil(decoded.fontFamily)
         profile.timeZoneID = "Asia/Tokyo"; profile.minimumFontSize = 32
         try store.save(profile)
         let reopened = ProfileStore(fileURL: file)
@@ -102,6 +103,19 @@ final class BrowserTests: XCTestCase {
         let largeHeight = try XCTUnwrap(changed["textHeight"] as? Double)
         XCTAssertGreaterThan(largeHeight, smallHeight)
     }
+    func testNativeFontChoiceAppliesToInlineAndFrameText() async throws {
+        var mono = BrowserProfile(); mono.fontFamily = .monospaced
+        let monospaced = try await sampleContext(mono)
+        var serif = BrowserProfile(); serif.fontFamily = .serif
+        let withSerifs = try await sampleContext(serif)
+        XCTAssertEqual(monospaced["fontFamily"] as? String, "monospace")
+        XCTAssertEqual(monospaced["frameFontFamily"] as? String, "monospace")
+        XCTAssertEqual(withSerifs["fontFamily"] as? String, "serif")
+        XCTAssertEqual(withSerifs["frameFontFamily"] as? String, "serif")
+        let original = try await sampleContext(BrowserProfile())
+        XCTAssertEqual(original["fontFamily"] as? String, "sans-serif")
+        XCTAssertEqual(original["frameFontFamily"] as? String, "sans-serif")
+    }
     private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile; fixture.privacy.blockTrackers = false
@@ -113,16 +127,24 @@ final class BrowserTests: XCTestCase {
         let tab = try XCTUnwrap(session.selectedTab)
         let html = #"""
         <!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">
-        <span id="sample" style="font-size:1px">Measurement</span><script>
+        <span id="sample" style="font-size:1px;font-family:sans-serif!important">Measurement</span><script>
+        (async () => {
+        const frame = document.createElement('iframe');
+        const loaded = new Promise(resolve => {frame.onload=resolve});
+        frame.srcdoc = '<span style="font-family:sans-serif!important">Frame</span>';
+        document.body.append(frame); await loaded;
         const d = new Date('2026-01-15T12:00:00Z');
         const result = {zone:Intl.DateTimeFormat().resolvedOptions().timeZone,
           offset:d.getTimezoneOffset(),hour:d.getHours(),
+          fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
+          frameFontFamily:frame.contentWindow.getComputedStyle(frame.contentDocument.querySelector('span')).fontFamily,
           textHeight:document.querySelector('#sample').getBoundingClientRect().height};
         const code = "const d=new Date('2026-01-15T12:00:00Z');postMessage({workerZone:Intl.DateTimeFormat().resolvedOptions().timeZone,workerOffset:d.getTimezoneOffset()})";
         const url = URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
         const worker = new Worker(url);
         worker.onmessage = event => {window.qaValue=JSON.stringify({...result,...event.data});worker.terminate();URL.revokeObjectURL(url)};
         worker.onerror = event => {window.qaError=String(event.message)};
+        })().catch(error=>{window.qaError=String(error)});
         </script>
         """#
         tab.webView.loadHTMLString(html, baseURL: URL(string: "https://context.lekapro.invalid"))
