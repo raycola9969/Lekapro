@@ -12,6 +12,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     @Published var canGoBack = false
     @Published var canGoForward = false
     @Published var errorMessage: String?
+    private(set) var navigationError: NSError?
     @Published var dialogMessage: String?
     @Published var dialogKind = "alert"
     var onChange: (() -> Void)?
@@ -45,7 +46,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         canGoBack = webView.canGoBack; canGoForward = webView.canGoForward
         onChange?()
     }
-    func navigate(_ url: URL) { errorMessage = nil; self.url = url; webView.load(URLRequest(url: url)) }
+    func navigate(_ url: URL) { errorMessage = nil; navigationError = nil; self.url = url; webView.load(URLRequest(url: url)) }
     func close() {
         resolveDialog(accepted: false)
         webView.stopLoading(); webView.navigationDelegate = nil; webView.uiDelegate = nil
@@ -60,7 +61,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) { failed(error) }
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { failed(error) }
     private func failed(_ error: Error) {
-        if (error as NSError).code != NSURLErrorCancelled { errorMessage = error.localizedDescription }
+        if (error as NSError).code != NSURLErrorCancelled { navigationError = error as NSError; errorMessage = error.localizedDescription }
         refresh()
     }
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {

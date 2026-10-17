@@ -55,13 +55,15 @@ enum DeviceNetworkDiagnostics {
             result["proxyProfileID"] = proxied.id.uuidString
             result["proxyKind"] = proxy.kind.rawValue
             let directSession = try workspace.session(for: direct, store: store)
-            let proxySession = try workspace.session(for: proxied, store: store)
-            await directSession.start(); await proxySession.start()
-            guard let directTab = directSession.selectedTab, let proxyTab = proxySession.selectedTab else {
+            await directSession.start()
+            guard let directTab = directSession.selectedTab else {
                 throw BrowserError.invalid("No browser tab was created.")
             }
             let directIP = try await readIP(in: directTab)
             result["directIP"] = directIP; saveReport()
+            let proxySession = try workspace.session(for: proxied, store: store)
+            await proxySession.start()
+            guard let proxyTab = proxySession.selectedTab else { throw BrowserError.invalid("No proxy tab was created.") }
             let proxyIP = try await readIP(in: proxyTab)
             result["proxyIP"] = proxyIP
             result["differentExitIPs"] = directIP != proxyIP; saveReport()
@@ -105,6 +107,9 @@ enum DeviceNetworkDiagnostics {
             result["completed"] = true; result["status"] = "finished"
         } catch {
             result["status"] = "error"; result["error"] = error.localizedDescription
+            let native = error as NSError
+            result["errorCode"] = native.code; result["errorDomain"] = native.domain
+            if let path = native.userInfo["_NSURLErrorNWPathKey"] { result["networkPath"] = String(describing: path) }
         }
         saveReport()
         #endif
@@ -117,7 +122,10 @@ enum DeviceNetworkDiagnostics {
     private static func readIP(in tab: BrowserTab, timeout: TimeInterval = 45) async throws -> String {
         let end = Date().addingTimeInterval(timeout)
         while Date() < end {
-            if let error = tab.errorMessage { throw BrowserError.invalid(error) }
+            if let message = tab.errorMessage {
+                if let error = tab.navigationError { throw error }
+                throw BrowserError.invalid(message)
+            }
             if !tab.webView.isLoading, tab.webView.url?.host == "api.ipify.org",
                let text = try? await tab.webView.evaluateJavaScript("document.body.innerText") as? String,
                let data = text.data(using: .utf8), let response = try? JSONDecoder().decode(IPResponse.self, from: data),
