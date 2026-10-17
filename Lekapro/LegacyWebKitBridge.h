@@ -12,6 +12,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone
                                                 error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(makeProcessPool(timeZone:));
++ (nullable NSObject *)makeFontStyleWithFamily:(NSString *)family
+                                        error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(makeFontStyle(family:));
++ (void)installFontStyle:(NSObject *)style controller:(WKUserContentController *)controller;
 @end
 
 NS_ASSUME_NONNULL_END

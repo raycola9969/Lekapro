@@ -4,6 +4,24 @@
 // Runtime-checked WebKit SPI for locally installed iOS 16 builds.
 // All paths belong to this app's own Application Support container.
 @implementation LegacyWebKitBridge
++ (NSObject *)makeFontStyleWithFamily:(NSString *)family error:(NSError **)error {
+    @try {
+        Class cls = NSClassFromString(@"_WKUserStyleSheet");
+        SEL initializer = NSSelectorFromString(@"initWithSource:forWKWebView:forMainFrameOnly:includeMatchPatternStrings:excludeMatchPatternStrings:baseURL:level:contentWorld:");
+        if (![@[@"serif", @"sans-serif", @"monospace"] containsObject:family] || !cls || ![cls instancesRespondToSelector:initializer] || ![WKUserContentController instancesRespondToSelector:NSSelectorFromString(@"_addUserStyleSheet:")]) {
+            @throw [NSException exceptionWithName:@"UnsupportedFontStyle" reason:@"WebKit cannot apply this profile font style on this OS." userInfo:nil];
+        }
+        NSString *source = [NSString stringWithFormat:@"* { font-family: %@ !important; }", family];
+        // User-origin CSS: inline author styles cannot silently undo the user's choice.
+        return ((id (*)(id, SEL, id, id, BOOL, id, id, id, NSInteger, id))objc_msgSend)([cls alloc], initializer, source, nil, NO, nil, nil, nil, 0, WKContentWorld.pageWorld);
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.LegacyWebKit" code:3 userInfo:@{NSLocalizedDescriptionKey: exception.reason ?: @"Font configuration failed."}];
+        return nil;
+    }
+}
++ (void)installFontStyle:(NSObject *)style controller:(WKUserContentController *)controller {
+    ((void (*)(id, SEL, id))objc_msgSend)(controller, NSSelectorFromString(@"_addUserStyleSheet:"), style);
+}
 + (WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone error:(NSError **)error {
     @try {
         Class cls = NSClassFromString(@"_WKProcessPoolConfiguration");

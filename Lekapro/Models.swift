@@ -68,6 +68,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var userAgent: String?
     var timeZoneID: String?
     var minimumFontSize: Double?
+    var fontFamily: ProfileFont?
     var proxyID: UUID?
     var privacy = PrivacySettings()
     var tabs: [SavedTab] = []
@@ -89,6 +90,25 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
         copy.createdAt = Date()
         copy.lastUsed = nil
         return copy
+    }
+}
+
+enum ProfileFont: String, Codable, CaseIterable, Identifiable {
+    case serif, sansSerif, monospaced
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .serif: return "Có chân"
+        case .sansSerif: return "Không chân"
+        case .monospaced: return "Đơn cách"
+        }
+    }
+    var css: String {
+        switch self {
+        case .serif: return "serif"
+        case .sansSerif: return "sans-serif"
+        case .monospaced: return "monospace"
+        }
     }
 }
 

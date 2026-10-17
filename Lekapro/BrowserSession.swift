@@ -16,10 +16,14 @@ final class BrowserSession: ObservableObject, Identifiable {
     private var blocker: WKContentRuleList?
     private var saveTask: Task<Void, Never>?
     private let processPool: WKProcessPool?
+    private let fontStyle: NSObject?
     var selectedTab: BrowserTab? { tabs.first { $0.id == selectedTabID } }
 
     init(profile: BrowserProfile, store: ProfileStore) throws {
         self.id = profile.id; self.profile = profile; self.store = store
+        if let font = profile.fontFamily {
+            fontStyle = try LegacyWebKitBridge.makeFontStyle(family: font.css)
+        } else { fontStyle = nil }
         if let zone = profile.timeZoneID {
             processPool = try LegacyWebKitBridge.makeProcessPool(timeZone: zone)
         } else { processPool = nil }
@@ -49,6 +53,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         configuration.websiteDataStore = dataStore
         if let processPool { configuration.processPool = processPool }
         if let size = profile.minimumFontSize { configuration.preferences.minimumFontSize = CGFloat(size) }
+        if let fontStyle { LegacyWebKitBridge.installFontStyle(fontStyle, controller: configuration.userContentController) }
         configuration.allowsInlineMediaPlayback = true
         configuration.defaultWebpagePreferences.preferredContentMode = profile.desktopMode ? .desktop : .mobile
         if let blocker { configuration.userContentController.add(blocker) }

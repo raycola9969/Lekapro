@@ -107,6 +107,14 @@ struct ProfileEditor: View {
                 Section("Trình duyệt") {
                     TextField("https://example.com", text: $profile.homeURL).keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                     Toggle("Yêu cầu giao diện máy tính", isOn: $profile.desktopMode)
+                    Picker("Phông chữ website", selection: $profile.fontFamily) {
+                        Text("Theo website").tag(ProfileFont?.none)
+                        ForEach(ProfileFont.allCases) { font in Text(font.title).tag(Optional(font)) }
+                    }
+                    if profile.fontFamily != nil {
+                        Text("Dùng một họ phông cho nội dung website. Có thể thay bố cục hoặc biểu tượng dùng phông.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
                     Picker("Chữ tối thiểu", selection: $profile.minimumFontSize) {
                         Text("Mặc định").tag(Double?.none)
                         ForEach([16.0, 20.0, 24.0, 32.0], id: \.self) { size in
