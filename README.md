@@ -10,6 +10,7 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 - Kho proxy SOCKS5 và HTTP CONNECT; HTTPS CONNECT tới proxy được hỗ trợ từ iOS 17. Mật khẩu lưu trong Keychain.
 - iOS 17+: `allowFailover = false`. iOS 16 dùng cấu hình proxy riêng của WebKit; phép thử với SOCKS5 tại cổng không có máy chủ đã trả lỗi kết nối, không tải trang trực tiếp. Chưa đo DNS/UDP hoặc mọi tình huống thay đổi mạng.
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
+- Tùy chọn chặn tạo ngữ cảnh WebGL và giảm thông tin phần cứng: tối đa 2 luồng được báo cho trang, kích thước màn hình làm tròn xuống theo bậc 200 px. Mặc định tắt; áp dụng trong trang/frame, chưa bao phủ Worker. Có thể ảnh hưởng đồ họa 3D, bố cục và xử lý song song; không bảo đảm tách Visitor ID.
 - User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
 - Chữ tối thiểu theo hồ sơ qua `WKPreferences.minimumFontSize`; múi giờ riêng qua cấu hình process pool WebKit SPI, hỗ trợ từ iOS 16 và kiểm tra khả năng ở runtime. Không thay múi giờ toàn hệ thống hoặc bọc các hàm `Date`/`Intl`. Nếu SPI không hỗ trợ, app báo lỗi thay vì âm thầm dùng múi giờ thiết bị.
 - Tùy chọn dùng một họ phông cho website qua user stylesheet WebKit, mặc định theo website. Thay bố cục chữ thực trong trang/frame, có thể ảnh hưởng phông biểu tượng; không thay các hàm đo chữ JavaScript. Dùng SPI và báo lỗi nếu không hỗ trợ.
@@ -40,6 +41,8 @@ open Lekapro.xcodeproj
 Chọn Team cá nhân và Bundle Identifier phù hợp, rồi chạy trên iPhone. Trên iOS 16.1.1 jailbreak có thể cài IPA bằng TrollStore. Nhánh iOS 16 dùng API WebKit private, không dành cho phân phối App Store. Không cần thay đổi proxy toàn hệ thống hoặc cài tweak vào Safari.
 
 ## Kiểm tra iOS 16 trên thiết bị
+
+Build 10 thêm 12 lượt đo về họ phông và các tổ hợp (tổng 80), vẫn cùng Visitor ID trên cấu hình đã thử. WebKit thực sự thay các chỉ số font mà server đo được. Build và XCTest simulator đều qua. Xem [báo cáo build 10](verification/fingerprint-experiments-build10.json).
 
 Build 9 thêm 16 lượt tải đã đối chiếu agent/server, nâng tổng lên 68. Múi giờ riêng có hiệu lực trong cả trang và Worker; cỡ chữ tối thiểu làm đổi chỉ số chữ/emoji thực. Các cấu hình này và tổ hợp thêm UA/proxy/nhiễu vẫn chưa tách Visitor ID. Build và XCTest simulator của bản 9 đều qua. Xem [báo cáo build 9](verification/fingerprint-experiments-build9.json).
 
