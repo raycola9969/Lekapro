@@ -47,6 +47,65 @@ final class BrowserTests: XCTestCase {
         XCTAssertThrowsError(try store.save(changed))
         XCTAssertEqual(store.profile(profile.id)?.userAgent, UserAgentPreset.ios1879.value)
     }
+    func testOldPrivacySettingsKeepReadbackVariationOff() throws {
+        let old = Data(#"{"blockTrackers":true,"blockCanvasReadback":false,"blockAudioReadback":false,"blockWebRTC":false}"#.utf8)
+        let privacy = try JSONDecoder().decode(PrivacySettings.self, from: old)
+        XCTAssertNil(privacy.canvasNoise)
+        XCTAssertNil(privacy.audioNoise)
+        XCTAssertEqual(privacy, PrivacySettings())
+    }
+    func testReadbackVariationIsStableDistinctAndKeepsAudioCopiesConsistent() async throws {
+        var first = BrowserProfile()
+        first.privacy.blockTrackers = false
+        first.privacy.canvasNoise = true
+        first.privacy.audioNoise = true
+        let second = first.duplicated()
+        let a = try await sampleReadback(first)
+        let repeated = try await sampleReadback(first)
+        let b = try await sampleReadback(second)
+        XCTAssertEqual(a, repeated)
+        XCTAssertNotEqual(a, b)
+        let decoded = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(a.utf8)) as? [String: Any])
+        let png = try XCTUnwrap(decoded["png"] as? [String])
+        XCTAssertEqual(png[0], png[1])
+        let audio = try XCTUnwrap(decoded["audio"] as? [[Double]])
+        XCTAssertEqual(audio[0], audio[1])
+        XCTAssertEqual(audio[0], audio[2])
+        var native = first
+        native.privacy.canvasNoise = false; native.privacy.audioNoise = false
+        let original = try await sampleReadback(native)
+        XCTAssertNotEqual(a, original)
+    }
+    private func sampleReadback(_ profile: BrowserProfile) async throws -> String {
+        let store = ProfileStore(fileURL: temporaryFile())
+        var fixture = profile
+        fixture.tabs = [SavedTab(url: "about:blank", title: "Readback fixture")]
+        try store.save(fixture)
+        let session = try BrowserSession(profile: fixture, store: store)
+        await session.start()
+        defer { session.close() }
+        let tab = try XCTUnwrap(session.selectedTab)
+        let html = #"""
+        <!doctype html><script>
+        const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+        const ctx = c.getContext('2d'); ctx.fillStyle = '#723b81'; ctx.fillRect(0,0,64,64);
+        const buffer = new AudioBuffer({length:512,sampleRate:44100});
+        buffer.getChannelData(0).fill(0.25);
+        const first = Array.from(buffer.getChannelData(0));
+        const second = Array.from(buffer.getChannelData(0));
+        const copy = new Float32Array(512); buffer.copyFromChannel(copy,0);
+        const pick = values => [values[0],values[128],values[256],values[384]];
+        window.qaValue = JSON.stringify({png:[c.toDataURL(),c.toDataURL()],audio:[pick(first),pick(second),pick(copy)]});
+        </script>
+        """#
+        tab.webView.loadHTMLString(html, baseURL: URL(string: "https://readback.lekapro.invalid"))
+        let deadline = Date().addingTimeInterval(15)
+        while Date() < deadline {
+            if let value = try? await tab.webView.evaluateJavaScript("window.qaValue"), let text = value as? String { return text }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        throw BrowserError.invalid("Readback fixture did not finish.")
+    }
     func testProfileUserAgentReachesJavaScriptAndNewTabs() async throws {
         let store = ProfileStore(fileURL: temporaryFile())
         var profile = BrowserProfile()
