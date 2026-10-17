@@ -1,0 +1,136 @@
+{
+  "build": "21",
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "sourceCommit": "fc6b72566227f4a972af3dcb73b59ae96113a922",
+  "verifiedUniqueUncachedEvents": 72,
+  "pageAgentServerIDsAndEventsMatch": true,
+  "sameIPThroughout": true,
+  "nativeStateRemovalCohorts": [
+    {
+      "mode": "cookies",
+      "matchedUniqueUncachedEvents": 12,
+      "onlyDisposableProfileAReset": true,
+      "profileBIDUnchanged": true,
+      "nativeCookieCountBefore": 24,
+      "nativeCookieCountAfter": 0,
+      "transitions": [
+        {
+          "stage": "sameSafari",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        },
+        {
+          "stage": "afterReset",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        }
+      ]
+    },
+    {
+      "mode": "localStorage",
+      "matchedUniqueUncachedEvents": 12,
+      "onlyDisposableProfileAReset": true,
+      "profileBIDUnchanged": true,
+      "nativeCookieCountBefore": 24,
+      "nativeCookieCountAfter": 24,
+      "transitions": [
+        {
+          "stage": "sameSafari",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        },
+        {
+          "stage": "afterReset",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        }
+      ]
+    },
+    {
+      "mode": "allSiteData",
+      "matchedUniqueUncachedEvents": 12,
+      "onlyDisposableProfileAReset": true,
+      "profileBIDUnchanged": true,
+      "nativeCookieCountBefore": 24,
+      "nativeCookieCountAfter": 0,
+      "transitions": [
+        {
+          "stage": "sameSafari",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        },
+        {
+          "stage": "afterReset",
+          "matchedUniqueUncachedEvents": 4,
+          "bothOriginalIDsRetained": true,
+          "stableOnReload": true,
+          "sameSafari17_2UA": true,
+          "changedRawAttributeGroupsOnReload": []
+        }
+      ]
+    }
+  ],
+  "preservedSameSafariPairIDsSurviveBuild20To21Update": true,
+  "preservedPairChangedRawAttributeGroupsOnReload": [],
+  "furtherUAComparisons": [
+    {
+      "initialUAString": "android-chrome119-ua",
+      "matchedUniqueUncachedEvents": 8,
+      "differentIDsInPair": false,
+      "IDBeyondEstablishedPair": false,
+      "IDsRetainedAfterBothChangeToSafari17_2": true,
+      "changedRawGroupsOnSameSafariReload": []
+    },
+    {
+      "initialUAString": "windows-chrome119-ua",
+      "matchedUniqueUncachedEvents": 8,
+      "differentIDsInPair": false,
+      "IDBeyondEstablishedPair": false,
+      "IDsRetainedAfterBothChangeToSafari17_2": true,
+      "changedRawGroupsOnSameSafariReload": []
+    },
+    {
+      "initialUAString": "windows-firefox119-ua",
+      "matchedUniqueUncachedEvents": 8,
+      "differentIDsInPair": true,
+      "IDBeyondEstablishedPair": true,
+      "IDsRetainedAfterBothChangeToSafari17_2": true,
+      "changedRawGroupsOnSameSafariReload": []
+    }
+  ],
+  "threePreservedSameSafariProfilesHaveDifferentIDsAfterRelaunch": true,
+  "allFinalPageAndWorkerUAsMatchSafari17_2": true,
+  "namedProfiles": [
+    "03 - Safari 17.2 A",
+    "04 - Safari 17.2 B",
+    "05 - Safari 17.2 C"
+  ],
+  "ci": {
+    "runID": 39051220994,
+    "passed": 27,
+    "skipped": 1,
+    "failures": 0
+  },
+  "limits": [
+    "These are history-dependent recognition observations, not proof of a different raw hardware fingerprint.",
+    "WebKit native removal completed; cookie deletion was counted. All internal persistence and server-side state were not independently enumerated.",
+    "No cookie-only or localStorage-only cause was established.",
+    "No proof of a separate visitor ID for every fresh profile or of ExitAnty internals."
+  ]
+}

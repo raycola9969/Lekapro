@@ -4,9 +4,21 @@ Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. 
 
 ## Kết quả mới trên iOS 16.1.1
 
+Build 21 đã cài trên iPhone 11 Pro Max iOS 16.1.1 và xác nhận **ba hồ sơ cùng UA Safari 17.2 giữ ba Visitor ID khác nhau** sau tải lại và đóng/mở app. Các hồ sơ đã lưu trên máy là `03 - Safari 17.2 A`, `04 - Safari 17.2 B`, `05 - Safari 17.2 C`. A được đo lần đầu bằng UA iPhone Chrome 119, B bằng UA WebKit mặc định, C bằng chuỗi UA Windows Firefox 119; sau đó A/C đổi về Safari 17.2, giữ nguyên kho của từng hồ sơ. Engine thật vẫn là WebKit iOS 16.1.1. UA trong trang, Worker và phản hồi server đều khớp cấu hình cuối.
+
+Đợt build 21 có 72 event mới, không dùng cache, đối chiếu ID/event giữa trang, agent và server trên cùng IP. Ba đối chứng riêng ở hồ sơ thử dùng một lần cho thấy: xóa cookie native (24→0), xóa localStorage, hoặc gọi WebKit xóa tất cả loại dữ liệu website công khai đều chưa làm hai ID đang có nhập lại. Việc xóa cookie được đếm trực tiếp; chưa kiểm kê độc lập mọi trạng thái nội bộ hay trạng thái ở server. Các nhóm thuộc tính thiết bị thô bằng nhau giữa các hồ sơ ở lượt tải lại cuối. UA Android Chrome và Windows Chrome không tạo ID mới ngoài cặp đã có. Xem [báo cáo build 21 đã loại dữ liệu định danh](verification/ios16-site-state-build21.json). [CI build 21](https://github.com/raycola9969/Lekapro/actions/runs/39051220994) đạt 27 bài kiểm thử, một bài đo mạng bỏ qua.
+
 Trên iPhone 11 Pro Max chạy iOS 16.1.1, build 20 đã được cài và kiểm chứng hai Visitor ID khác nhau tại fingerprint.com/demo: hồ sơ A dùng UA iPhone Chrome 119, hồ sơ B dùng UA WebKit mặc định. Cả hai vẫn báo nền tảng iPhone, kết nối trực tiếp cùng IP, tắt chặn tracker, dùng Canvas/Audio và các API nguyên bản. Mười hai event mới không dùng cache xác nhận ID hiển thị khớp phản hồi JavaScript và máy chủ: cặp đã đo giữ ID qua cập nhật 19→20, một cặp mới ổn định khi tải lại và sau khi kết thúc/mở lại app. Không dùng tùy chọn engine chẩn đoán, Frida hoặc sửa kết quả website. Xem [báo cáo đã loại dữ liệu định danh](verification/ios16-browser-family-build20.json). [CI build 20](https://github.com/raycola9969/Lekapro/actions/runs/39045021797) đạt 26 bài kiểm thử, bỏ qua một bài đo mạng chưa bật trong CI.
 
-Đối chứng hai hồ sơ mới dùng cùng UA Chrome vẫn cho cùng ID. Đổi riêng nền tảng sang iPad không tách được ID; UA iPad đã tách được trong phép thử riêng. Kết quả này chứng minh một cấu hình hai ID trên thiết bị đã đo, chưa bảo đảm ID riêng cho từng UUID hồ sơ hoặc hai hồ sơ iPhone Safari chỉ khác phiên bản iOS. Chưa xác định cơ chế nội bộ ExitAnty 2.2.2.
+Đã kiểm chứng thêm 48 event trên build 20: khởi tạo hai ID bằng cặp UA Chrome/mặc định, rồi đổi đúng hai hồ sơ sang cùng UA Safari 17.2 vẫn giữ hai ID qua tải lại và mở lại app. Cặp Safari 17.2/18.7.9 cũng giữ được ID theo cách này. Khi đổi UA, giữ cùng kho dữ liệu. Các thuộc tính thiết bị thô bằng nhau ở lượt tải lại. Hồ sơ mới tạo trực tiếp với cùng UA Safari hoặc cặp Safari 17.2/18.7.9 vẫn cho một ID. Xem [đối chứng chuyển UA và lưu trạng thái](verification/ios16-state-retention-build20.json).
+
+Đây là kết quả nhận diện phụ thuộc lịch sử truy cập đã quan sát; nguyên nhân lưu giữ cụ thể chưa được tách riêng. Chưa chứng minh dấu vân tay phần cứng khác nhau hoặc ID riêng cho mọi UUID hồ sơ. Đối chứng hai hồ sơ mới cùng UA Chrome cũng cho cùng ID. Đổi riêng nền tảng sang iPad không tách được ID; UA iPad tách được trong phép thử riêng. Chưa xác định cơ chế nội bộ ExitAnty 2.2.2.
+
+Để lặp lại hồ sơ C trong đợt thử: tạo kho mới, tắt các tùy chọn bảo vệ để dùng API gốc, đặt UA tùy chỉnh dưới đây, mở demo và đo; sau đó sửa chính hồ sơ đó sang preset Safari 17.2. Việc đổi UA áp dụng khi đóng/mở trình duyệt hồ sơ. Đây là cấu hình đã đo trên máy này; chưa bảo đảm một ID mới cho mỗi hồ sơ C tạo thêm. App chỉ truy cập demo khi người dùng hoặc bộ đo DEBUG yêu cầu.
+
+```text
+Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:119.0) Gecko/20100101 Firefox/119.0
+```
 
 Build 20 đưa các chuỗi đã thử vào menu User-Agent: iPhone Chrome 119, iPhone Firefox 119 và iPad Safari 16.1. Đây là lựa chọn chuỗi UA; app tiếp tục dùng WebKit của hệ điều hành. Để lặp lại cặp đã xác nhận, chọn Chrome ở A, Tự động theo WebKit ở B và tắt chặn tracker trong cả hai.
 

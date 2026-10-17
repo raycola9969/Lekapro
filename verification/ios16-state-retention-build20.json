@@ -1,0 +1,94 @@
+{
+  "build": "20",
+  "actualOSVersion": "16.1.1",
+  "verifiedUniqueUncachedEvents": 48,
+  "sameIPThroughout": true,
+  "permanentSameSafariProfilesVerifiedAcrossRelaunch": true,
+  "sameSafariUA17_2PairRetainsTwoIDsAcrossReloadAndRelaunch": true,
+  "mixedSafari17_2_18_7PairRetainsTwoIDsAcrossReloadAndRelaunch": true,
+  "previousChromeNativeVisitRequiredForObservedSafariSplit": true,
+  "freshSameAndMixedSafariControlsHaveOneID": true,
+  "cohorts": [
+    {
+      "cohort": "ua-transition20",
+      "events": 16,
+      "stages": [
+        {
+          "stage": "baseline",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "safariTransition",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "safariRelaunch",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "restored",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        }
+      ]
+    },
+    {
+      "cohort": "same-safari20",
+      "events": 16,
+      "stages": [
+        {
+          "stage": "baseline",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "sameSafari",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": true,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "sameSafariRelaunch",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": true,
+          "changedRawGroupsOnReload": []
+        },
+        {
+          "stage": "restored",
+          "verifiedUncachedEvents": 4,
+          "differentVisitorIDs": true,
+          "IDsPreservedFromBaseline": true,
+          "sameUserAgent": false,
+          "changedRawGroupsOnReload": []
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No proof of a different raw hardware fingerprint per profile.",
+    "The location and cause of this history-dependent recognition are not isolated.",
+    "Not a separate ID for every new profile or proof of ExitAnty internals."
+  ]
+}
