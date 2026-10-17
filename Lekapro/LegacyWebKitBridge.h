@@ -7,6 +7,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSSet<NSString *> *)diagnosticAllNativeDataTypes:(NSError * _Nullable * _Nullable)error;
 + (pid_t)diagnosticNetworkPID:(WKWebsiteDataStore *)store;
 + (BOOL)restartDiagnosticNetwork:(WKWebsiteDataStore *)store error:(NSError * _Nullable * _Nullable)error;
++ (BOOL)flushDiagnosticNetwork:(WKWebsiteDataStore *)store completion:(void(^)(void))completion
+    NS_SWIFT_NAME(flushDiagnosticNetwork(_:completion:));
 + (nullable WKWebsiteDataStore *)makeStoreAtURL:(NSURL *)directory
                            proxyConfiguration:(nullable NSDictionary *)proxy
                                         error:(NSError * _Nullable * _Nullable)error

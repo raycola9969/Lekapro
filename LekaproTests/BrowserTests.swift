@@ -178,6 +178,7 @@ final class BrowserTests: XCTestCase {
         let afterPID = try XCTUnwrap(result["networkPIDAfter"] as? Int32)
         XCTAssertGreaterThan(beforePID, 0); XCTAssertGreaterThan(afterPID, 0); XCTAssertNotEqual(beforePID, afterPID)
         XCTAssertEqual(after["cookieCount"] as? Int, 1)
+        XCTAssertEqual(result["persistentStateFlushCompleted"] as? Bool, true)
         let cookieOnly = try await DiagnosticSiteState.reset(.cookies, profile: profile, store: dataStore, restartNetwork: true)
         let afterCookie = try XCTUnwrap(cookieOnly["stateAfter"] as? NSDictionary)
         XCTAssertEqual(afterCookie["cookieCount"] as? Int, 0)

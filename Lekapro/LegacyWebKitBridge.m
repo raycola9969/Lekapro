@@ -40,6 +40,23 @@
         return NO;
     }
 }
++ (BOOL)flushDiagnosticNetwork:(WKWebsiteDataStore *)store completion:(void(^)(void))completion {
+#if DEBUG
+    SEL flush = NSSelectorFromString(@"_flushCookiesToDiskWithCompletionHandler:");
+    SEL prepare = NSSelectorFromString(@"_sendNetworkProcessPrepareToSuspend:");
+    SEL resume = NSSelectorFromString(@"_sendNetworkProcessDidResume");
+    if (![store.httpCookieStore respondsToSelector:flush] || ![store respondsToSelector:prepare] || ![store respondsToSelector:resume]) return NO;
+    ((void (*)(id, SEL, id))objc_msgSend)(store.httpCookieStore, flush, ^{
+        ((void (*)(id, SEL, id))objc_msgSend)(store, prepare, ^{
+            ((void (*)(id, SEL))objc_msgSend)(store, resume);
+            completion();
+        });
+    });
+    return YES;
+#else
+    return NO;
+#endif
+}
 + (BOOL)applyDiagnosticOptions:(NSDictionary<NSString *, id> *)options configuration:(WKWebViewConfiguration *)configuration error:(NSError **)error {
     @try {
 #if DEBUG

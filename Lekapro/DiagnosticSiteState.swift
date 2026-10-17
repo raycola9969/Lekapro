@@ -45,6 +45,21 @@ enum DiagnosticSiteState {
             store.removeData(ofTypes: types, modifiedSince: .distantPast) { done(.success(true)) }
         }
     }
+    private static func networkPID(in store: WKWebsiteDataStore, differentFrom previous: Int32? = nil) async throws -> Int32 {
+        let deadline = Date().addingTimeInterval(25)
+        repeat {
+            let pid = LegacyWebKitBridge.diagnosticNetworkPID(store)
+            if pid > 0, previous == nil || pid != previous { return pid }
+            try await Task.sleep(for: .milliseconds(100))
+        } while Date() < deadline
+        throw BrowserError.invalid("Diagnostic network process did not become ready.")
+    }
+    private static func flushNetwork(_ store: WKWebsiteDataStore) async throws {
+        let _: Bool = try await bounded("persistent network-session flush") { done in
+            let accepted = LegacyWebKitBridge.flushDiagnosticNetwork(store) { done(.success(true)) }
+            if !accepted { done(.failure(BrowserError.invalid("Persistent network-session flush is unavailable."))) }
+        }
+    }
     enum Reset: String, Codable {
         case cookies, localStorage, indexedDB, caches, allSiteData, cookiesAndLocalStorage
         case allNativeData, allNativeDataAndNetwork
@@ -197,10 +212,17 @@ enum DiagnosticSiteState {
         } else { types = action.dataTypes }
         if !types.isEmpty { try await remove(types: types, from: store) }
         let restartsNetwork = restartNetwork || [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
-        let processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store)
-        if restartsNetwork { try LegacyWebKitBridge.restartDiagnosticNetwork(store) }
+        let processBefore: Int32
+        if restartsNetwork {
+            _ = try await networkPID(in: store)
+            try await flushNetwork(store)
+            processBefore = try await networkPID(in: store)
+            try LegacyWebKitBridge.restartDiagnosticNetwork(store)
+        } else { processBefore = LegacyWebKitBridge.diagnosticNetworkPID(store) }
         let stateAfter = try await snapshot(store: store)
-        let processAfter = LegacyWebKitBridge.diagnosticNetworkPID(store)
+        let processAfter: Int32
+        if restartsNetwork { processAfter = try await networkPID(in: store, differentFrom: processBefore) }
+        else { processAfter = LegacyWebKitBridge.diagnosticNetworkPID(store) }
         if restartsNetwork, processBefore <= 0 || processAfter <= 0 || processBefore == processAfter {
             throw BrowserError.invalid("The diagnostic network process did not restart.")
         }
@@ -209,6 +231,7 @@ enum DiagnosticSiteState {
             "cookieCountBefore": before.count, "cookieCountAfter": after.count,
             "requestedNativeDataTypes": types.sorted(),
             "networkRestartRequested": restartsNetwork,
+            "persistentStateFlushCompleted": restartsNetwork,
             "networkPIDBefore": processBefore, "networkPIDAfter": processAfter,
             "stateBefore": stateBefore, "stateAfter": stateAfter]
         #else
