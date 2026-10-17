@@ -19,6 +19,9 @@ enum DeviceUserAgentDiagnostics {
     }
 
     private static func run(input: URL, folder: URL, store: ProfileStore, workspace: BrowserWorkspace) async {
+        let wasIdleTimerDisabled = UIApplication.shared.isIdleTimerDisabled
+        UIApplication.shared.isIdleTimerDisabled = true
+        defer { UIApplication.shared.isIdleTimerDisabled = wasIdleTimerDisabled }
         let output = folder.appendingPathComponent("Lekapro-ua-check.json")
         let evidence = folder.appendingPathComponent("Lekapro-ua-evidence", isDirectory: true)
         var result: [String: Any] = ["completed": false, "status": "running",
@@ -67,10 +70,7 @@ enum DeviceUserAgentDiagnostics {
             for (phaseIndex, experiment) in experiments.enumerated() {
                 phases.append(["name": experiment.0, "observations": [[String: Any]]()]); save()
                 for (index, id) in request.profileIDs.enumerated() {
-                    if workspace.diagnosticSession != nil {
-                        workspace.diagnosticSession = nil
-                        try await Task.sleep(for: .milliseconds(700))
-                    }
+                    await DeviceBrowserPresentation.hide()
                     workspace.close(id)
                     guard var profile = store.profile(id) else { throw BrowserError.invalid("QA profile disappeared.") }
                     guard profile.proxyID == nil, !profile.desktopMode,
@@ -85,7 +85,7 @@ enum DeviceUserAgentDiagnostics {
                     let session = try workspace.session(for: profile, store: store)
                     await session.start()
                     guard let tab = session.selectedTab else { throw BrowserError.invalid("QA browser tab was not created.") }
-                    workspace.diagnosticSession = session
+                    try await DeviceBrowserPresentation.show(session, store: store, workspace: workspace)
                     let deadline = Date().addingTimeInterval(15)
                     while tab.webView.window == nil || tab.webView.bounds.width < 100 {
                         guard Date() < deadline else { throw BrowserError.invalid("QA browser was not presented.") }
@@ -122,6 +122,7 @@ enum DeviceUserAgentDiagnostics {
         } catch {
             result["status"] = "error"; result["error"] = error.localizedDescription
         }
+        await DeviceBrowserPresentation.hide()
         save()
     }
 }

@@ -19,6 +19,9 @@ enum DevicePageDiagnostics {
     }
 
     private static func run(input: URL, folder: URL, store: ProfileStore, workspace: BrowserWorkspace) async {
+        let wasIdleTimerDisabled = UIApplication.shared.isIdleTimerDisabled
+        UIApplication.shared.isIdleTimerDisabled = true
+        defer { UIApplication.shared.isIdleTimerDisabled = wasIdleTimerDisabled }
         let output = folder.appendingPathComponent("Lekapro-fingerprint-check.json")
         let evidence = folder.appendingPathComponent("Lekapro-fingerprint-evidence", isDirectory: true)
         var result: [String: Any] = ["completed": false, "status": "running",
@@ -48,11 +51,7 @@ enum DevicePageDiagnostics {
                 let session = try workspace.session(for: profile, store: store)
                 await session.start()
                 guard let tab = session.selectedTab else { throw BrowserError.invalid("No browser tab was created.") }
-                if workspace.diagnosticSession != nil {
-                    workspace.diagnosticSession = nil
-                    try await Task.sleep(for: .milliseconds(700))
-                }
-                workspace.diagnosticSession = session
+                try await DeviceBrowserPresentation.show(session, store: store, workspace: workspace)
                 let deadline = Date().addingTimeInterval(15)
                 while tab.webView.window == nil || tab.webView.bounds.width < 100 {
                     guard Date() < deadline else { throw BrowserError.invalid("Browser view was not presented.") }
@@ -84,6 +83,7 @@ enum DevicePageDiagnostics {
         } catch {
             result["status"] = "error"; result["error"] = error.localizedDescription
         }
+        await DeviceBrowserPresentation.hide()
         save()
     }
 
