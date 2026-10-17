@@ -15,12 +15,12 @@ enum DiagnosticSiteState {
         }
     }
 
-    private static func bounded<Value>(_ label: String,
+    private static func bounded<Value>(_ label: String, timeout duration: Duration = .seconds(120),
         operation: (@escaping (Result<Value, Error>) -> Void) -> Void) async throws -> Value {
         try await withCheckedThrowingContinuation { continuation in
             let pending = Pending(continuation)
             let timeout = Task { @MainActor in
-                do { try await Task.sleep(for: .seconds(120)) } catch { return }
+                do { try await Task.sleep(for: duration) } catch { return }
                 pending.finish(.failure(BrowserError.invalid("State experiment timed out: " + label)))
             }
             operation { result in
@@ -120,17 +120,23 @@ enum DiagnosticSiteState {
         defer { document.close() }
         let local = try await localValues(document)
         let cookieRecords = try await cookies(in: store)
-        let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration") { done in
-            store.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { done(.success($0)) }
-        }
-        return ["localStorageKeyNames": local.keys.sorted(),
+        var result: [String: Any] = ["localStorageKeyNames": local.keys.sorted(),
             "localIdentityTokens": local.filter { identityKeys.contains($0.key) }.mapValues {
                 ["bytes": $0.utf8.count, "sha256": digest($0)] as [String: Any]
             }, "cookieCount": cookieRecords.count,
             "cookieIdentityTokens": cookieRecords.filter { identityKeys.contains($0.name) }.map {
                 ["name": $0.name, "domain": $0.domain, "path": $0.path,
                  "bytes": $0.value.utf8.count, "sha256": digest($0.value)] as [String: Any]
-            }, "nativeDataRecords": records.map { ["name": $0.displayName, "types": $0.dataTypes.sorted()] }]
+            }]
+        // Store-record enumeration can stall on background simulator processes.
+        // It is optional metadata: a timeout is explicitly unknown, never empty.
+        do {
+            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(15)) { done in
+                store.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { done(.success($0)) }
+            }
+            result["nativeDataRecords"] = records.map { ["name": $0.displayName, "types": $0.dataTypes.sorted()] }
+        } catch { result["nativeDataRecordsError"] = error.localizedDescription }
+        return result
     }
 
     static func copy(_ request: CopyRequest, source: BrowserProfile, target: BrowserProfile,
