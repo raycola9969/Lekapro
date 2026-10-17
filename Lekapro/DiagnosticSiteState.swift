@@ -266,6 +266,25 @@ enum DiagnosticSiteState {
         }
     }
 
+    static func networkCacheDiskInventory(profile: BrowserProfile) throws -> [String: Any] {
+        try validateTarget(profile)
+        let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Lekapro/WebsiteProfiles", isDirectory: true)
+            .appendingPathComponent(profile.dataStoreID.uuidString, isDirectory: true)
+            .appendingPathComponent("NetworkCache", isDirectory: true)
+        guard let files = FileManager.default.enumerator(at: root,
+            includingPropertiesForKeys: [.isRegularFileKey, .fileSizeKey]) else { return ["available": false] }
+        var count = 0, bytes = 0, unreadable = 0
+        for case let file as URL in files {
+            do {
+                let values = try file.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey])
+                if values.isRegularFile == true { count += 1; bytes += values.fileSize ?? 0 }
+            } catch { unreadable += 1 }
+        }
+        return ["available": true, "regularFileCount": count, "byteCount": bytes,
+            "unreadableEntryCount": unreadable, "complete": unreadable == 0]
+    }
+
     static func reset(_ action: Reset, profile: BrowserProfile, store: WKWebsiteDataStore,
                       restartNetwork: Bool = false, customDataTypes: Set<String>? = nil) async throws -> [String: Any] {
         #if DEBUG

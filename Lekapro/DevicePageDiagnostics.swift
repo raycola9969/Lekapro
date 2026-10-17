@@ -100,6 +100,7 @@ enum DevicePageDiagnostics {
                 let targetSession = try workspace.session(for: target, store: store)
                 result["identityStateCopy"] = try await DiagnosticSiteState.copy(copy, source: source, target: target,
                     sourceStore: sourceSession.dataStore, targetStore: targetSession.dataStore)
+                result["targetDiskCacheAfterCopy"] = try DiagnosticSiteState.networkCacheDiskInventory(profile: target)
                 save()
             }
             for (index, id) in request.profileIDs.enumerated() {
@@ -115,7 +116,8 @@ enum DevicePageDiagnostics {
                     try DiagnosticSiteState.validateTarget(profile)
                     let state = try await DiagnosticSiteState.snapshot(store: session.dataStore, requireNativeRecords: true)
                     var before = result["beforeProfileNavigations"] as? [[String: Any]] ?? []
-                    before.append(["profileID": id.uuidString, "navigationIndex": index, "state": state])
+                    before.append(["profileID": id.uuidString, "navigationIndex": index, "state": state,
+                        "networkCacheDiskInventory": try DiagnosticSiteState.networkCacheDiskInventory(profile: profile)])
                     result["beforeProfileNavigations"] = before; save()
                 }
                 await session.start()
