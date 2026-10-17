@@ -64,6 +64,7 @@ enum DiagnosticSiteState {
         case cookies, localStorage, indexedDB, caches, allSiteData, cookiesAndLocalStorage
         case allNativeData, allNativeDataAndNetwork
         case networkOnly, allSiteDataAndNetwork
+        case customTypes
 
         var dataTypes: Set<String> {
             switch self {
@@ -76,8 +77,26 @@ enum DiagnosticSiteState {
             case .allNativeData, .allNativeDataAndNetwork: return WKWebsiteDataStore.allWebsiteDataTypes()
             case .networkOnly: return []
             case .allSiteDataAndNetwork: return WKWebsiteDataStore.allWebsiteDataTypes()
+            case .customTypes: return []
             }
         }
+    }
+    static func selectedTypes(_ action: Reset, custom: Set<String>? = nil) throws -> Set<String> {
+        if action == .customTypes {
+            guard let custom, !custom.isEmpty, custom.count <= 64 else {
+                throw BrowserError.invalid("Custom QA removal requires a nonempty native type selection.")
+            }
+            let known = try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
+            guard custom.isSubset(of: known) else {
+                throw BrowserError.invalid("Custom QA removal contains an unknown WebKit data type.")
+            }
+            return custom
+        }
+        guard custom == nil else { throw BrowserError.invalid("Type overrides require an explicit custom QA action.") }
+        if action == .allNativeData || action == .allNativeDataAndNetwork {
+            return try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
+        }
+        return action.dataTypes
     }
 
     struct CopyRequest: Codable {
@@ -88,7 +107,7 @@ enum DiagnosticSiteState {
         var key: String
         var clearTargetFirst: Bool?
         var clearAllTargetWebsiteData: Bool?
-        var restartTargetNetworkAfterCopy: Bool?
+        var restartTargetNetworkBeforeCopy: Bool?
     }
     static let identityKeys: Set<String> = ["_vid_t", "_iidt", "_vid_s", "_vid_lr"]
 
@@ -96,11 +115,15 @@ enum DiagnosticSiteState {
         try validateTarget(source); try validateTarget(target)
         guard source.id != target.id, source.dataStoreID != target.dataStoreID,
               request.sourceProfileID == source.id, request.targetProfileID == target.id,
-              identityKeys.contains(request.key) else {
+              (identityKeys.contains(request.key) || (request.kind == .cookies && request.key == "_vid_t+_iidt")) else {
             throw BrowserError.invalid("Token copies require distinct disposable QA stores and a known identity key.")
         }
         if request.clearAllTargetWebsiteData == true, request.clearTargetFirst != true {
             throw BrowserError.invalid("Full target clearing must be explicitly enabled for the disposable copy target.")
+        }
+        if request.restartTargetNetworkBeforeCopy == true,
+           request.clearTargetFirst != true || request.clearAllTargetWebsiteData != true {
+            throw BrowserError.invalid("A cold copy requires full public target clearing before its network restart.")
         }
     }
 
@@ -170,14 +193,31 @@ enum DiagnosticSiteState {
             try await remove(types: types, from: targetStore)
             cleared = try await snapshot(store: targetStore)
         }
+        var networkBefore: Int32 = 0, networkAfter: Int32 = 0
+        if request.restartTargetNetworkBeforeCopy == true {
+            _ = try await networkPID(in: sourceStore)
+            try await flushNetwork(sourceStore)
+            _ = try await networkPID(in: targetStore)
+            try await flushNetwork(targetStore)
+            networkBefore = try await networkPID(in: targetStore)
+            try LegacyWebKitBridge.restartDiagnosticNetwork(targetStore)
+            networkAfter = try await networkPID(in: targetStore, differentFrom: networkBefore)
+            // Restart while the target is empty. Install tokens only in the new
+            // session so a fresh cookie database cannot lose an uncommitted copy.
+            cleared = try await snapshot(store: targetStore)
+        }
         let sourceDocument = try await originDocument(store: sourceStore)
         let targetDocument = try await originDocument(store: targetStore)
         defer { sourceDocument.close(); targetDocument.close() }
         var count = 0
         switch request.kind {
         case .cookies:
-            let sourceCookies = try await cookies(in: sourceStore).filter { $0.name == request.key }
+            let names: Set<String> = request.key == "_vid_t+_iidt" ? ["_vid_t", "_iidt"] : [request.key]
+            let sourceCookies = try await cookies(in: sourceStore).filter { names.contains($0.name) }
             guard !sourceCookies.isEmpty else { throw BrowserError.invalid("The source identity cookie was absent.") }
+            guard names.isSubset(of: Set(sourceCookies.map(\.name))) else {
+                throw BrowserError.invalid("A selected source identity cookie was absent.")
+            }
             for cookie in sourceCookies {
                 let _: Bool = try await bounded("identity cookie installation") { done in
                     targetStore.httpCookieStore.setCookie(cookie) { done(.success(true)) }
@@ -191,21 +231,12 @@ enum DiagnosticSiteState {
                 arguments: ["key": request.key, "value": value], in: nil, contentWorld: .page)
             count = 1
         }
-        var networkBefore: Int32 = 0, networkAfter: Int32 = 0
-        if request.restartTargetNetworkAfterCopy == true {
-            _ = try await networkPID(in: sourceStore)
-            try await flushNetwork(sourceStore)
-            _ = try await networkPID(in: targetStore)
-            try await flushNetwork(targetStore)
-            networkBefore = try await networkPID(in: targetStore)
-            try LegacyWebKitBridge.restartDiagnosticNetwork(targetStore)
-            networkAfter = try await networkPID(in: targetStore, differentFrom: networkBefore)
-        }
         return ["sourceProfileID": source.id.uuidString, "targetProfileID": target.id.uuidString,
             "kind": request.kind.rawValue, "key": request.key, "copiedValueCount": count,
             "allTargetWebsiteDataRemovalRequested": request.clearAllTargetWebsiteData == true,
             "targetNetworkPIDBefore": networkBefore, "targetNetworkPIDAfter": networkAfter,
-            "persistentStateFlushCompleted": request.restartTargetNetworkAfterCopy == true,
+            "networkRestartBeforeTokenInstallation": request.restartTargetNetworkBeforeCopy == true,
+            "persistentStateFlushCompleted": request.restartTargetNetworkBeforeCopy == true,
             "targetBefore": before, "targetAfterClear": cleared, "targetAfter": try await snapshot(store: targetStore),
             "source": try await snapshot(store: sourceStore)]
         #else
@@ -220,15 +251,12 @@ enum DiagnosticSiteState {
     }
 
     static func reset(_ action: Reset, profile: BrowserProfile, store: WKWebsiteDataStore,
-                      restartNetwork: Bool = false) async throws -> [String: Any] {
+                      restartNetwork: Bool = false, customDataTypes: Set<String>? = nil) async throws -> [String: Any] {
         #if DEBUG
         try validateTarget(profile)
+        let types = try selectedTypes(action, custom: customDataTypes)
         let stateBefore = try await snapshot(store: store)
         let before = try await cookies(in: store)
-        let types: Set<String>
-        if action == .allNativeData || action == .allNativeDataAndNetwork {
-            types = try LegacyWebKitBridge.diagnosticAllNativeDataTypes()
-        } else { types = action.dataTypes }
         if !types.isEmpty { try await remove(types: types, from: store) }
         let restartsNetwork = restartNetwork || [Reset.allNativeDataAndNetwork, .allSiteDataAndNetwork, .networkOnly].contains(action)
         let processBefore: Int32

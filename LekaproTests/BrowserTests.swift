@@ -130,15 +130,21 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
         let cookie = CookieRecord(name: "_vid_t", value: "cookie-A", domain: "fingerprint.com",
             expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
-        _ = try await CookieService.importData(JSONEncoder().encode([cookie]), into: a)
+        let secondCookie = CookieRecord(name: "_iidt", value: "cookie-A-second", domain: "fingerprint.com",
+            expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
+        _ = try await CookieService.importData(JSONEncoder().encode([cookie, secondCookie]), into: a)
         request.kind = .cookies
+        request.key = "_vid_t+_iidt"
         request.clearTargetFirst = true
-        request.clearAllTargetWebsiteData = true; request.restartTargetNetworkAfterCopy = true
+        request.clearAllTargetWebsiteData = true; request.restartTargetNetworkBeforeCopy = true
         let coldCopy = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
         XCTAssertEqual(coldCopy["persistentStateFlushCompleted"] as? Bool, true)
+        XCTAssertEqual(coldCopy["networkRestartBeforeTokenInstallation"] as? Bool, true)
         XCTAssertNotEqual(coldCopy["targetNetworkPIDBefore"] as? Int32, coldCopy["targetNetworkPIDAfter"] as? Int32)
         let copiedCookies = await CookieService.all(in: b)
         XCTAssertTrue(copiedCookies.contains { $0.name == "_vid_t" && $0.value == "cookie-A" })
+        XCTAssertTrue(copiedCookies.contains { $0.name == "_iidt" && $0.value == "cookie-A-second" })
+        XCTAssertEqual(coldCopy["copiedValueCount"] as? Int, 2)
         var ordinary = target; ordinary.tags = "ordinary"
         XCTAssertThrowsError(try DiagnosticSiteState.validateCopy(request, source: source, target: ordinary))
         var wrongKey = request; wrongKey.key = "account_session"
@@ -188,6 +194,14 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(afterCookie["localIdentityTokens"] as? NSDictionary, after["localIdentityTokens"] as? NSDictionary)
         XCTAssertEqual(cookieOnly["networkRestartRequested"] as? Bool, true)
         XCTAssertNotEqual(cookieOnly["networkPIDBefore"] as? Int32, cookieOnly["networkPIDAfter"] as? Int32)
+    }
+    func testCustomQATypeSelectionRejectsUnknownAndImplicitOverrides() throws {
+        let allowed: Set<String> = [WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage, WKWebsiteDataTypeDiskCache]
+        XCTAssertEqual(try DiagnosticSiteState.selectedTypes(.customTypes, custom: allowed), allowed)
+        XCTAssertThrowsError(try DiagnosticSiteState.selectedTypes(.customTypes))
+        XCTAssertThrowsError(try DiagnosticSiteState.selectedTypes(.customTypes, custom: []))
+        XCTAssertThrowsError(try DiagnosticSiteState.selectedTypes(.customTypes, custom: ["unrecognized-type"]))
+        XCTAssertThrowsError(try DiagnosticSiteState.selectedTypes(.networkOnly, custom: allowed))
     }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()
