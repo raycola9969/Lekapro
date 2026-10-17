@@ -1,0 +1,78 @@
+name: iOS build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build for iPhone
+        run: |
+          mkdir -p build
+          set -o pipefail
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -configuration Debug -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/device CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build | tee build/device-build.log
+      - name: Package unsigned IPA
+        run: |
+          mkdir -p build/ipa/Payload
+          ditto build/device/Build/Products/Debug-iphoneos/Lekapro.app build/ipa/Payload/Lekapro.app
+          cd build/ipa
+          zip -qr Lekapro-unsigned.ipa Payload
+          shasum -a 256 Lekapro-unsigned.ipa > SHA256.txt
+          printf 'Unsigned iOS build. Sign before installing on a device.\nCommit: %s\n' "$GITHUB_SHA" > BUILD-INFO.txt
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lekapro-unsigned
+          path: |
+            build/ipa/Lekapro-unsigned.ipa
+            build/ipa/SHA256.txt
+            build/ipa/BUILD-INFO.txt
+          retention-days: 7
+      - name: Select simulator
+        run: |
+          xcrun simctl list devices available -j > build/simulators.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('build/simulators.json'))
+          candidates = [(runtime, device) for runtime, devices in data['devices'].items() if 'iOS' in runtime for device in devices if device['isAvailable'] and device['name'].startswith('iPhone')]
+          if not candidates:
+              raise SystemExit('No available iPhone simulator')
+          runtime, device = sorted(candidates, key=lambda item: (item[0], item[1]['name']), reverse=True)[0]
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('SIMULATOR_ID=' + device['udid'] + '\n')
+          print('Using', runtime, device['name'])
+          PY
+      - name: Run simulator tests
+        run: |
+          set -o pipefail
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+      - name: Upload diagnostics and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-diagnostics
+          path: |
+            build/*.log
+            build/TestResults.xcresult
+          if-no-files-found: ignore
+          retention-days: 7

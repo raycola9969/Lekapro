@@ -1,0 +1,12 @@
+.DS_Store
+build/
+DerivedData/
+Lekapro.xcodeproj/
+*.xcuserstate
+xcuserdata/
+*.ipa
+*.p12
+*.mobileprovision
+*.xcresult
+.env
+__pycache__/

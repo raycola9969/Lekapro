@@ -1,0 +1,105 @@
+import XCTest
+import WebKit
+@testable import Lekapro
+
+@MainActor
+final class BrowserTests: XCTestCase {
+    private func temporaryFile() -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString).appendingPathComponent("profiles.json")
+    }
+    func testAddressParsingDoesNotOpenLocalOrScriptURLs() throws {
+        XCTAssertEqual(try AddressInput.resolve("example.com/path").absoluteString, "https://example.com/path")
+        XCTAssertEqual(try AddressInput.resolve("hello world").host, "www.google.com")
+        XCTAssertThrowsError(try AddressInput.resolve("file:///etc/passwd"))
+        XCTAssertThrowsError(try AddressInput.resolve("https://user:password@example.com"))
+        XCTAssertThrowsError(try AddressInput.validateHome("example.com"))
+    }
+    func testDuplicateStartsWithFreshWebsiteIdentity() {
+        var profile = BrowserProfile()
+        profile.tabs = [SavedTab(url: "https://example.com", title: "Example")]
+        profile.history = [PageRecord(title: "Example", url: "https://example.com")]
+        let duplicate = profile.duplicated()
+        XCTAssertNotEqual(profile.id, duplicate.id)
+        XCTAssertNotEqual(profile.dataStoreID, duplicate.dataStoreID)
+        XCTAssertTrue(duplicate.tabs.isEmpty)
+        XCTAssertTrue(duplicate.history.isEmpty)
+        XCTAssertEqual(duplicate.privacy, profile.privacy)
+    }
+    func testConfigurationImportCreatesNewIDsAndKeepsExistingProfiles() throws {
+        let file = temporaryFile()
+        let store = ProfileStore(fileURL: file)
+        let first = BrowserProfile()
+        try store.save(first)
+        let backup = try store.exportConfiguration()
+        try store.importConfiguration(backup)
+        XCTAssertEqual(store.profiles.count, 2)
+        XCTAssertEqual(Set(store.profiles.map(\.dataStoreID)).count, 2)
+        XCTAssertEqual(store.profiles[0].id, first.id)
+        let reopened = ProfileStore(fileURL: file)
+        XCTAssertEqual(reopened.profiles.count, 2)
+        XCTAssertFalse(reopened.isReadOnly)
+    }
+    func testCorruptDatabaseIsPreservedAndNotOverwritten() throws {
+        let file = temporaryFile()
+        try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let corrupt = Data("broken data".utf8)
+        try corrupt.write(to: file)
+        let store = ProfileStore(fileURL: file)
+        XCTAssertTrue(store.isReadOnly)
+        XCTAssertThrowsError(try store.save(BrowserProfile()))
+        XCTAssertEqual(try Data(contentsOf: file), corrupt)
+    }
+    func testSharedWebsiteDataIdentityIsRejected() {
+        let first = BrowserProfile()
+        var second = BrowserProfile(); second.dataStoreID = first.dataStoreID
+        XCTAssertThrowsError(try ProfileStore.validate(BrowserDatabase(profiles: [first, second])))
+    }
+    func testProxyRequiresCredentialsAndDisallowsDirectFailover() throws {
+        var proxy = ProxyRecord(); proxy.host = "127.0.0.1"; proxy.username = "test"
+        XCTAssertThrowsError(try ProxyService.configuration(for: proxy, password: nil))
+        let config = try ProxyService.configuration(for: proxy, password: "example")
+        XCTAssertFalse(config.allowFailover)
+        proxy.port = 70000
+        XCTAssertThrowsError(try ProxyService.configuration(for: proxy, password: "example"))
+    }
+    func testNetscapeCookieParsingAndValidation() throws {
+        let source = "# Netscape HTTP Cookie File\n#HttpOnly_.example.com\tTRUE\t/\tTRUE\t0\tsession\tvalue\n"
+        let cookies = try CookieService.parse(Data(source.utf8))
+        XCTAssertEqual(cookies.count, 1)
+        XCTAssertEqual(cookies.first?.name, "session")
+        XCTAssertTrue(cookies.first?.isSecure == true)
+        XCTAssertTrue(cookies.first?.isHTTPOnly == true)
+        XCTAssertNil(cookies.first?.expiresDate)
+        XCTAssertThrowsError(try CookieService.parse(Data("not cookie data".utf8)))
+        XCTAssertThrowsError(try CookieRecord(name: "test", value: "value", domain: "bad/domain").cookie())
+    }
+    func testCookiesAreSharedWithinProfileAndIsolatedBetweenProfiles() async throws {
+        let idA = UUID(), idB = UUID()
+        let storeA = WKWebsiteDataStore(forIdentifier: idA)
+        let storeB = WKWebsiteDataStore(forIdentifier: idB)
+        let cookieA = try CookieRecord(name: "account", value: "A", domain: "example.com").cookie()
+        let cookieB = try CookieRecord(name: "account", value: "B", domain: "example.com").cookie()
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in storeA.httpCookieStore.setCookie(cookieA) { c.resume() } }
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in storeB.httpCookieStore.setCookie(cookieB) { c.resume() } }
+        let config1 = WKWebViewConfiguration(); config1.websiteDataStore = storeA
+        let config2 = WKWebViewConfiguration(); config2.websiteDataStore = WKWebsiteDataStore(forIdentifier: idA)
+        let tab1 = WKWebView(frame: .zero, configuration: config1)
+        let tab2 = WKWebView(frame: .zero, configuration: config2)
+        let a1 = await CookieService.all(in: tab1.configuration.websiteDataStore)
+        let a2 = await CookieService.all(in: tab2.configuration.websiteDataStore)
+        let b = await CookieService.all(in: storeB)
+        XCTAssertEqual(a1.first(where: { $0.name == "account" })?.value, "A")
+        XCTAssertEqual(a2.first(where: { $0.name == "account" })?.value, "A")
+        XCTAssertEqual(b.first(where: { $0.name == "account" })?.value, "B")
+        await CookieService.clear(storeA)
+        let remainingA = await CookieService.all(in: storeA)
+        let remainingB = await CookieService.all(in: storeB)
+        XCTAssertTrue(remainingA.isEmpty)
+        XCTAssertEqual(remainingB.first(where: { $0.name == "account" })?.value, "B")
+        await CookieService.clear(storeB)
+    }
+    func testTrackerRulesCompileInWebKit() async throws {
+        let list = try await PrivacyService.blocker()
+        XCTAssertEqual(list.identifier, "Lekapro.Trackers.v1")
+    }
+}
