@@ -59,6 +59,56 @@ final class BrowserTests: XCTestCase {
         XCTAssertNil(privacy.audioNoiseScale)
         XCTAssertEqual(privacy, PrivacySettings())
     }
+    func testDiagnosticStateResetIsScopedAndPreservesOtherDataTypes() async throws {
+        var selected = BrowserProfile(); selected.tags = "qa-disposable-site-state"
+        let other = BrowserProfile()
+        let a = try DataStoreFactory.make(id: selected.dataStoreID, forceLegacy: true)
+        let b = try DataStoreFactory.make(id: other.dataStoreID, forceLegacy: true)
+        let ca = WKWebViewConfiguration(); ca.websiteDataStore = a
+        let cb = WKWebViewConfiguration(); cb.websiteDataStore = b
+        let ta = BrowserTab(configuration: ca), tb = BrowserTab(configuration: cb)
+        defer {
+            ta.close(); tb.close()
+            DataStoreFactory.release(id: selected.dataStoreID); DataStoreFactory.release(id: other.dataStoreID)
+        }
+        func load(_ tab: BrowserTab) async throws {
+            tab.webView.loadHTMLString("<!doctype html><title>State fixture</title>", baseURL: URL(string: "https://lekapro.invalid"))
+            let end = Date().addingTimeInterval(25)
+            while tab.webView.title != "State fixture" || tab.webView.isLoading {
+                guard Date() < end else { throw BrowserError.invalid("State fixture timed out.") }
+                try await Task.sleep(for: .milliseconds(100))
+            }
+        }
+        try await load(ta); try await load(tb)
+        let encoder = JSONEncoder()
+        for (value, dataStore) in [("A", a), ("B", b)] {
+            _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "qa_state", value: value,
+                domain: "lekapro.invalid", expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)]), into: dataStore)
+        }
+        _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('qa_state','A')")
+        _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('qa_state','B')")
+        let cleared = try await DiagnosticSiteState.reset(.cookies, profile: selected, store: a)
+        XCTAssertEqual(cleared["cookieCountAfter"] as? Int, 0)
+        let bCookies = await CookieService.all(in: b)
+        XCTAssertTrue(bCookies.contains { $0.name == "qa_state" && $0.value == "B" })
+        let localA = try await ta.webView.evaluateJavaScript("localStorage.getItem('qa_state')")
+        XCTAssertEqual(localA as? String, "A")
+        _ = try await CookieService.importData(encoder.encode([CookieRecord(name: "qa_state", value: "A2",
+            domain: "lekapro.invalid", expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)]), into: a)
+        _ = try await DiagnosticSiteState.reset(.localStorage, profile: selected, store: a)
+        try await load(ta)
+        let emptyA = try await ta.webView.evaluateJavaScript("localStorage.getItem('qa_state') === null")
+        let localB = try await tb.webView.evaluateJavaScript("localStorage.getItem('qa_state')")
+        XCTAssertEqual(emptyA as? Bool, true); XCTAssertEqual(localB as? String, "B")
+        let aCookies = await CookieService.all(in: a)
+        XCTAssertTrue(aCookies.contains { $0.name == "qa_state" && $0.value == "A2" })
+        do {
+            _ = try await DiagnosticSiteState.reset(.allSiteData, profile: other, store: b)
+            XCTFail("Ordinary profiles must not be reset by the QA harness")
+        } catch { }
+        let unchanged = await CookieService.all(in: b)
+        XCTAssertTrue(unchanged.contains { $0.name == "qa_state" && $0.value == "B" })
+    }
     func testNativeDiagnosticOptionsAffectOnlySelectedProfileAndClear() async throws {
         let defaultProfile = BrowserProfile()
         let baseline = try await sampleContext(defaultProfile)

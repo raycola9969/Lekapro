@@ -9,6 +9,7 @@ enum DevicePageDiagnostics {
     private struct Request: Decodable {
         var profileIDs: [UUID]
         var engineOptionsByProfileID: [String: DiagnosticEngineOptions]?
+        var stateResetByProfileID: [String: DiagnosticSiteState.Reset]?
     }
     private static var task: Task<Void, Never>?
 
@@ -51,6 +52,14 @@ enum DevicePageDiagnostics {
                 throw BrowserError.invalid("Select exactly two different existing profiles.")
             }
             var experiments: [UUID: DiagnosticEngineOptions] = [:]
+            var resets: [UUID: DiagnosticSiteState.Reset] = [:]
+            for (key, action) in request.stateResetByProfileID ?? [:] {
+                guard let id = UUID(uuidString: key), request.profileIDs.contains(id), let profile = store.profile(id) else {
+                    throw BrowserError.invalid("State resets must name one of the two requested QA profiles.")
+                }
+                try DiagnosticSiteState.validateTarget(profile)
+                resets[id] = action
+            }
             for (key, options) in request.engineOptionsByProfileID ?? [:] {
                 guard let id = UUID(uuidString: key), request.profileIDs.contains(id) else {
                     throw BrowserError.invalid("Engine options must name one of the two requested QA profiles.")
@@ -65,6 +74,11 @@ enum DevicePageDiagnostics {
             for (index, id) in request.profileIDs.enumerated() {
                 guard let profile = store.profile(id) else { throw BrowserError.invalid("Test profile was not found.") }
                 let session = try workspace.session(for: profile, store: store)
+                if let action = resets[id] {
+                    let reset = try await DiagnosticSiteState.reset(action, profile: profile, store: session.dataStore)
+                    var applied = result["siteStateResets"] as? [[String: Any]] ?? []
+                    applied.append(reset); result["siteStateResets"] = applied; save()
+                }
                 await session.start()
                 guard let tab = session.selectedTab else { throw BrowserError.invalid("No browser tab was created.") }
                 try await DeviceBrowserPresentation.show(session, store: store, workspace: workspace)
@@ -173,6 +187,12 @@ enum DevicePageDiagnostics {
             try await Task.sleep(for: .milliseconds(500))
         }
         let body = last.removeValue(forKey: "bodyText") as? String ?? ""
+        do {
+            last["siteStorageKeyNames"] = try await tab.webView.evaluateJavaScript("""
+            ({localStorage:Object.keys(localStorage).sort(),sessionStorage:Object.keys(sessionStorage).sort(),
+              scriptVisibleCookieNames:document.cookie.split(';').map(x=>x.split('=')[0].trim()).filter(Boolean).sort()})
+            """)
+        } catch { last["siteStorageKeyNamesError"] = (error as NSError).code }
         do {
             last["storageContext"] = try await tab.webView.callAsyncJavaScript("""
             return {secureContext:isSecureContext, estimateSupported:typeof navigator.storage?.estimate === 'function',
