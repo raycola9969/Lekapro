@@ -155,6 +155,12 @@ final class BrowserTests: XCTestCase {
         XCTAssertFalse(controlCookies.contains { ["_vid_t", "_iidt"].contains($0.name) })
         let controlState = try XCTUnwrap(control["targetAfterClear"] as? [String: Any])
         XCTAssertEqual((controlState["nativeDataRecords"] as? [NSDictionary])?.count, 0)
+        let afterRestartSource = try await DiagnosticSiteState.originDocument(store: a)
+        defer { afterRestartSource.close() }
+        _ = try await afterRestartSource.webView.evaluateJavaScript("document.cookie='qa_after_restart=A; path=/; max-age=3600'; localStorage.setItem('qa_after_restart','A')")
+        let isolatedTarget = try await DiagnosticSiteState.snapshot(store: b, requireNativeRecords: true)
+        XCTAssertEqual(isolatedTarget["cookieCount"] as? Int, 0)
+        XCTAssertEqual(isolatedTarget["localStorageKeyNames"] as? [String], [])
         var ordinary = target; ordinary.tags = "ordinary"
         XCTAssertThrowsError(try DiagnosticSiteState.validateCopy(request, source: source, target: ordinary))
         var wrongKey = request; wrongKey.key = "account_session"
