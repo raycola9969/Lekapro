@@ -4,6 +4,23 @@
 // Runtime-checked WebKit SPI for locally installed iOS 16 builds.
 // All paths belong to this app's own Application Support container.
 @implementation LegacyWebKitBridge
++ (BOOL)prepareDiagnosticOriginConfiguration:(WKWebViewConfiguration *)configuration error:(NSError **)error {
+    @try {
+#if DEBUG
+        // Only the controlled, resource-free origin document uses this setting.
+        // Fingerprint page configurations and production defaults are untouched.
+        SEL selector = NSSelectorFromString(@"_setAlwaysRunsAtForegroundPriority:");
+        if (![configuration respondsToSelector:selector]) @throw [NSException exceptionWithName:@"UnsupportedDiagnostic" reason:@"Foreground origin-document scheduling is unavailable." userInfo:nil];
+        ((void (*)(id, SEL, BOOL))objc_msgSend)(configuration, selector, YES);
+        return YES;
+#else
+        @throw [NSException exceptionWithName:@"DiagnosticsDisabled" reason:@"Origin scheduling experiments require DEBUG." userInfo:nil];
+#endif
+    } @catch (NSException *exception) {
+        if (error) *error = [NSError errorWithDomain:@"Lekapro.StateDiagnostic" code:3 userInfo:@{NSLocalizedDescriptionKey: exception.reason}];
+        return NO;
+    }
+}
 + (NSSet<NSString *> *)diagnosticAllNativeDataTypes:(NSError **)error {
     @try {
 #if DEBUG

@@ -139,6 +139,9 @@ enum DiagnosticSiteState {
     // SDK method, or network request is loaded by this document.
     static func originDocument(store: WKWebsiteDataStore) async throws -> BrowserTab {
         let configuration = WKWebViewConfiguration(); configuration.websiteDataStore = store
+        #if DEBUG
+        try LegacyWebKitBridge.prepareDiagnosticOriginConfiguration(configuration)
+        #endif
         let tab = BrowserTab(configuration: configuration)
         tab.webView.loadHTMLString("<!doctype html><title>Disposable state session</title>",
             baseURL: URL(string: "https://fingerprint.com/"))
@@ -182,7 +185,7 @@ enum DiagnosticSiteState {
         // Store-record enumeration can stall on background simulator processes.
         // It is optional metadata: a timeout is explicitly unknown, never empty.
         do {
-            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(requireNativeRecords ? 60 : 15)) { done in
+            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(requireNativeRecords ? 60 : 3)) { done in
                 store.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { done(.success($0)) }
             }
             result["nativeDataRecords"] = records.map { ["name": $0.displayName, "types": $0.dataTypes.sorted()] }
