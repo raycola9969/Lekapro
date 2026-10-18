@@ -99,10 +99,22 @@ jobs:
           set -o pipefail
           xcrun simctl bootstatus "$SIMULATOR_ID" -b | tee build/simulator-boot.log
       - name: Run simulator tests
-        timeout-minutes: 25
+        timeout-minutes: 12
         run: |
           set -o pipefail
-          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+          # Network-restart fixtures terminate a process shared by WebKit stores.
+          # Run them in fresh test-host processes, retaining every assertion.
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult -skip-testing:LekaproTests/BrowserTests/testDisposableIdentityTokenCopyAndVerifiedCombinedReset -skip-testing:LekaproTests/BrowserTests/testNetworkOnlyResetRetainsDisposablePersistentTokens -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+      - name: Run isolated cold-reset test
+        timeout-minutes: 6
+        run: |
+          set -o pipefail
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/ColdResetResults.xcresult -only-testing:LekaproTests/BrowserTests/testDisposableIdentityTokenCopyAndVerifiedCombinedReset -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/cold-reset-tests.log
+      - name: Run isolated network-reset test
+        timeout-minutes: 6
+        run: |
+          set -o pipefail
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/NetworkResetResults.xcresult -only-testing:LekaproTests/BrowserTests/testNetworkOnlyResetRetainsDisposablePersistentTokens -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/network-reset-tests.log
       - name: Export sanitized live-probe summary
         if: always() && contains(github.event.head_commit.message, '[live-probe]')
         run: |
@@ -124,6 +136,6 @@ jobs:
           path: |
             build/*.log
             build/live-probe-summary.json
-            build/TestResults.xcresult
+            build/*Results.xcresult
           if-no-files-found: ignore
           retention-days: 7
