@@ -2,6 +2,12 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Kết quả mới nhất: proxy và UA iOS, build 31
+
+Trên máy thật iOS 16.1.1, **8 hồ sơ mới dùng UA Safari 17.2/18.4 qua 4 proxy, qua hai lượt tạo kho, chỉ nhận một ID chung và trùng ID của đối chứng UA 16.1.1**. Máy chủ nhận đúng UA và IP thoát; mở lại 10 kho đầu đều giữ ID ban đầu. Toàn đợt có 48 event không cache và 14 kho mới. [Bảng đối chiếu và giới hạn kết luận](verification/ios16-proxy-ua-comparison-build31.md).
+
+[Đợt build 31 trước đó](verification/ios16-private-signals-build31.md) từng đạt 20 kho / 20 ID riêng khi không gắn proxy trong app, giữ cả 20 ID khi mở lại. Đối chứng không reset cùng đợt cũng nhận ID mới, nên chưa xác định reset là nguyên nhân. Các kết quả hữu hạn này chưa bảo đảm mỗi hồ sơ tương lai có ID riêng.
+
 ## Đo lại 12 OS token với cả ba trình duyệt iOS
 
 Đã đo lại **12 OS token × 3 họ UA = 36 hồ sơ mới**, mỗi hồ sơ có kho độc lập, **không proxy và không hậu tố**, trên iPhone 11 Pro Max **iOS 16.1.1, build 29**. Đây là 12 OS token Safari không trùng trong từng lượt A/B/C được chọn để kiểm chứng thêm. Safari giữ đúng UA đã dùng ở lượt C; Chrome giữ `CriOS/119.0.6045.41`, Firefox giữ `FxiOS/119.0` để chỉ thay OS token. Các mẫu UA là cấu hình thử nghiệm trên engine iOS 16.1.1, không phải cài các hệ điều hành tương ứng.
