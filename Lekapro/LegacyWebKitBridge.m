@@ -153,6 +153,14 @@
 + (WKWebsiteDataStore *)makeQuotaStoreAtURL:(NSURL *)directory quota:(NSUInteger)quota error:(NSError **)error {
     return [self makeConfiguredStoreAtURL:directory proxyConfiguration:nil quota:@(quota) error:error];
 }
++ (WKWebsiteDataStore *)makeDiagnosticStoreAtURL:(NSURL *)directory proxyConfiguration:(NSDictionary *)proxy quota:(NSUInteger)quota error:(NSError **)error {
+#if DEBUG
+    return [self makeConfiguredStoreAtURL:directory proxyConfiguration:proxy quota:@(quota) error:error];
+#else
+    if (error) *error = [NSError errorWithDomain:@"Lekapro.EngineDiagnostic" code:3 userInfo:@{NSLocalizedDescriptionKey: @"Diagnostic storage limits require DEBUG."}];
+    return nil;
+#endif
+}
 + (WKWebsiteDataStore *)makeConfiguredStoreAtURL:(NSURL *)directory proxyConfiguration:(NSDictionary *)proxy quota:(NSNumber *)quota error:(NSError **)error {
     @try {
         Class cls = NSClassFromString(@"_WKWebsiteDataStoreConfiguration");

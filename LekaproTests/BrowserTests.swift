@@ -277,9 +277,15 @@ final class BrowserTests: XCTestCase {
     func testNativeStorageLimitReachesMainAndWorkerWithoutJavaScriptOverrides() async throws {
         guard #available(iOS 17, *) else { throw XCTSkip("Storage estimate requires newer WebKit.") }
         for size in [1, 2] {
-            let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            let profile = BrowserProfile()
+            let options = DiagnosticEngineOptions(storageAPIEnabled: true, originQuotaBytes: UInt(size) * 1024 * 1024 * 1024)
+            try options.validate()
+            DiagnosticEngineRegistry.set([profile.id: options])
+            defer { DiagnosticEngineRegistry.clear(); DataStoreFactory.release(id: profile.dataStoreID) }
             let configuration = WKWebViewConfiguration()
-            configuration.websiteDataStore = try LegacyWebKitBridge.makeQuotaStore(at: folder, quota: UInt(size) * 1024 * 1024 * 1024)
+            configuration.websiteDataStore = try DataStoreFactory.make(id: profile.dataStoreID,
+                diagnosticQuota: DiagnosticEngineRegistry.originQuota(profileID: profile.id))
+            try DiagnosticEngineRegistry.apply(profileID: profile.id, configuration: configuration)
             let tab = BrowserTab(configuration: configuration)
             defer { tab.close() }
             tab.webView.loadHTMLString("<!doctype html><title>Native quota fixture</title>", baseURL: URL(string: "https://quota.lekapro.invalid/"))

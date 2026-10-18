@@ -5,10 +5,11 @@ import WebKit
 enum DataStoreFactory {
     private static var stores: [String: WKWebsiteDataStore] = [:]
 
-    static func make(id: UUID, proxy: ProxyRecord? = nil, forceLegacy: Bool = false) throws -> WKWebsiteDataStore {
+    static func make(id: UUID, proxy: ProxyRecord? = nil, forceLegacy: Bool = false, diagnosticQuota: UInt? = nil) throws -> WKWebsiteDataStore {
         let legacy: Bool
-        if #available(iOS 17, *) { legacy = forceLegacy } else { legacy = true }
-        let key = (legacy ? "legacy:" : "public:") + id.uuidString
+        if diagnosticQuota != nil { legacy = true }
+        else if #available(iOS 17, *) { legacy = forceLegacy } else { legacy = true }
+        let key = (legacy ? "legacy:" : "public:") + id.uuidString + (diagnosticQuota.map { ":quota:\($0)" } ?? "")
         if let existing = stores[key] { return existing }
         let store: WKWebsiteDataStore
         if #available(iOS 17, *), !legacy {
@@ -19,7 +20,12 @@ enum DataStoreFactory {
                 .appendingPathComponent("Lekapro/WebsiteProfiles", isDirectory: true)
                 .appendingPathComponent(id.uuidString, isDirectory: true)
             let dictionary = try proxy.map { try ProxyService.legacyConfiguration(for: $0, password: SecretStore.password(for: $0.id)) }
-            let candidate: WKWebsiteDataStore? = try LegacyWebKitBridge.makeStore(at: base, proxy: dictionary)
+            let candidate: WKWebsiteDataStore?
+            if let quota = diagnosticQuota {
+                candidate = try LegacyWebKitBridge.makeDiagnosticStore(at: base, proxy: dictionary, quota: quota)
+            } else {
+                candidate = try LegacyWebKitBridge.makeStore(at: base, proxy: dictionary)
+            }
             guard let created = candidate else {
                 throw BrowserError.invalid("Không tạo được kho dữ liệu riêng trên phiên bản WebKit này.")
             }
@@ -29,7 +35,9 @@ enum DataStoreFactory {
         return store
     }
     static func release(id: UUID) {
-        stores.removeValue(forKey: "legacy:" + id.uuidString)
-        stores.removeValue(forKey: "public:" + id.uuidString)
+        let prefixes = ["legacy:" + id.uuidString, "public:" + id.uuidString]
+        for key in stores.keys.filter({ key in prefixes.contains(where: { key.hasPrefix($0) }) }) {
+            stores.removeValue(forKey: key)
+        }
     }
 }

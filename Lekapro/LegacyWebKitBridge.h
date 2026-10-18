@@ -17,6 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
                                               quota:(NSUInteger)quota
                                               error:(NSError * _Nullable * _Nullable)error
     NS_SWIFT_NAME(makeQuotaStore(at:quota:));
++ (nullable WKWebsiteDataStore *)makeDiagnosticStoreAtURL:(NSURL *)directory
+                                    proxyConfiguration:(nullable NSDictionary *)proxy
+                                                 quota:(NSUInteger)quota
+                                                 error:(NSError * _Nullable * _Nullable)error
+    NS_SWIFT_NAME(makeDiagnosticStore(at:proxy:quota:));
 + (NSDictionary<NSString *, NSNumber *> *)capabilities;
 + (nullable WKProcessPool *)makeProcessPoolWithTimeZone:(NSString *)timeZone
                                                 error:(NSError * _Nullable * _Nullable)error
