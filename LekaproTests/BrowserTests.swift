@@ -406,6 +406,48 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(payload["hardwareConcurrency"] as? Int, 99)
         XCTAssertEqual(payload["userAgent"] as? String, "literal payload")
     }
+    func testDiagnosticPrivateStoresStaySeparateFromPersistentStores() throws {
+        let id = UUID(), otherID = UUID()
+        defer { DataStoreFactory.release(id: id); DataStoreFactory.release(id: otherID) }
+        let persistent = try DataStoreFactory.make(id: id, forceLegacy: true)
+        let ephemeral = try DataStoreFactory.make(id: id, diagnosticEphemeral: true)
+        XCTAssertTrue(persistent.isPersistent)
+        XCTAssertFalse(ephemeral.isPersistent)
+        XCTAssertFalse(persistent === ephemeral)
+        XCTAssertTrue(ephemeral === (try DataStoreFactory.make(id: id, diagnosticEphemeral: true)))
+        XCTAssertFalse(ephemeral === (try DataStoreFactory.make(id: otherID, diagnosticEphemeral: true)))
+        XCTAssertTrue(persistent === (try DataStoreFactory.make(id: id, forceLegacy: true)))
+        XCTAssertThrowsError(try DataStoreFactory.make(id: UUID(), diagnosticQuota: 32 * 1024 * 1024, diagnosticEphemeral: true))
+        DataStoreFactory.release(id: id)
+        XCTAssertFalse(ephemeral === (try DataStoreFactory.make(id: id, diagnosticEphemeral: true)))
+    }
+    func testDiagnosticSignalLimitsReachFramesAndWorkersWithoutChangingDefaults() async throws {
+        let native = try await sampleContext(BrowserProfile())
+        var profile = BrowserProfile(); profile.tags = "qa-disposable-site-state"
+        let options = try JSONDecoder().decode(DiagnosticEngineOptions.self,
+            from: Data(#"{"hardwareThreadLimit":1,"colorDepthLimit":8,"ephemeralStore":true}"#.utf8))
+        try options.validate()
+        DiagnosticEngineRegistry.set([profile.id: options])
+        defer { DiagnosticEngineRegistry.clear() }
+        let changed = try await sampleContext(profile)
+        XCTAssertEqual(changed["cpu"] as? Int, 1)
+        XCTAssertEqual(changed["frameCPU"] as? Int, 1)
+        XCTAssertEqual(changed["workerCPU"] as? Int, 1)
+        for key in ["colorDepth", "pixelDepth", "frameColorDepth", "framePixelDepth"] {
+            XCTAssertEqual(changed[key] as? Int, min(8, try XCTUnwrap(native[key] as? Int)))
+        }
+        XCTAssertEqual(changed["workerStrict"] as? Bool, true)
+        XCTAssertEqual(changed["workerName"] as? String, "context-fixture")
+        DiagnosticEngineRegistry.clear()
+        let unchanged = try await sampleContext(BrowserProfile())
+        for key in ["cpu", "frameCPU", "workerCPU", "colorDepth", "pixelDepth", "frameColorDepth", "framePixelDepth"] {
+            XCTAssertEqual(unchanged[key] as? Int, native[key] as? Int)
+        }
+        for text in [#"{"hardwareThreadLimit":0}"#, #"{"hardwareThreadLimit":9}"#, #"{"colorDepthLimit":32}"#] {
+            let invalid = try JSONDecoder().decode(DiagnosticEngineOptions.self, from: Data(text.utf8))
+            XCTAssertThrowsError(try invalid.validate())
+        }
+    }
     private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile; fixture.privacy.blockTrackers = false
@@ -443,6 +485,9 @@ final class BrowserTests: XCTestCase {
           platform:navigator.platform,framePlatform:frame.contentWindow.navigator.platform,
           webAudioAvailable:typeof OfflineAudioContext==='function'||typeof webkitOfflineAudioContext==='function',
           cpu:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
+          colorDepth:screen.colorDepth,pixelDepth:screen.pixelDepth,
+          frameCPU:frame.contentWindow.navigator.hardwareConcurrency,
+          frameColorDepth:frame.contentWindow.screen.colorDepth,framePixelDepth:frame.contentWindow.screen.pixelDepth,
           offset:d.getTimezoneOffset(),hour:d.getHours(),
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
           frameFontFamily:frame.contentWindow.getComputedStyle(frame.contentDocument.querySelector('span')).fontFamily,
