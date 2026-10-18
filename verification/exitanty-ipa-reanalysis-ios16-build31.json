@@ -1,0 +1,338 @@
+{
+  "sample": {
+    "ipaSHA256": "bec4b137b91520601547b9894af799de369a41cc5515affd64deba760eaeefbd",
+    "binarySHA256": "203a9ca23240762146e0caff8f4eb971f585517dd622c0253ea83e5e2a380412",
+    "version": "2.0.0",
+    "minimumOS": "18",
+    "encryption": [
+      {
+        "offset": 16384,
+        "size": 6897664,
+        "cryptid": 0
+      }
+    ],
+    "functionCount": 18075,
+    "verifiedChainedPointerFormats": [
+      6
+    ]
+  },
+  "sampleMatchesSuppliedIPA": true,
+  "currentInstalledExitAnty222BinaryAvailable": false,
+  "nativeCallsites": {
+    "poolSelectionCall": "0x10000bd38",
+    "setProcessPoolCall": "0x10000bd50",
+    "UUIDToNSUUID": "0x10000bd5c",
+    "dataStoreForIdentifierCall": "0x10000bd7c",
+    "setWebsiteDataStoreCall": "0x10000bdb0",
+    "nativeTimezoneFallback": "0x10000b220",
+    "poolCacheLookup": "0x10000b2a0",
+    "poolConstruction": "0x10000b380",
+    "depthFallback24": "0x10008e804",
+    "depthFallbackSelection": "0x10008e808",
+    "screenTemplateColorDepth": "0x10008e8e4"
+  },
+  "boundedDisassemblySHA256": {
+    "isolation-config-arm64.txt": "a82476063ec7049872364ea183064868777bc868978a375c35989f17402259b8",
+    "process-pool-choice-arm64.txt": "c9928001df8685c8def8d42fc1036a1e7bcae9adfe9798d3c5923a79a21fbc6e",
+    "process-pool-cache-arm64.txt": "aa634fef1b1a261a72e8887ff7672d90e0a329007439c98f1034aba8faabe4ee",
+    "pool-UUID-cache-key-arm64.txt": "e49b0c2185782788dd94a20460fbcde52f21059e6dc77b60e242843134f682d2",
+    "screen-depth-arguments-arm64.txt": "1ef3a76aa619d97b9c925af11f834b170d139c1999851424dbbf9a59eb04b2d1"
+  },
+  "device": {
+    "OS": "16.1.1",
+    "installedLekaproBuild": "31"
+  },
+  "poolTest": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 8,
+    "verifiedUncachedEvents": 32,
+    "distinctObservedIDs": 3,
+    "actualIPCount": 3,
+    "reportedTimezoneKeptFixed": true,
+    "sameSafari172UAForAll": true,
+    "noStateResetsOrHardwareOverrides": true,
+    "unlimitedUniquenessGuaranteed": false,
+    "rows": [
+      {
+        "phase": "fresh",
+        "case": "direct-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": null,
+        "initialIDGroups": [
+          "V1",
+          "V2"
+        ],
+        "sameIDInPair": false,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "fresh",
+        "case": "proxy1-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "fresh",
+        "case": "proxy2-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "fresh",
+        "case": "proxy1-two-own-pools",
+        "ownPool": [
+          true,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "reopen",
+        "case": "direct-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": null,
+        "initialIDGroups": [
+          "V1",
+          "V2"
+        ],
+        "sameIDInPair": false,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      },
+      {
+        "phase": "reopen",
+        "case": "proxy1-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      },
+      {
+        "phase": "reopen",
+        "case": "proxy2-default-vs-own-pool",
+        "ownPool": [
+          false,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      },
+      {
+        "phase": "reopen",
+        "case": "proxy1-two-own-pools",
+        "ownPool": [
+          true,
+          true
+        ],
+        "sameReportedTimezoneMainWorkerServer": true,
+        "checkedProxyExitIPMatches": true,
+        "initialIDGroups": [
+          "V3",
+          "V3"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      }
+    ],
+    "preexistingProfilesAndProxiesUnchanged": true,
+    "baselineProfileCount": 1090
+  },
+  "exactDepth24Test": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 6,
+    "verifiedUncachedEvents": 24,
+    "distinctObservedIDs": 1,
+    "actualIPCount": 2,
+    "noStateResetOrCPUOverride": true,
+    "unlimitedUniquenessGuaranteed": false,
+    "rows": [
+      {
+        "phase": "fresh",
+        "case": "direct-native32-vs24",
+        "colorDepths": [
+          32,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": false,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "fresh",
+        "case": "proxy-native32-vs24",
+        "colorDepths": [
+          32,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": true,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "fresh",
+        "case": "proxy-two-fresh24",
+        "colorDepths": [
+          24,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": true,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2
+      },
+      {
+        "phase": "reopen",
+        "case": "direct-native32-vs24",
+        "colorDepths": [
+          32,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": false,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      },
+      {
+        "phase": "reopen",
+        "case": "proxy-native32-vs24",
+        "colorDepths": [
+          32,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": true,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      },
+      {
+        "phase": "reopen",
+        "case": "proxy-two-fresh24",
+        "colorDepths": [
+          24,
+          24
+        ],
+        "depthAppliedInPageAndServer": true,
+        "proxy": true,
+        "initialIDGroups": [
+          "V1",
+          "V1"
+        ],
+        "sameIDInPair": true,
+        "reloadStableProfiles": 2,
+        "originalIDsPreserved": [
+          true,
+          true
+        ]
+      }
+    ],
+    "preexistingProfilesAndProxiesUnchanged": true,
+    "baselineProfileCount": 1098
+  },
+  "newStrictEvents": 56,
+  "newStores": 14,
+  "allEventsUncachedAndPageAgentServerMatched": true,
+  "allEventIDsUniqueAcrossBothNewGroups": true,
+  "externalVisitorIDUniquenessGuaranteed": false,
+  "completeServerRetentionMechanismEstablished": false,
+  "scriptInventoryScope": "46 recovered nonempty JavaScript modules from supplied 2.0.0 sample; not a proof of all dynamic code paths",
+  "storageEstimateMentionFoundInRecoveredModules": false,
+  "visitorIDLiteralMentionFoundInRecoveredModules": false
+}
