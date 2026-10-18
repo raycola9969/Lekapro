@@ -2,6 +2,28 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Tạo lại hồ sơ với các UA từng cho ID khác nhau
+
+Đã chạy một đợt đo mới theo yêu cầu tạo lại hồ sơ. Tập lịch sử 63 ID có **59 chuỗi UA khác nhau**; bốn chuỗi từng gắn với nhiều ID, nên được gộp theo đúng chuỗi đầu vào. Mỗi UA có một kho mới ở lượt A và một kho mới ở lượt B: **118 hồ sơ mới**, **236 event không dùng cache**, trên cùng iPhone 11 Pro Max **iOS 16.1.1, build 29**. Đo hết 59 UA của lượt A rồi mới đo lại chúng ở lượt B; không dùng lại kho cũ.
+
+Lượt A: **55/59 ID khác nhau**. Lượt B: **21/59 ID khác nhau**. Cả 118 hồ sơ có **74 ID**. Khi so hai hồ sơ mới có cùng UA: **2/59 cặp cùng ID**, **57/59 cặp khác ID**. So với tập 84 ID của đợt quét 94 phiên bản và lượt lặp tiếp theo, có 3 ID được dùng lại và 71 ID ngoài chính tập tham chiếu đó. Các con số này là kết quả của đợt đo, chưa phải bảo đảm cho mọi hồ sơ tạo thêm.
+
+| Safari UA iOS | Lượt A | Lượt B | A và B cùng ID? |
+| --- | --- | --- | --- |
+| 17.2 | G56 | R53 | Không |
+| 18.4 | R52 | R71 | Không |
+| 26.0 | R1 | R53 | Không |
+| 26.1 | R52 | R71 | Không |
+| 26.2 | R52 | R71 | Không |
+| 26.3 | R52 | R71 | Không |
+| 26.4 | R52 | R71 | Không |
+
+G/N/R là nhãn đối chiếu tính bằng nhau, không chứa Visitor ID thật. [Bảng đủ 59 UA và chuỗi UA chính xác (CSV)](verification/ios16-ua-recreation-build29.csv) · [Báo cáo đầy đủ (JSON)](verification/ios16-ua-recreation-build29.json).
+
+Có **18/59 UA không trùng với UA nào khác trong cả hai lượt đã đo**. Cột `No cross-UA collision in either measured wave` trong CSV đánh dấu các trường hợp đó. Đây là quan sát của hai lượt này, chưa bảo đảm ID riêng ở lượt tạo hồ sơ tiếp theo.
+
+Từng hồ sơ giữ ID khi tải lại. ID và event khớp trang/agent/server; UA khớp trang/Worker/server; máy chủ nhận iPhone/iOS và OS token đã cấu hình. Trong đợt mới, IP và môi trường máy chủ thống nhất; so với đợt lặp trước, IP giống và môi trường máy chủ giống. 2 cặp thiếu số đo Worker bị loại khỏi tổng đạt và thử lại bằng kho mới. Mọi UUID hồ sơ/kho mới đều khác nhau và khác tập trước; 63 hồ sơ lịch sử được giữ nguyên. Mã app và engine iOS không đổi trong phép thử này.
+
 ## Quét các phiên bản iOS từ 16.1.1
 
 **Chưa có công thức UA → ID riêng cho mọi hồ sơ.** Đợt lặp đúng UA trong hai kho mới cho 60/63 cặp trùng ID, và 126 hồ sơ chỉ có 24 nhóm trong đợt lặp. Các nhóm của lượt quét dưới đây là số đo theo thời điểm, không phải một ID cố định cho mỗi phiên bản iOS.
@@ -38,7 +60,7 @@ Trên iPhone 11 Pro Max, tám kho mới với UA Safari 17.4–17.7 và Chrome/F
 
 Đã lưu ba hồ sơ **10 - iPhone Safari iOS 17.4**, **11 - iPhone Chrome iOS 17.4**, **12 - iPhone Firefox iOS 17.4**. Sau cập nhật build 29, thêm tám event kiểm tra lại xác nhận đúng ba ID cũ, đúng UA trong trang/Worker/server, đúng iPhone/iOS 17.4. UUID hồ sơ và kho giữ nguyên. [Kết quả iOS-only](verification/ios16-iphone-ua-build29.json). [CI build 29](https://github.com/raycola9969/Lekapro/actions/runs/39067566316): 30 kiểm thử đạt, 1 bài mạng bỏ qua, không có lỗi.
 
-Báo cáo điều tra cập nhật có **1844 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
+Báo cáo điều tra cập nhật có **2080 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
 
 ## Các đối chứng đến build 28 trên iOS 16.1.1
 
