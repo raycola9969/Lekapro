@@ -2,7 +2,45 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
-## Kết quả hiện tại trên iOS 16.1.1
+## Quét các phiên bản iOS từ 16.1.1
+
+**Chưa có công thức UA → ID riêng cho mọi hồ sơ.** Đợt lặp đúng UA trong hai kho mới cho 60/63 cặp trùng ID, và 126 hồ sơ chỉ có 24 nhóm trong đợt lặp. Các nhóm của lượt quét dưới đây là số đo theo thời điểm, không phải một ID cố định cho mỗi phiên bản iOS.
+
+Đã thử UA đại diện cho **94 phiên bản iOS ổn định từ 16.1.1**, gồm các bản vá có trong danh sách Apple, với Safari, Chrome iOS và Firefox iOS. Trên build 29 có **288 kho mới**: 282 tổ hợp phiên bản/họ trình duyệt, năm mẫu Safari 26 có OS token đóng băng và một đối chứng lặp lại. Cộng 26 cấu hình tham chiếu đã đo trước đó trên build 28, số liệu đạt gồm **314 kho mới**, **680 event không dùng cache**. Bảng 94 phiên bản chỉ dùng số đo build 29 để tránh trộn bản app. Chrome giữ token 119.0.6045.41 và Firefox giữ token 119.0 để tách ảnh hưởng của phiên bản iOS. Đây là UA thử nghiệm trên **engine thật iOS 16.1.1**; không phải cài các hệ điều hành tương ứng. Ngoài số liệu đạt, 3 cặp đo thiếu Worker đã bị loại và đo lại; chúng không được cộng vào các tổng trên.
+
+Riêng các kho mới trên build 29 cho **60 nhóm Visitor ID**: Safari 58, Chrome iOS 1, Firefox iOS 1. Cả tập tham chiếu hai bản app có **63 nhóm**. Bảng dưới là những OS token bạn yêu cầu trước, chỉ dùng số đo build 29. Nhiều phiên bản có thể dùng chung nhóm. Mọi lần tải đầu/tải lại đều khớp ID và event giữa trang/agent/server, UA giữa trang/Worker/server, cùng IP và môi trường máy chủ. Toàn bộ 26 cấu hình của đợt đầu còn được mở lại app và giữ ID; đợt quét bổ sung đo tải đầu/tải lại.
+
+| OS token trong UA · build 29 | Safari | Chrome iOS | Firefox iOS |
+| --- | --- | --- | --- |
+| 17.2 | G56 | G2 | G3 |
+| 18.4 | G57 | G2 | G3 |
+| 26.0 | G58 | G2 | G3 |
+| 26.1 | G59 | G2 | G3 |
+| 26.2 | G60 | G2 | G3 |
+| 26.3 | G61 | G2 | G3 |
+| 26.4 | G62 | G2 | G3 |
+
+[Bảng đầy đủ 94 phiên bản (CSV)](verification/ios16-ua-version-sweep-build29.csv) · [Số đo và cấu hình (JSON)](verification/ios16-ua-version-sweep-build29.json).
+
+Lặp đúng UA đại diện của 63 nhóm, mỗi UA trong hai kho mới độc lập: thêm 126 hồ sơ và 252 event đạt. Đợt lặp có 21 ID ngoài tập của đợt quét. Bảng JSON ghi rõ trường hợp dùng lại ID cũ; thay UUID và tạo kho mới không tự bảo đảm ID mới.
+
+Đã giữ lại một lịch sử cho mỗi nhóm của đợt quét chính: **63 hồ sơ iPhone/iOS có 63 ID khác nhau**, đánh số từ **10** đến **72** trên máy thử. Danh sách tên nằm trong JSON; số đo kho mới của đợt lặp được báo cáo riêng. Kiểm tra lại bằng 128 event mới xác nhận ID giữ qua tải lại và mở lại app. Không đổi UA/UUID/kho, không chép hoặc xóa dữ liệu website. Đợt kiểm tra lại loại 7 cặp bị ngắt tải và 0 cặp thiếu số đo Worker; mọi ID quan sát được trước khi thử lại đều phải khớp ID cũ. Các lượt bị loại không nằm trong tổng event đạt. Các hồ sơ này là những lịch sử đã đo được, **chưa bảo đảm mỗi hồ sơ tạo thêm có ID riêng**.
+
+Safari 26 thực tế giữ phiên bản iOS trong UA thay vì luôn ghi 26.x; vì vậy đã thử riêng mẫu OS token 18.6/18.6.2 với Safari26 và mẫu OS token26.x. [WebKit công bố thay đổi UA](https://webkit.org/blog/17333/webkit-features-in-safari-26-0/), [điều chỉnh token 18.6.2](https://bugs.webkit.org/show_bug.cgi?id=298473). Danh sách phiên bản lấy từ [Apple security releases](https://support.apple.com/en-us/100100) và [bản lưu 2022–2023](https://support.apple.com/en-us/121012); không gồm beta hoặc hậu tố RSR (a)/(c). Các mẫu sinh cho phép thử không được khẳng định là chuỗi UA nguyên bản của mọi bản trình duyệt đã phát hành.
+
+Quy trình kiểm tra lịch sử: bốn cặp đầu hoàn tất với tab tự khôi phục như thường lệ. Các cặp còn lại tạm đặt URL tab đã lưu thành `about:blank` trước khi mở app, để tránh tải trang khôi phục chồng với lượt nạp của bộ đo, rồi khôi phục toàn bộ danh sách tab sau mỗi phép thử. UUID tab/hồ sơ/kho và UA không đổi; phép đo vẫn nạp trang thật từ đúng kho cũ. Không sửa app đã cài hoặc dữ liệu website để xử lý lỗi tải này.
+
+## UA iPhone/iOS trong build 29
+
+Menu có thêm Safari iOS **17.4, 17.5, 17.6, 17.7**, cùng các tổ hợp **Chrome/Firefox iOS 17.4, 17.5, 17.6**. Đây là chuỗi UA gửi website; máy và engine thật vẫn là iOS/WebKit 16.1.1. Nhóm thử mới chỉ dùng UA iPhone/iOS, không dùng UA Windows hay Android.
+
+Trên iPhone 11 Pro Max, tám kho mới với UA Safari 17.4–17.7 và Chrome/Firefox iOS 17.4–17.6 tạo **ba ID trong nhóm thử**. Đổi riêng phiên bản Safari 17.4 → 17.5 → 17.6 → 17.7 không tách ID; kết hợp họ Safari/Chrome/Firefox iOS đã cho ba ID khác nhau. Cả 32 event đều khớp giao diện/agent/server, không dùng cache; server đọc đúng iPhone, iOS và phiên bản cấu hình. Ba ID giữ qua tải lại và mở lại app. Trong nhóm này có một ID ngoài bảy ID đã lưu trước đó; không suy ra ID mới cho mỗi UUID.
+
+Đã lưu ba hồ sơ **10 - iPhone Safari iOS 17.4**, **11 - iPhone Chrome iOS 17.4**, **12 - iPhone Firefox iOS 17.4**. Sau cập nhật build 29, thêm tám event kiểm tra lại xác nhận đúng ba ID cũ, đúng UA trong trang/Worker/server, đúng iPhone/iOS 17.4. UUID hồ sơ và kho giữ nguyên. [Kết quả iOS-only](verification/ios16-iphone-ua-build29.json). [CI build 29](https://github.com/raycola9969/Lekapro/actions/runs/39067566316): 30 kiểm thử đạt, 1 bài mạng bỏ qua, không có lỗi.
+
+Báo cáo điều tra cập nhật có **1844 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
+
+## Các đối chứng đến build 28 trên iOS 16.1.1
 
 **Bảy hồ sơ đã lưu giữ bảy Visitor ID khác nhau tại fingerprint.com/demo, cùng UA Safari 17.2. Chưa bảo đảm một ID mới cho mọi hồ sơ tạo thêm.** Build 28 đã cài trên iPhone 11 Pro Max iOS 16.1.1; engine thật vẫn là WebKit của iOS 16.1.1. UA trong trang, Worker và phản hồi server khớp cấu hình. Không sửa ID trên giao diện, SDK hoặc phản hồi server.
 
@@ -46,7 +84,7 @@ Báo cáo điều tra hiện có **744 event thiết bị độc lập** đã ki
 - Bộ chặn tracker cơ bản; tùy chọn chặn đọc Canvas/Audio và chặn WebRTC.
 - Tùy chọn chặn tạo ngữ cảnh WebGL và giảm thông tin phần cứng: tối đa 2 luồng được báo cho trang, kích thước màn hình làm tròn xuống theo bậc 200 px. Mặc định tắt; áp dụng trong trang/frame, chưa bao phủ Worker. Có thể ảnh hưởng đồ họa 3D, bố cục và xử lý song song; không bảo đảm tách Visitor ID.
 - Thử nghiệm áp dụng các thiết lập trên cho classic Blob Worker được tạo trong trang qua `URL.createObjectURL`. Mặc định tắt; giữ MIME và kiểm tra CSP, không sửa thông điệp của Worker. Chưa bao phủ module, URL ngoài, Shared/Service Worker hoặc mọi Worker lồng nhau. Địa chỉ Blob Worker thay đổi; CSP có thể chặn việc nạp script bổ sung, khi đó cần tắt tùy chọn này để giữ tương thích.
-- User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/18.7.9, iPad Safari 16.1, iPhone Chrome/Firefox 119 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
+- User-Agent theo hồ sơ: mặc định WebKit, preset iPhone Safari 17.2/17.4/17.5/17.6/17.7/18.7.9, iPad Safari 16.1, iPhone Chrome/Firefox 119 với iOS 16.1.1 hoặc 17.4–17.6 và chuỗi tùy chỉnh. Đổi UA giữ UUID kho dữ liệu; không đổi iOS/WebKit thật.
 - Chữ tối thiểu theo hồ sơ qua `WKPreferences.minimumFontSize`; múi giờ riêng qua cấu hình process pool WebKit SPI, hỗ trợ từ iOS 16 và kiểm tra khả năng ở runtime. Không thay múi giờ toàn hệ thống hoặc bọc các hàm `Date`/`Intl`. Nếu SPI không hỗ trợ, app báo lỗi thay vì âm thầm dùng múi giờ thiết bị.
 - Tùy chọn dùng một họ phông cho website qua user stylesheet WebKit, mặc định theo website. Thay bố cục chữ thực trong trang/frame, có thể ảnh hưởng phông biểu tượng; không thay các hàm đo chữ JavaScript. Dùng SPI và báo lỗi nếu không hỗ trợ.
 - Thử nghiệm nhiễu Canvas/Audio theo hồ sơ và website, mặc định tắt. Thay đổi dữ liệu đọc từ API, không thay phản hồi của dịch vụ kiểm tra; chưa bảo đảm tách Visitor ID. Chỉ áp dụng trong trang/frame, chưa bao phủ Worker hoặc mọi API đồ họa/âm thanh.

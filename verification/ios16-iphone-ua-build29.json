@@ -1,0 +1,213 @@
+{
+  "actualOSVersion": "16.1.1",
+  "installedBuild": "29",
+  "sourceCommit": "5d8b6866ec34b05aa4a28da459cd3daff9cd52cb",
+  "verifiedBuild": {
+    "build": "29",
+    "sourceCommit": "5d8b6866ec34b05aa4a28da459cd3daff9cd52cb",
+    "runID": 39067566316,
+    "runAttempt": 2,
+    "jobID": 117501632048,
+    "artifactID": 12114480794,
+    "artifactSHA256": "3b068c94dfc882ce637ce11400f5a3982d7a5648d9490427d1099940da33ab72",
+    "ipaSHA256": "f6b33e1a53ed28b1e72e48584ad59f2e63b4cec7fa7eae446a3d833153589b49",
+    "ciConclusion": "success",
+    "passed": 30,
+    "skipped": 1,
+    "failures": 0,
+    "earlierFailedAttempt": "Native data-removal callback timed out; unchanged source passed the rerun."
+  },
+  "iPhoneOnlyUAMatrix": {
+    "build": "28",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 32,
+    "freshProfiles": 8,
+    "distinctIDsAcrossAllEightProfiles": 3,
+    "rows": [
+      {
+        "case": "safari174-175",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "distinctIDsInPair": 1,
+        "originalIDsRetainedAcrossAppRelaunch": true,
+        "serverParsedBrowsers": [
+          {
+            "browser_full_version": "17.4",
+            "browser_major_version": "17",
+            "browser_name": "Mobile Safari",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.4"
+          },
+          {
+            "browser_full_version": "17.5",
+            "browser_major_version": "17",
+            "browser_name": "Mobile Safari",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.5"
+          }
+        ],
+        "allInputUAStringsAreIPhoneIOS": true,
+        "allPageWorkerServerUAStringsMatch": true
+      },
+      {
+        "case": "safari176-177",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "distinctIDsInPair": 1,
+        "originalIDsRetainedAcrossAppRelaunch": true,
+        "serverParsedBrowsers": [
+          {
+            "browser_full_version": "17.6",
+            "browser_major_version": "17",
+            "browser_name": "Mobile Safari",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.6"
+          },
+          {
+            "browser_full_version": "17.7",
+            "browser_major_version": "17",
+            "browser_name": "Mobile Safari",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.7"
+          }
+        ],
+        "allInputUAStringsAreIPhoneIOS": true,
+        "allPageWorkerServerUAStringsMatch": true
+      },
+      {
+        "case": "chrome174-firefox174",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "distinctIDsInPair": 2,
+        "originalIDsRetainedAcrossAppRelaunch": true,
+        "serverParsedBrowsers": [
+          {
+            "browser_full_version": "119.0.6045",
+            "browser_major_version": "119",
+            "browser_name": "Chrome Mobile iOS",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.4"
+          },
+          {
+            "browser_full_version": "119.0",
+            "browser_major_version": "119",
+            "browser_name": "Firefox iOS",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.4"
+          }
+        ],
+        "allInputUAStringsAreIPhoneIOS": true,
+        "allPageWorkerServerUAStringsMatch": true
+      },
+      {
+        "case": "chrome175-firefox176",
+        "freshProfiles": 2,
+        "uniqueUncachedEvents": 8,
+        "distinctIDsInPair": 2,
+        "originalIDsRetainedAcrossAppRelaunch": true,
+        "serverParsedBrowsers": [
+          {
+            "browser_full_version": "119.0.6045",
+            "browser_major_version": "119",
+            "browser_name": "Chrome Mobile iOS",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.5"
+          },
+          {
+            "browser_full_version": "119.0",
+            "browser_major_version": "119",
+            "browser_name": "Firefox iOS",
+            "device": "iPhone",
+            "os": "iOS",
+            "os_version": "17.6"
+          }
+        ],
+        "allInputUAStringsAreIPhoneIOS": true,
+        "allPageWorkerServerUAStringsMatch": true
+      }
+    ],
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "allServerParsedOSValuesAreIOS": true,
+    "allServerParsedDevicesAreIPhone": true,
+    "allConfiguredIOSVersionsReachServer": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "universalFreshProfileUniquenessEstablished": false,
+    "limit": "These are iOS UA presentations on actual WebKit/iOS 16.1.1; they do not replace the native browser engine.",
+    "newIDsBeyondHistoricalSeven": 1
+  },
+  "afterUpdateThreeProfileRecheck": {
+    "build": "29",
+    "actualOSVersion": "16.1.1",
+    "uniqueUncachedEvents": 8,
+    "distinctPreservedIOSOnlyIDs": 3,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allWorkerUAsMatch": true,
+    "sameIPThroughout": true,
+    "sameServerEnvironmentThroughout": true,
+    "allServerOSValuesAreIOS": true,
+    "allConfiguredIOSVersionsReachServer": true,
+    "allServerDevicesAreIPhone": true,
+    "allInitialAndReloadIDsStable": true,
+    "profileAndStoreUUIDsPreserved": true,
+    "IDsPreservedAcrossAppUpdate": true,
+    "rows": [
+      {
+        "profileName": "10 - iPhone Safari iOS 17.4",
+        "serverParsedBrowser": {
+          "browser_full_version": "17.4",
+          "browser_major_version": "17",
+          "browser_name": "Mobile Safari",
+          "device": "iPhone",
+          "os": "iOS",
+          "os_version": "17.4"
+        }
+      },
+      {
+        "profileName": "11 - iPhone Chrome iOS 17.4",
+        "serverParsedBrowser": {
+          "browser_full_version": "119.0.6045",
+          "browser_major_version": "119",
+          "browser_name": "Chrome Mobile iOS",
+          "device": "iPhone",
+          "os": "iOS",
+          "os_version": "17.4"
+        }
+      },
+      {
+        "profileName": "12 - iPhone Firefox iOS 17.4",
+        "serverParsedBrowser": {
+          "browser_full_version": "119.0",
+          "browser_major_version": "119",
+          "browser_name": "Firefox iOS",
+          "device": "iPhone",
+          "os": "iOS",
+          "os_version": "17.4"
+        }
+      }
+    ],
+    "universalFreshProfileUniquenessEstablished": false
+  },
+  "newSafariPresets": [
+    "17.4",
+    "17.5",
+    "17.6",
+    "17.7"
+  ],
+  "newChromeAndFirefoxIOSVersions": [
+    "17.4",
+    "17.5",
+    "17.6"
+  ],
+  "desktopWindowsInputsUsedInTheseExperiments": false,
+  "nativeEngineChanged": false,
+  "allFreshProfilesHaveUniqueIDs": false
+}
