@@ -5,7 +5,21 @@ import WebKit
 enum DataStoreFactory {
     private static var stores: [String: WKWebsiteDataStore] = [:]
 
-    static func make(id: UUID, proxy: ProxyRecord? = nil, forceLegacy: Bool = false, diagnosticQuota: UInt? = nil) throws -> WKWebsiteDataStore {
+    static func make(id: UUID, proxy: ProxyRecord? = nil, forceLegacy: Bool = false, diagnosticQuota: UInt? = nil, diagnosticEphemeral: Bool = false) throws -> WKWebsiteDataStore {
+        if diagnosticEphemeral {
+            #if DEBUG
+            guard proxy == nil, diagnosticQuota == nil else {
+                throw BrowserError.invalid("Private-store QA currently requires a direct connection and no quota override.")
+            }
+            let key = "ephemeral:" + id.uuidString
+            if let existing = stores[key] { return existing }
+            let value = WKWebsiteDataStore.nonPersistent()
+            stores[key] = value
+            return value
+            #else
+            throw BrowserError.invalid("Private-store experiments require DEBUG.")
+            #endif
+        }
         let legacy: Bool
         if diagnosticQuota != nil { legacy = true }
         else if #available(iOS 17, *) { legacy = forceLegacy } else { legacy = true }
@@ -35,7 +49,7 @@ enum DataStoreFactory {
         return store
     }
     static func release(id: UUID) {
-        let prefixes = ["legacy:" + id.uuidString, "public:" + id.uuidString]
+        let prefixes = ["legacy:" + id.uuidString, "public:" + id.uuidString, "ephemeral:" + id.uuidString]
         for key in stores.keys.filter({ key in prefixes.contains(where: { key.hasPrefix($0) }) }) {
             stores.removeValue(forKey: key)
         }
