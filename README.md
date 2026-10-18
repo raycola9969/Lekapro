@@ -2,6 +2,29 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Thử 20 hồ sơ: phiên bản trình duyệt và hậu tố UA
+
+Đã tạo và đo **20 hồ sơ mới, 20 chuỗi UA khác nhau**, **không proxy**, trên iPhone 11 Pro Max **iOS 16.1.1, build 29**. Có 10 cặp với kho độc lập: mỗi mẫu UA có một bản gốc và một bản thêm `Lekapro/1.0 Profile/Pxx` riêng. Bộ thử gồm 8 hồ sơ Safari (16.1, 17.2, 18.4, 26.0), 6 Chrome iOS (119, 120, 121) và 6 Firefox iOS (119, 120, 121). Chrome/Firefox giữ OS token 16.1.1 để so phiên bản trình duyệt; Safari 26.0 dùng OS token 18.6.
+
+Kết quả: **3 ID khác nhau / 20 hồ sơ**; **10/10 cặp UA gốc–hậu tố cùng ID lúc tải đầu**, 0/10 cặp khác ID. Có **20/20 hồ sơ giữ ID khi tải lại**. Đây là kết quả quan sát của lượt này, chưa chứng minh công thức cấp ID riêng cho mọi hồ sơ.
+
+| Mẫu iOS / trình duyệt | UA gốc | UA thêm hậu tố riêng | Cùng ID lúc tải đầu? |
+| --- | --- | --- | --- |
+| Safari 16.1 / OS 16.1.1 | G1 | G1 | Có |
+| Safari 17.2 / OS 17.2 | G1 | G1 | Có |
+| Safari 18.4 / OS 18.4 | G1 | G1 | Có |
+| Safari 26.0 / OS 18.6 | G1 | G1 | Có |
+| Chrome 119.0.6045.41 / OS 16.1.1 | G2 | G2 | Có |
+| Chrome 120.0.6099.101 / OS 16.1.1 | G2 | G2 | Có |
+| Chrome 121.0.6167.138 / OS 16.1.1 | G2 | G2 | Có |
+| Firefox 119.0 / OS 16.1.1 | G3 | G3 | Có |
+| Firefox 120.0 / OS 16.1.1 | G3 | G3 | Có |
+| Firefox 121.0 / OS 16.1.1 | G3 | G3 | Có |
+
+[Bảng 20 UA và kết quả (CSV)](verification/ios16-ua-versions-suffix20-build29.csv) · [Báo cáo đầy đủ (JSON)](verification/ios16-ua-versions-suffix20-build29.json). Nhãn G chỉ thể hiện ID bằng nhau/khác nhau trong lượt này; không chứa Visitor ID thật.
+
+Có **40 event mới không dùng cache**, ID/event khớp trang–agent–server và UA khớp trang–Worker–server. Máy chủ nhận đúng iPhone/iOS và phiên bản major trình duyệt ở 20/20 hồ sơ. Trường browser-details khớp toàn bộ số phiên bản ở 14/20 hồ sơ; với 6 hồ sơ Chrome, parser bỏ thành phần số thứ tư nhưng UA thô vẫn giữ nguyên đầy đủ. Cùng IP và môi trường máy chủ trong lượt đo. Đã loại 1 cặp thiếu Worker, phát sinh 2 hồ sơ thay thế ngoài 20 kết quả đạt; các event bị loại không nằm trong tổng. Toàn bộ 842 cấu hình hồ sơ có trước, gồm 63 hồ sơ lịch sử được bảo vệ, giữ nguyên. Không đổi mã app/engine, không chép/xóa dữ liệu website, không sửa ID hoặc phản hồi nhà cung cấp. Cặp dùng kho mới khác nhau nên nếu tách ID cũng chưa thể quy riêng nguyên nhân cho hậu tố.
+
 ## Đo thêm một lần đúng 18 UA không trùng trước đó
 
 Đã lấy đúng **18 UA** được đánh dấu không trùng trong cả hai lượt A/B, tạo **18 hồ sơ với kho mới** và đo thêm **một lần C** trên iPhone 11 Pro Max **iOS 16.1.1, build 29**. Mỗi hồ sơ tải đầu và tải lại, tổng **36 event mới không dùng cache**.
@@ -91,7 +114,7 @@ Trên iPhone 11 Pro Max, tám kho mới với UA Safari 17.4–17.7 và Chrome/F
 
 Đã lưu ba hồ sơ **10 - iPhone Safari iOS 17.4**, **11 - iPhone Chrome iOS 17.4**, **12 - iPhone Firefox iOS 17.4**. Sau cập nhật build 29, thêm tám event kiểm tra lại xác nhận đúng ba ID cũ, đúng UA trong trang/Worker/server, đúng iPhone/iOS 17.4. UUID hồ sơ và kho giữ nguyên. [Kết quả iOS-only](verification/ios16-iphone-ua-build29.json). [CI build 29](https://github.com/raycola9969/Lekapro/actions/runs/39067566316): 30 kiểm thử đạt, 1 bài mạng bỏ qua, không có lỗi.
 
-Báo cáo điều tra cập nhật có **2116 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
+Báo cáo điều tra cập nhật có **2156 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
 
 ## Các đối chứng đến build 28 trên iOS 16.1.1
 
