@@ -2,6 +2,37 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Đo thêm một lần đúng 18 UA không trùng trước đó
+
+Đã lấy đúng **18 UA** được đánh dấu không trùng trong cả hai lượt A/B, tạo **18 hồ sơ với kho mới** và đo thêm **một lần C** trên iPhone 11 Pro Max **iOS 16.1.1, build 29**. Mỗi hồ sơ tải đầu và tải lại, tổng **36 event mới không dùng cache**.
+
+Kết quả lượt C: **15/18 ID khác nhau**, có **1 nhóm trùng giữa các UA khác nhau**. Kết quả không lặp lại được đầy đủ: một số UA của nhóm 18 đã nhận cùng ID trong lượt C. Đây là kết quả của lượt đo này, chưa bảo đảm ID riêng cho các hồ sơ tạo tiếp.
+
+| UA | ID nhóm C | Trùng UA khác ở C? |
+| --- | --- | --- |
+| Chrome iOS 17.2 | G2 | Không |
+| Firefox iOS 17.2 | G3 | Không |
+| Safari 26.0 (OS 18.6) | C1 | Có |
+| Safari iOS 26.0.1 | C1 | Có |
+| Safari iOS 26.2.1 | C1 | Có |
+| Safari iOS 26.3.1 | C1 | Có |
+| Safari iOS 26.4.1 | C2 | Không |
+| Safari iOS 26.4.2 | C3 | Không |
+| Safari iOS 26.5 | C4 | Không |
+| Safari iOS 26.5.1 | C5 | Không |
+| Safari iOS 26.5.2 | C6 | Không |
+| Safari iOS 26.6 | C7 | Không |
+| Safari iOS 26.6.1 | C8 | Không |
+| Safari iOS 26.6.2 | C9 | Không |
+| Safari iOS 26.7 | C10 | Không |
+| Safari iOS 26.7.1 | C11 | Không |
+| Safari iOS 27.0 | C12 | Không |
+| Safari iOS 27.0.1 | C13 | Không |
+
+[Bảng 18 chuỗi UA và đối chiếu A/B/C (CSV)](verification/ios16-ua-third-build29.csv) · [Báo cáo lượt C (JSON)](verification/ios16-ua-third-build29.json). Nhãn G/R/C chỉ thể hiện ID bằng nhau hay khác nhau; không chứa Visitor ID thật.
+
+Trong lượt C, 2 hồ sơ nhận lại ID của cùng UA ở lượt A, 2 hồ sơ nhận lại ID của cùng UA ở lượt B. ID từng hồ sơ giữ qua tải lại, khớp trang/agent/server; UA khớp trang/Worker/server. So với A/B, IP giống, môi trường máy chủ giống. Mọi UUID hồ sơ/kho trong lượt C đều mới; 63 hồ sơ lịch sử được giữ nguyên. 0 cặp thiếu Worker bị loại khỏi tổng đạt. App và engine không đổi.
+
 ## Tạo lại hồ sơ với các UA từng cho ID khác nhau
 
 Đã chạy một đợt đo mới theo yêu cầu tạo lại hồ sơ. Tập lịch sử 63 ID có **59 chuỗi UA khác nhau**; bốn chuỗi từng gắn với nhiều ID, nên được gộp theo đúng chuỗi đầu vào. Mỗi UA có một kho mới ở lượt A và một kho mới ở lượt B: **118 hồ sơ mới**, **236 event không dùng cache**, trên cùng iPhone 11 Pro Max **iOS 16.1.1, build 29**. Đo hết 59 UA của lượt A rồi mới đo lại chúng ở lượt B; không dùng lại kho cũ.
@@ -60,7 +91,7 @@ Trên iPhone 11 Pro Max, tám kho mới với UA Safari 17.4–17.7 và Chrome/F
 
 Đã lưu ba hồ sơ **10 - iPhone Safari iOS 17.4**, **11 - iPhone Chrome iOS 17.4**, **12 - iPhone Firefox iOS 17.4**. Sau cập nhật build 29, thêm tám event kiểm tra lại xác nhận đúng ba ID cũ, đúng UA trong trang/Worker/server, đúng iPhone/iOS 17.4. UUID hồ sơ và kho giữ nguyên. [Kết quả iOS-only](verification/ios16-iphone-ua-build29.json). [CI build 29](https://github.com/raycola9969/Lekapro/actions/runs/39067566316): 30 kiểm thử đạt, 1 bài mạng bỏ qua, không có lỗi.
 
-Báo cáo điều tra cập nhật có **2080 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
+Báo cáo điều tra cập nhật có **2116 event thiết bị độc lập**: [báo cáo build 29](verification/ios16-retention-investigation-build29.json). Các số đo này chưa bảo đảm ID riêng cho mọi hồ sơ mới.
 
 ## Các đối chứng đến build 28 trên iOS 16.1.1
 

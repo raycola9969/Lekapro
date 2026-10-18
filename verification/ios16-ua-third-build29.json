@@ -1,0 +1,356 @@
+{
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "installedBuild": "29",
+  "protocol": "Exactly one new independent profile per selected UA; initial plus reload on the real Fingerprint demo.",
+  "selection": "The 18 exact UA inputs without cross-UA collisions in either previous A/B wave.",
+  "selectedUAInputs": 18,
+  "completedFreshProfiles": 18,
+  "uniqueUncachedEvents": 36,
+  "distinctVisitorIDsInThisRound": 15,
+  "all18UAInputsReceivedDifferentIDs": false,
+  "rows": [
+    {
+      "uaInputKey": "T2",
+      "family": "chrome",
+      "configuredOS": "17.2",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "G2",
+        "B": "G2"
+      },
+      "observedIDGroupC": "G2",
+      "sameIDAsPreviousA": true,
+      "sameIDAsPreviousB": true,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T3",
+      "family": "firefox",
+      "configuredOS": "17.2",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15",
+      "previousIDGroups": {
+        "A": "G3",
+        "B": "G3"
+      },
+      "observedIDGroupC": "G3",
+      "sameIDAsPreviousA": true,
+      "sameIDAsPreviousB": true,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T5",
+      "family": "safari",
+      "configuredOS": "18.6",
+      "uaConstruction": "frozen-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1",
+      "configuredSafariVersion": "26.0",
+      "previousIDGroups": {
+        "A": "R2",
+        "B": "R54"
+      },
+      "observedIDGroupC": "C1",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": false
+    },
+    {
+      "uaInputKey": "T40",
+      "family": "safari",
+      "configuredOS": "26.0.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R37",
+        "B": "R56"
+      },
+      "observedIDGroupC": "C1",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": false
+    },
+    {
+      "uaInputKey": "T41",
+      "family": "safari",
+      "configuredOS": "26.2.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_2_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.2 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R38",
+        "B": "R57"
+      },
+      "observedIDGroupC": "C1",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": false
+    },
+    {
+      "uaInputKey": "T42",
+      "family": "safari",
+      "configuredOS": "26.3.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.3 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R39",
+        "B": "R58"
+      },
+      "observedIDGroupC": "C1",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": false
+    },
+    {
+      "uaInputKey": "T43",
+      "family": "safari",
+      "configuredOS": "26.4.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R40",
+        "B": "R59"
+      },
+      "observedIDGroupC": "C2",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T44",
+      "family": "safari",
+      "configuredOS": "26.4.2",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R41",
+        "B": "R60"
+      },
+      "observedIDGroupC": "C3",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T45",
+      "family": "safari",
+      "configuredOS": "26.5",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R42",
+        "B": "R61"
+      },
+      "observedIDGroupC": "C4",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T46",
+      "family": "safari",
+      "configuredOS": "26.5.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R43",
+        "B": "R62"
+      },
+      "observedIDGroupC": "C5",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T47",
+      "family": "safari",
+      "configuredOS": "26.5.2",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R44",
+        "B": "R63"
+      },
+      "observedIDGroupC": "C6",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T48",
+      "family": "safari",
+      "configuredOS": "26.6",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R45",
+        "B": "R64"
+      },
+      "observedIDGroupC": "C7",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T49",
+      "family": "safari",
+      "configuredOS": "26.6.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R46",
+        "B": "R65"
+      },
+      "observedIDGroupC": "C8",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T50",
+      "family": "safari",
+      "configuredOS": "26.6.2",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_6_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R47",
+        "B": "R66"
+      },
+      "observedIDGroupC": "C9",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T51",
+      "family": "safari",
+      "configuredOS": "26.7",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.7 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R48",
+        "B": "R67"
+      },
+      "observedIDGroupC": "C10",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T52",
+      "family": "safari",
+      "configuredOS": "26.7.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.7 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R49",
+        "B": "R68"
+      },
+      "observedIDGroupC": "C11",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T53",
+      "family": "safari",
+      "configuredOS": "27.0",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 27_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R50",
+        "B": "R69"
+      },
+      "observedIDGroupC": "C12",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    },
+    {
+      "uaInputKey": "T54",
+      "family": "safari",
+      "configuredOS": "27.0.1",
+      "uaConstruction": "explicit-os-token",
+      "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 27_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0 Mobile/15E148 Safari/604.1",
+      "previousIDGroups": {
+        "A": "R51",
+        "B": "R70"
+      },
+      "observedIDGroupC": "C13",
+      "sameIDAsPreviousA": false,
+      "sameIDAsPreviousB": false,
+      "stableOnReload": true,
+      "noCrossUACollisionInThisRound": true
+    }
+  ],
+  "collisionsAcrossDifferentUAInputs": [
+    {
+      "observedIDGroup": "C1",
+      "uaInputKeys": [
+        "T5",
+        "T40",
+        "T41",
+        "T42"
+      ]
+    }
+  ],
+  "sameIDAsPreviousACount": 2,
+  "sameIDAsPreviousBCount": 2,
+  "IDNotSeenInPreviousRecreation74Count": 13,
+  "IDSeenInPreviousRecreation74Count": 2,
+  "allMeasuredProfilesStableOnReload": true,
+  "allPageAgentServerIDsAndEventsMatch": true,
+  "allPageWorkerServerUAsMatch": true,
+  "allUAInputsAreIPhoneIOS": true,
+  "allServerOSValuesAreIOS": true,
+  "allServerDevicesAreIPhone": true,
+  "sameIPThroughout": true,
+  "sameServerEnvironmentThroughout": true,
+  "sameIPAsPreviousABWaves": true,
+  "sameServerEnvironmentAsPreviousABWaves": true,
+  "allEventsNewAgainstEarlierRawEvidence": true,
+  "allNewProfilesAndStoresHaveDistinctUUIDs": true,
+  "appSourceChangedForThisRound": false,
+  "websiteDataCopiedOrCleared": false,
+  "excludedWorkerTimeoutCohorts": 0,
+  "excludedCohortsCountedInStrictTotals": false,
+  "firstMeasurementUTC": "2026-10-18T12:34:15Z",
+  "lastMeasurementUTC": "2026-10-18T12:38:04Z",
+  "complete": true,
+  "universalFreshProfileUniquenessEstablished": false,
+  "groupLabelsContainNoRealIDs": true,
+  "completeRetentionCauseEstablished": false,
+  "all63ProtectedHistoricalProfilesUnchanged": true,
+  "verifiedBuild": {
+    "build": "29",
+    "sourceCommit": "5d8b6866ec34b05aa4a28da459cd3daff9cd52cb",
+    "runID": 39067566316,
+    "runAttempt": 2,
+    "jobID": 117501632048,
+    "artifactID": 12114480794,
+    "artifactSHA256": "3b068c94dfc882ce637ce11400f5a3982d7a5648d9490427d1099940da33ab72",
+    "ipaSHA256": "f6b33e1a53ed28b1e72e48584ad59f2e63b4cec7fa7eae446a3d833153589b49",
+    "ciConclusion": "success",
+    "passed": 30,
+    "skipped": 1,
+    "failures": 0,
+    "earlierFailedAttempt": "Native data-removal callback timed out; unchanged source passed the rerun."
+  }
+}
