@@ -1,0 +1,405 @@
+{
+  "actualOSVersion": "16.1.1",
+  "installedBuild": "31",
+  "markerIsolation": {
+    "freshNativeStores": 3,
+    "appLaunchesForMarkers": 2,
+    "additionalLaunchForHTTPSRouteCheck": 1,
+    "distinctActualHTTPSExitRoutes": 3,
+    "expectedMarkerAssertions": 72,
+    "allAssertionsPassed": true,
+    "localCookieAndLocalStoragePersistentAndIsolated": true,
+    "HTTPSCookieEchoPersistentAndIsolated": true,
+    "publicProfileDatabaseChanged": false,
+    "newNormalProfiles": 0,
+    "newFingerprintEvents": 0,
+    "nativeConfigurationGetterAvailable": false,
+    "requestedPathHashesAreNotGetterReadback": true,
+    "freshQAStoresCreatedUsingExistingBridge": true,
+    "interceptorsOrServiceResultOverridesUsed": false,
+    "scope": "Two controlled origins only; not a proof of all native caches, salts, TLS or third-party-origin behavior",
+    "rows": [
+      {
+        "appLaunch": 1,
+        "originKind": "local",
+        "allExpectedMarkersMatched": {
+          "before": true,
+          "writes": true,
+          "after": true,
+          "afterMiddleUpdate": true
+        }
+      },
+      {
+        "appLaunch": 1,
+        "originKind": "network",
+        "allExpectedMarkersMatched": {
+          "before": true,
+          "writes": true,
+          "after": true,
+          "afterMiddleUpdate": true
+        }
+      },
+      {
+        "appLaunch": 2,
+        "originKind": "local",
+        "allExpectedMarkersMatched": {
+          "before": true,
+          "writes": true,
+          "after": true,
+          "afterMiddleUpdate": true
+        }
+      },
+      {
+        "appLaunch": 2,
+        "originKind": "network",
+        "allExpectedMarkersMatched": {
+          "before": true,
+          "writes": true,
+          "after": true,
+          "afterMiddleUpdate": true
+        }
+      }
+    ],
+    "privateEvidenceFileSHA256": {
+      "round-1-local-private.json": "2f49ccdc523a51818a62b3cbb594c6f216375cdba613647d7af41d9b0edd0090",
+      "round-1-network-private.json": "6e2231c8a982c46f2ce2ba6baecfbb41a7d047dd976ff2320396d0d92e2f5ce2",
+      "round-2-local-private.json": "13a838d1528b362dd2a8efb22cdf31e8a06fa5666952b1484a91a3504fe4c5ee",
+      "round-2-network-private.json": "745b7ad6b79e48d0c88d4cf0697d718c411bd10876250b86bafae9ba56193504"
+    }
+  },
+  "reanalysisOfExistingFingerprintEvidence": {
+    "additionalServiceRequests": 0,
+    "verifiedHistoricalEventsInSelectedAllocationGroups": 64,
+    "direct20FreshQAStores": {
+      "firstMeasurements": 20,
+      "distinctIDs": 20,
+      "serverReportedNewVisitors": 20,
+      "serverReportedKnownVisitors": 0,
+      "firstSeenEqualsEventTimestamp": 20,
+      "confidenceScores": [
+        1
+      ],
+      "firstSeenAgeHoursRange": [
+        0.0,
+        0.0
+      ]
+    },
+    "proxy12FreshQAStores": {
+      "firstMeasurements": 12,
+      "distinctIDs": 1,
+      "serverReportedNewVisitors": 0,
+      "serverReportedKnownVisitors": 12,
+      "firstSeenEqualsEventTimestamp": 0,
+      "confidenceScores": [
+        0.92,
+        0.98,
+        0.99
+      ],
+      "firstSeenAgeHoursRange": [
+        145.717,
+        145.862
+      ]
+    },
+    "ExitAnty222UserSuppliedJSON": {
+      "independentlyFetchedFromServer": false,
+      "distinctIDs": 2,
+      "sameEnvironment": true,
+      "rows": [
+        {
+          "UAGroup": "ios187",
+          "serverReportedVisitorFound": true,
+          "firstSeenAgeHours": 4.789,
+          "confidenceScore": 1
+        },
+        {
+          "UAGroup": "ios172",
+          "serverReportedVisitorFound": true,
+          "firstSeenAgeHours": 4.392,
+          "confidenceScore": 1
+        }
+      ]
+    },
+    "interpretation": "Known visitor differs from new allocation. Confidence alone is not uniqueness or a complete causal explanation."
+  },
+  "universalExternalVisitorIDUniquenessGuaranteed": false,
+  "completeServerMatchingAndRetentionMechanismEstablished": false,
+  "directProxyCrossover": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "newProfiles": 0,
+    "preexistingQAStores": 2,
+    "verifiedUncachedEvents": 12,
+    "actualExitIPCount": 3,
+    "sameStoreUUIDsAndUAsAcrossPhases": true,
+    "allProfileConfigurationsAndProxyRecordsRestored": true,
+    "noStateClearOrCookieCopyOrJSOverrides": true,
+    "universalUniquenessGuaranteed": false,
+    "rows": [
+      {
+        "phase": "direct-baseline",
+        "distinctInitialIDs": 2,
+        "initialAndReloadStable": [
+          true,
+          true
+        ],
+        "historicIDsPreserved": [
+          true,
+          true
+        ],
+        "baselineIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          1,
+          1
+        ]
+      },
+      {
+        "phase": "proxy",
+        "distinctInitialIDs": 2,
+        "initialAndReloadStable": [
+          true,
+          true
+        ],
+        "historicIDsPreserved": [
+          true,
+          true
+        ],
+        "baselineIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          1,
+          1
+        ]
+      },
+      {
+        "phase": "direct-return",
+        "distinctInitialIDs": 2,
+        "initialAndReloadStable": [
+          true,
+          true
+        ],
+        "historicIDsPreserved": [
+          true,
+          true
+        ],
+        "baselineIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "freshInitialRouteOrder": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshQAProfiles": 4,
+    "verifiedUncachedEvents": 24,
+    "actualIPCount": 3,
+    "sameUAAndNativeCPU4": true,
+    "distinctObservedIDs": 1,
+    "noStateClearOrCopyOrJSOverrides": true,
+    "preexistingProfilesAndProxiesUnchanged": true,
+    "QAProfileConfigurationsRestored": true,
+    "universalUniquenessGuaranteed": false,
+    "rows": [
+      {
+        "cohort": "direct-first",
+        "phase": "initial-direct",
+        "proxy": false,
+        "freshProfiles": 2,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.98,
+          0.98
+        ]
+      },
+      {
+        "cohort": "proxy-first",
+        "phase": "initial-proxy",
+        "proxy": true,
+        "freshProfiles": 2,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.99,
+          0.99
+        ]
+      },
+      {
+        "cohort": "direct-first",
+        "phase": "switch-to-proxy",
+        "proxy": true,
+        "freshProfiles": 0,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.98,
+          0.98
+        ]
+      },
+      {
+        "cohort": "proxy-first",
+        "phase": "switch-to-direct",
+        "proxy": false,
+        "freshProfiles": 0,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.98,
+          0.98
+        ]
+      },
+      {
+        "cohort": "direct-first",
+        "phase": "reopen-proxy",
+        "proxy": true,
+        "freshProfiles": 0,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.98,
+          0.98
+        ]
+      },
+      {
+        "cohort": "proxy-first",
+        "phase": "return-to-proxy",
+        "proxy": true,
+        "freshProfiles": 0,
+        "IDGroups": [
+          "V1",
+          "V1"
+        ],
+        "distinctInitialIDs": 1,
+        "reloadStable": [
+          true,
+          true
+        ],
+        "firstContactIDsPreserved": [
+          true,
+          true
+        ],
+        "serverVisitorFound": [
+          true,
+          true
+        ],
+        "serverConfidence": [
+          0.98,
+          0.98
+        ]
+      }
+    ]
+  },
+  "newStrictFingerprintEventsAcrossBothRouteExperiments": 36,
+  "freshNormalQAProfilesAcrossBothRouteExperiments": 4,
+  "allNewDirectAndProxyEventIPsMatchCheckedRoute": true,
+  "allNewEventIDsDistinctAndPageAgentServerMatched": true,
+  "newRouteExperimentsServerEnvironmentCount": 1,
+  "establishedVsFreshDirectComparison": {
+    "sameEnvironment": true,
+    "sameIP": true,
+    "sameUA": true,
+    "sameNonemptySDK": true,
+    "sameRawDeviceAttributes": true,
+    "differentVisitorIDs": true,
+    "comparisonScope": "One established direct QA store versus one fresh direct QA store; storage histories differ"
+  }
+}

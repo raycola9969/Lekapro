@@ -2,6 +2,10 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Kiểm chứng mới: trạng thái kho và đổi đường mạng
+
+Ba kho native qua ba IP thoát đạt **72/72 kiểm tra cookie/localStorage**, gồm ghi xen kẽ, cookie HTTPS thực nhận và khởi động lại app. Đã chạy thêm phép trực tiếp → hai proxy → trực tiếp trên hai kho đang có ID riêng và đối chứng thứ tự truy cập bằng bốn kho mới, tổng **36 event mới**; không reset hay đổi UA. [Kết quả và phạm vi bảo đảm](verification/ios16-state-isolation-and-identity-build31.md).
+
 ## Phân tích lại IPA ExitAnty và kiểm chứng mới
 
 Đã lần lại đường tạo pool/kho theo UUID và mặc định Color Depth 24 trong IPA ExitAnty 2.0.0. Hai phép thử mới trên iOS 16.1.1 có **56 event / 14 kho mới**: pool riêng giữ cùng múi giờ vẫn trùng ID qua proxy; hai kho mới 24 bit cũng trùng ID. Cả 14 kho giữ ID khi mở lại, nhưng chưa có cơ chế bảo đảm mỗi kho nhận một Visitor ID riêng. IPA mẫu yêu cầu iOS 18 và khác bản App Store 2.2.2 từng được đo. [Bằng chứng ARM64, bảng đo và giới hạn](verification/exitanty-ipa-reanalysis-ios16-build31.md).
