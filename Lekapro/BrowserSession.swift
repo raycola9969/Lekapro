@@ -29,7 +29,8 @@ final class BrowserSession: ObservableObject, Identifiable {
         } else { processPool = nil }
         if let proxyID = profile.proxyID, store.proxy(proxyID) == nil { throw BrowserError.invalid("Proxy của hồ sơ không còn tồn tại.") }
         dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID),
-            diagnosticQuota: DiagnosticEngineRegistry.originQuota(profileID: profile.id))
+            diagnosticQuota: DiagnosticEngineRegistry.originQuota(profileID: profile.id),
+            diagnosticEphemeral: DiagnosticEngineRegistry.ephemeralStore(profileID: profile.id))
     }
     func start() async {
         guard !started else { return }; started = true

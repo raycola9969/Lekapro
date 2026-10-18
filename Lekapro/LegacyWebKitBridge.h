@@ -4,6 +4,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LegacyWebKitBridge : NSObject
++ (BOOL)prepareDiagnosticOriginConfiguration:(WKWebViewConfiguration *)configuration
+                                      error:(NSError * _Nullable * _Nullable)error;
 + (nullable NSSet<NSString *> *)diagnosticAllNativeDataTypes:(NSError * _Nullable * _Nullable)error;
 + (pid_t)diagnosticNetworkPID:(WKWebsiteDataStore *)store;
 + (BOOL)restartDiagnosticNetwork:(WKWebsiteDataStore *)store error:(NSError * _Nullable * _Nullable)error;

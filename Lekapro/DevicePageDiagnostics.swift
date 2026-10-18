@@ -80,6 +80,14 @@ enum DevicePageDiagnostics {
                     throw BrowserError.invalid("Engine options must name one of the two requested QA profiles.")
                 }
                 try options.validate()
+                if options.ephemeralStore != nil || options.hardwareThreadLimit != nil || options.colorDepthLimit != nil {
+                    guard let profile = store.profile(id), profile.tags == "qa-disposable-site-state" else {
+                        throw BrowserError.invalid("Private-store and hardware probes require disposable QA profiles.")
+                    }
+                    guard options.hardwareThreadLimit == nil || profile.privacy.reduceHardwareInfo != true else {
+                        throw BrowserError.invalid("Select only one CPU reduction experiment.")
+                    }
+                }
                 experiments[id] = options
             }
             if let copy = request.identityStateCopy {
@@ -132,7 +140,7 @@ enum DevicePageDiagnostics {
                 let first = try await observe(tab: tab, previousOrigin: nil,
                     prefix: "profile-\(index)-initial", evidence: evidence)
                 observations.append(["profileID": id.uuidString, "profileName": profile.name,
-                    "usesProxy": profile.proxyID != nil, "initial": first])
+                    "usesProxy": profile.proxyID != nil, "persistentStore": session.dataStore.isPersistent, "initial": first])
                 save()
                 guard let origin = first["timeOrigin"] as? Double,
                       let visitorID = first["visitorID"] as? String else {
@@ -207,7 +215,8 @@ enum DevicePageDiagnostics {
           offset:new Date('2026-01-15T12:00:00Z').getTimezoneOffset(),
           hour:new Date('2026-01-15T12:00:00Z').getHours(),
           locale:Intl.DateTimeFormat().resolvedOptions().locale,language:navigator.language,
-          hardwareConcurrency:navigator.hardwareConcurrency,screen:[screen.width,screen.height]},
+          hardwareConcurrency:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
+          colorDepth:screen.colorDepth,pixelDepth:screen.pixelDepth},
         timeOrigin: performance.timeOrigin, url: location.href, title: document.title,
         viewportWidth: innerWidth, viewportHeight: innerHeight,
         visitorY: node ? node.getBoundingClientRect().top + scrollY : 0};

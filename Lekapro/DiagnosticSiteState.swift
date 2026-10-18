@@ -17,7 +17,11 @@ enum DiagnosticSiteState {
 
     private static func bounded<Value>(_ label: String, timeout duration: Duration = .seconds(120),
         operation: (@escaping (Result<Value, Error>) -> Void) -> Void) async throws -> Value {
-        try await withCheckedThrowingContinuation { continuation in
+        #if DEBUG
+        print("Lekapro state operation started: " + label)
+        defer { print("Lekapro state operation finished: " + label) }
+        #endif
+        return try await withCheckedThrowingContinuation { continuation in
             let pending = Pending(continuation)
             let timeout = Task { @MainActor in
                 do { try await Task.sleep(for: duration) } catch { return }
@@ -135,6 +139,9 @@ enum DiagnosticSiteState {
     // SDK method, or network request is loaded by this document.
     static func originDocument(store: WKWebsiteDataStore) async throws -> BrowserTab {
         let configuration = WKWebViewConfiguration(); configuration.websiteDataStore = store
+        #if DEBUG
+        try LegacyWebKitBridge.prepareDiagnosticOriginConfiguration(configuration)
+        #endif
         let tab = BrowserTab(configuration: configuration)
         tab.webView.loadHTMLString("<!doctype html><title>Disposable state session</title>",
             baseURL: URL(string: "https://fingerprint.com/"))
@@ -178,7 +185,7 @@ enum DiagnosticSiteState {
         // Store-record enumeration can stall on background simulator processes.
         // It is optional metadata: a timeout is explicitly unknown, never empty.
         do {
-            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(requireNativeRecords ? 60 : 15)) { done in
+            let records: [WKWebsiteDataRecord] = try await bounded("native record enumeration", timeout: .seconds(requireNativeRecords ? 60 : 3)) { done in
                 store.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { done(.success($0)) }
             }
             result["nativeDataRecords"] = records.map { ["name": $0.displayName, "types": $0.dataTypes.sorted()] }
@@ -220,9 +227,6 @@ enum DiagnosticSiteState {
                 throw BrowserError.invalid("Cold target was not verified empty after network restart.")
             }
         }
-        let sourceDocument = try await originDocument(store: sourceStore)
-        let targetDocument = try await originDocument(store: targetStore)
-        defer { sourceDocument.close(); targetDocument.close() }
         var count = 0
         if request.omitTokenForControl != true { switch request.kind {
         case .cookies:
@@ -239,6 +243,11 @@ enum DiagnosticSiteState {
             }
             count = sourceCookies.count
         case .localStorage:
+            // Only localStorage needs origin documents. Release both before
+            // the native store snapshots, particularly after a cold restart.
+            let sourceDocument = try await originDocument(store: sourceStore)
+            let targetDocument = try await originDocument(store: targetStore)
+            defer { sourceDocument.close(); targetDocument.close() }
             let local = try await localValues(sourceDocument)
             guard let value = local[request.key] else { throw BrowserError.invalid("The source identity storage key was absent.") }
             _ = try await targetDocument.webView.callAsyncJavaScript("localStorage.setItem(key,value); return true;",

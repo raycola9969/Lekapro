@@ -114,20 +114,24 @@ final class BrowserTests: XCTestCase {
         source.tags = "qa-disposable-site-state"; target.tags = source.tags
         let a = try DataStoreFactory.make(id: source.dataStoreID, forceLegacy: true)
         let b = try DataStoreFactory.make(id: target.dataStoreID, forceLegacy: true)
-        let ta = try await DiagnosticSiteState.originDocument(store: a)
-        let tb = try await DiagnosticSiteState.originDocument(store: b)
         defer {
-            ta.close(); tb.close()
             DataStoreFactory.release(id: source.dataStoreID); DataStoreFactory.release(id: target.dataStoreID)
         }
-        _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-A')")
-        _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-B'); localStorage.setItem('unrelated','keep-B')")
         var request = DiagnosticSiteState.CopyRequest(sourceProfileID: source.id, targetProfileID: target.id,
             kind: .localStorage, key: "_vid_t")
-        let copied = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
-        XCTAssertEqual(copied["copiedValueCount"] as? Int, 1)
-        let values = try await DiagnosticSiteState.localValues(tb)
-        XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
+        // Release seed WebViews before cold network restarts. A stopped but
+        // retained view can reconnect to the process being terminated.
+        do {
+            let ta = try await DiagnosticSiteState.originDocument(store: a)
+            let tb = try await DiagnosticSiteState.originDocument(store: b)
+            defer { ta.close(); tb.close() }
+            _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-A')")
+            _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-B'); localStorage.setItem('unrelated','keep-B')")
+            let copied = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+            XCTAssertEqual(copied["copiedValueCount"] as? Int, 1)
+            let values = try await DiagnosticSiteState.localValues(tb)
+            XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
+        }
         let cookie = CookieRecord(name: "_vid_t", value: "cookie-A", domain: "fingerprint.com",
             expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
         let secondCookie = CookieRecord(name: "_iidt", value: "cookie-A-second", domain: "fingerprint.com",
@@ -155,9 +159,11 @@ final class BrowserTests: XCTestCase {
         XCTAssertFalse(controlCookies.contains { ["_vid_t", "_iidt"].contains($0.name) })
         let controlState = try XCTUnwrap(control["targetAfterClear"] as? [String: Any])
         XCTAssertEqual((controlState["nativeDataRecords"] as? [NSDictionary])?.count, 0)
-        let afterRestartSource = try await DiagnosticSiteState.originDocument(store: a)
-        defer { afterRestartSource.close() }
-        _ = try await afterRestartSource.webView.evaluateJavaScript("document.cookie='qa_after_restart=A; path=/; max-age=3600'; localStorage.setItem('qa_after_restart','A')")
+        do {
+            let afterRestartSource = try await DiagnosticSiteState.originDocument(store: a)
+            defer { afterRestartSource.close() }
+            _ = try await afterRestartSource.webView.evaluateJavaScript("document.cookie='qa_after_restart=A; path=/; max-age=3600'; localStorage.setItem('qa_after_restart','A')")
+        }
         let isolatedTarget = try await DiagnosticSiteState.snapshot(store: b, requireNativeRecords: true)
         XCTAssertEqual(isolatedTarget["cookieCount"] as? Int, 0)
         XCTAssertEqual(isolatedTarget["localStorageKeyNames"] as? [String], [])
@@ -169,8 +175,12 @@ final class BrowserTests: XCTestCase {
         let after = try XCTUnwrap(cleared["stateAfter"] as? [String: Any])
         XCTAssertEqual(after["cookieCount"] as? Int, 0)
         XCTAssertEqual(after["localStorageKeyNames"] as? [String], [])
-        let sourceValues = try await DiagnosticSiteState.localValues(ta)
-        XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
+        do {
+            let sourceAfterColdCopy = try await DiagnosticSiteState.originDocument(store: a)
+            defer { sourceAfterColdCopy.close() }
+            let sourceValues = try await DiagnosticSiteState.localValues(sourceAfterColdCopy)
+            XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
+        }
         let sourceCookies = await CookieService.all(in: a)
         XCTAssertTrue(sourceCookies.contains { $0.value == "cookie-A" })
         let restarted = try await DiagnosticSiteState.reset(.allNativeDataAndNetwork, profile: target, store: b)
@@ -406,6 +416,48 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(payload["hardwareConcurrency"] as? Int, 99)
         XCTAssertEqual(payload["userAgent"] as? String, "literal payload")
     }
+    func testDiagnosticPrivateStoresStaySeparateFromPersistentStores() throws {
+        let id = UUID(), otherID = UUID()
+        defer { DataStoreFactory.release(id: id); DataStoreFactory.release(id: otherID) }
+        let persistent = try DataStoreFactory.make(id: id, forceLegacy: true)
+        let ephemeral = try DataStoreFactory.make(id: id, diagnosticEphemeral: true)
+        XCTAssertTrue(persistent.isPersistent)
+        XCTAssertFalse(ephemeral.isPersistent)
+        XCTAssertFalse(persistent === ephemeral)
+        XCTAssertTrue(ephemeral === (try DataStoreFactory.make(id: id, diagnosticEphemeral: true)))
+        XCTAssertFalse(ephemeral === (try DataStoreFactory.make(id: otherID, diagnosticEphemeral: true)))
+        XCTAssertTrue(persistent === (try DataStoreFactory.make(id: id, forceLegacy: true)))
+        XCTAssertThrowsError(try DataStoreFactory.make(id: UUID(), diagnosticQuota: 32 * 1024 * 1024, diagnosticEphemeral: true))
+        DataStoreFactory.release(id: id)
+        XCTAssertFalse(ephemeral === (try DataStoreFactory.make(id: id, diagnosticEphemeral: true)))
+    }
+    func testDiagnosticSignalLimitsReachFramesAndWorkersWithoutChangingDefaults() async throws {
+        let native = try await sampleContext(BrowserProfile())
+        var profile = BrowserProfile(); profile.tags = "qa-disposable-site-state"
+        let options = try JSONDecoder().decode(DiagnosticEngineOptions.self,
+            from: Data(#"{"hardwareThreadLimit":1,"colorDepthLimit":8,"ephemeralStore":true}"#.utf8))
+        try options.validate()
+        DiagnosticEngineRegistry.set([profile.id: options])
+        defer { DiagnosticEngineRegistry.clear() }
+        let changed = try await sampleContext(profile)
+        XCTAssertEqual(changed["cpu"] as? Int, 1)
+        XCTAssertEqual(changed["frameCPU"] as? Int, 1)
+        XCTAssertEqual(changed["workerCPU"] as? Int, 1)
+        for key in ["colorDepth", "pixelDepth", "frameColorDepth", "framePixelDepth"] {
+            XCTAssertEqual(changed[key] as? Int, min(8, try XCTUnwrap(native[key] as? Int)))
+        }
+        XCTAssertEqual(changed["workerStrict"] as? Bool, true)
+        XCTAssertEqual(changed["workerName"] as? String, "context-fixture")
+        DiagnosticEngineRegistry.clear()
+        let unchanged = try await sampleContext(BrowserProfile())
+        for key in ["cpu", "frameCPU", "workerCPU", "colorDepth", "pixelDepth", "frameColorDepth", "framePixelDepth"] {
+            XCTAssertEqual(unchanged[key] as? Int, native[key] as? Int)
+        }
+        for text in [#"{"hardwareThreadLimit":0}"#, #"{"hardwareThreadLimit":9}"#, #"{"colorDepthLimit":32}"#] {
+            let invalid = try JSONDecoder().decode(DiagnosticEngineOptions.self, from: Data(text.utf8))
+            XCTAssertThrowsError(try invalid.validate())
+        }
+    }
     private func sampleContext(_ profile: BrowserProfile) async throws -> [String: Any] {
         let store = ProfileStore(fileURL: temporaryFile())
         var fixture = profile; fixture.privacy.blockTrackers = false
@@ -443,6 +495,9 @@ final class BrowserTests: XCTestCase {
           platform:navigator.platform,framePlatform:frame.contentWindow.navigator.platform,
           webAudioAvailable:typeof OfflineAudioContext==='function'||typeof webkitOfflineAudioContext==='function',
           cpu:navigator.hardwareConcurrency,screen:[screen.width,screen.height],
+          colorDepth:screen.colorDepth,pixelDepth:screen.pixelDepth,
+          frameCPU:frame.contentWindow.navigator.hardwareConcurrency,
+          frameColorDepth:frame.contentWindow.screen.colorDepth,framePixelDepth:frame.contentWindow.screen.pixelDepth,
           offset:d.getTimezoneOffset(),hour:d.getHours(),
           fontFamily:getComputedStyle(document.querySelector('#sample')).fontFamily,
           frameFontFamily:frame.contentWindow.getComputedStyle(frame.contentDocument.querySelector('span')).fontFamily,
