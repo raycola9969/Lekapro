@@ -1,0 +1,1143 @@
+{
+  "actualDevice": "iPhone 11 Pro Max",
+  "actualOSVersion": "16.1.1",
+  "installedBuild": "29",
+  "verifiedNewUncachedEventsInThisReport": 152,
+  "distinctVisitorIDsAcrossIncludedExperiments": 4,
+  "distinctActualExitIPsAcrossIncludedExperiments": 17,
+  "serverEnvironmentCount": 1,
+  "allPageAgentServerIDsAndEventsMatch": true,
+  "allPageWorkerServerUAsMatch": true,
+  "IDGroupAliasesAreLocalToEachSubExperiment": true,
+  "onePriorProxyFactorial": {
+    "actualOSVersion": "16.1.1",
+    "installedBuild": "29",
+    "plannedProfiles": 24,
+    "completedProfiles": 24,
+    "uniqueUncachedEvents": 48,
+    "distinctVisitorIDs": 4,
+    "distinctObservedExitIPs": 2,
+    "sameIDAcrossRoutePairs": 11,
+    "differentActualExitIPPairs": 12,
+    "stableOnReloadProfiles": 24,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allPageWorkerServerUAsMatch": true,
+    "rows": [
+      {
+        "label": "P01",
+        "family": "safari",
+        "mode": "native",
+        "route": "direct",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P02",
+        "family": "safari",
+        "mode": "native",
+        "route": "proxy",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P03",
+        "family": "safari",
+        "mode": "canvas-audio",
+        "route": "direct",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P04",
+        "family": "safari",
+        "mode": "canvas-audio",
+        "route": "proxy",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P05",
+        "family": "safari",
+        "mode": "hardware-worker",
+        "route": "direct",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P06",
+        "family": "safari",
+        "mode": "hardware-worker",
+        "route": "proxy",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P07",
+        "family": "safari",
+        "mode": "combined",
+        "route": "direct",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P08",
+        "family": "safari",
+        "mode": "combined",
+        "route": "proxy",
+        "initialIDGroup": "V2",
+        "reloadIDGroup": "V2",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P09",
+        "family": "chrome",
+        "mode": "native",
+        "route": "direct",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P10",
+        "family": "chrome",
+        "mode": "native",
+        "route": "proxy",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P11",
+        "family": "chrome",
+        "mode": "canvas-audio",
+        "route": "direct",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P12",
+        "family": "chrome",
+        "mode": "canvas-audio",
+        "route": "proxy",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P13",
+        "family": "chrome",
+        "mode": "hardware-worker",
+        "route": "direct",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P14",
+        "family": "chrome",
+        "mode": "hardware-worker",
+        "route": "proxy",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P15",
+        "family": "chrome",
+        "mode": "combined",
+        "route": "direct",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P16",
+        "family": "chrome",
+        "mode": "combined",
+        "route": "proxy",
+        "initialIDGroup": "V3",
+        "reloadIDGroup": "V3",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.41 Mobile/15E148 Safari/604.1"
+      },
+      {
+        "label": "P17",
+        "family": "firefox",
+        "mode": "native",
+        "route": "direct",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P18",
+        "family": "firefox",
+        "mode": "native",
+        "route": "proxy",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P19",
+        "family": "firefox",
+        "mode": "canvas-audio",
+        "route": "direct",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P20",
+        "family": "firefox",
+        "mode": "canvas-audio",
+        "route": "proxy",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P21",
+        "family": "firefox",
+        "mode": "hardware-worker",
+        "route": "direct",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P22",
+        "family": "firefox",
+        "mode": "hardware-worker",
+        "route": "proxy",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P23",
+        "family": "firefox",
+        "mode": "combined",
+        "route": "direct",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "reloadIPGroup": "IP1",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      },
+      {
+        "label": "P24",
+        "family": "firefox",
+        "mode": "combined",
+        "route": "proxy",
+        "initialIDGroup": "V4",
+        "reloadIDGroup": "V4",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "reloadIPGroup": "IP2",
+        "sameIPOnReload": true,
+        "mainWorkerCPUAgree": true,
+        "exactUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/119.0 Mobile/15E148 Safari/605.1.15"
+      }
+    ],
+    "pairs": [
+      {
+        "family": "safari",
+        "mode": "native",
+        "sameIDAcrossRoutes": false,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V1",
+        "proxyIDGroup": "V2"
+      },
+      {
+        "family": "safari",
+        "mode": "canvas-audio",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V2",
+        "proxyIDGroup": "V2"
+      },
+      {
+        "family": "safari",
+        "mode": "hardware-worker",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V2",
+        "proxyIDGroup": "V2"
+      },
+      {
+        "family": "safari",
+        "mode": "combined",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V2",
+        "proxyIDGroup": "V2"
+      },
+      {
+        "family": "chrome",
+        "mode": "native",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V3",
+        "proxyIDGroup": "V3"
+      },
+      {
+        "family": "chrome",
+        "mode": "canvas-audio",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V3",
+        "proxyIDGroup": "V3"
+      },
+      {
+        "family": "chrome",
+        "mode": "hardware-worker",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V3",
+        "proxyIDGroup": "V3"
+      },
+      {
+        "family": "chrome",
+        "mode": "combined",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V3",
+        "proxyIDGroup": "V3"
+      },
+      {
+        "family": "firefox",
+        "mode": "native",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V4",
+        "proxyIDGroup": "V4"
+      },
+      {
+        "family": "firefox",
+        "mode": "canvas-audio",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V4",
+        "proxyIDGroup": "V4"
+      },
+      {
+        "family": "firefox",
+        "mode": "hardware-worker",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V4",
+        "proxyIDGroup": "V4"
+      },
+      {
+        "family": "firefox",
+        "mode": "combined",
+        "sameIDAcrossRoutes": true,
+        "differentActualExitIPs": true,
+        "directIDGroup": "V4",
+        "proxyIDGroup": "V4"
+      }
+    ],
+    "complete": true,
+    "excludedWorkerTimeoutPairs": 1,
+    "extraProfilesCreatedForExcludedPairs": 2,
+    "limits": [
+      "One existing SOCKS5 proxy versus the direct connection; this is not one new exit IP per profile.",
+      "Different privacy modes are grouped interventions, not a claim identifying the only causal browser signal."
+    ],
+    "universalFreshProfileUniquenessEstablished": false,
+    "allPreexistingProfilesUnchanged": true
+  },
+  "suppliedProxyProfileExperiments": {
+    "actualOSVersion": "16.1.1",
+    "installedBuild": "29",
+    "testedUserAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1",
+    "proxyCount": 15,
+    "profilesPerRound": 16,
+    "verifiedUncachedEvents": 72,
+    "distinctExitIPs": 15,
+    "distinctVisitorIDs": 1,
+    "distinctFreshProfiles": 32,
+    "rounds": {
+      "fresh": {
+        "completedProfiles": 16,
+        "distinctVisitorIDs": 1,
+        "distinctActualExitIPs": 15,
+        "stableOnReload": 16,
+        "retainedFirstFreshProfileID": 16
+      },
+      "reopen": {
+        "completedProfiles": 4,
+        "distinctVisitorIDs": 1,
+        "distinctActualExitIPs": 4,
+        "stableOnReload": 4,
+        "retainedFirstFreshProfileID": 4
+      },
+      "recreate": {
+        "completedProfiles": 16,
+        "distinctVisitorIDs": 1,
+        "distinctActualExitIPs": 14,
+        "stableOnReload": 16,
+        "retainedFirstFreshProfileID": 16
+      }
+    },
+    "rows": [
+      {
+        "proxyLabel": "P01",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P02",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P03",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP3",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P05",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP4",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P06",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP5",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P07",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP6",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P08",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP7",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P09",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP8",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P10",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP9",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P11",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP10",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P12",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP11",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P13",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP12",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P15",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP13",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P16-unavailable-same-proxy-control",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P17",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP14",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P18",
+        "round": "fresh",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP15",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P01",
+        "round": "reopen",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P02",
+        "round": "reopen",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P17",
+        "round": "reopen",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP14",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P18",
+        "round": "reopen",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP15",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P01",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P02",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP2",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P03-recreate-unavailable-same-proxy-control",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P05",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP4",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P06",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP5",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P07",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP6",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P08",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP7",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P09",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP8",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P10",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP9",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P11",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP10",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P12",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP11",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P13",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP12",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P15",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP13",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P16-unavailable-same-proxy-control",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP1",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P17",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP14",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      },
+      {
+        "proxyLabel": "P18",
+        "round": "recreate",
+        "initialIDGroup": "V1",
+        "reloadIDGroup": "V1",
+        "stableOnReload": true,
+        "initialIPGroup": "IP15",
+        "serverExitIPMatchesProxyCheck": true,
+        "sameIDAsFirstFreshProfile": true
+      }
+    ],
+    "excludedAttempts": 11,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allPageWorkerServerUAsMatch": true,
+    "noServiceResponsesOrIDsModified": true,
+    "universalFreshProfileUniquenessEstablished": false,
+    "distinctProxyCountries": 1,
+    "distinctProxyTimezones": 5,
+    "distinctProxyASNs": 11,
+    "proxyNetworkTypes": [
+      "isp"
+    ],
+    "mainWorkerCPUMatchesInAllVisits": true,
+    "serverEnvironmentCount": 1,
+    "requestedWorkingProxyCount": 17,
+    "unavailableOnActualIPhoneProxyLabels": [
+      "P14",
+      "P16"
+    ],
+    "unavailableDuringRecreationProxyLabels": [
+      "P03"
+    ],
+    "reopenSampleProfiles": 4,
+    "distinctCurrentIDsAlreadySeenInEarlierVerifiedProxyTest": 1,
+    "allPreexistingProfilesAndProxiesUnchanged": true,
+    "complete": true
+  },
+  "jointSignalExperiments": {
+    "actualOSVersion": "16.1.1",
+    "installedBuild": "29",
+    "verifiedUncachedEvents": 28,
+    "distinctObservedExitIPs": 4,
+    "distinctVisitorIDs": 4,
+    "cases": [
+      {
+        "case": "joint-privacy-proxy",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J1",
+            "J1"
+          ],
+          [
+            "J1",
+            "J1"
+          ]
+        ],
+        "differentIDsWithinPair": false,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "audio",
+          "canvas"
+        ]
+      },
+      {
+        "case": "joint-native-options",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J1",
+            "J1"
+          ],
+          [
+            "J1",
+            "J1"
+          ]
+        ],
+        "differentIDsWithinPair": false,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "canvas"
+        ]
+      },
+      {
+        "case": "joint-safari-os",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J1",
+            "J1"
+          ],
+          [
+            "J1",
+            "J1"
+          ]
+        ],
+        "differentIDsWithinPair": false,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "audio",
+          "canvas"
+        ]
+      },
+      {
+        "case": "joint-browser-family",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J2",
+            "J2"
+          ],
+          [
+            "J3",
+            "J3"
+          ]
+        ],
+        "differentIDsWithinPair": true,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "audio",
+          "canvas"
+        ]
+      },
+      {
+        "case": "original-native-stores-revisited",
+        "interventionApplied": true,
+        "freshStores": false,
+        "IDGroups": [
+          [
+            "J4",
+            "J4"
+          ],
+          [
+            "J1",
+            "J1"
+          ]
+        ],
+        "differentIDsWithinPair": true,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "bothOriginalIDsRetained": true
+      },
+      {
+        "case": "joint-ua-suffix-proxy",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J1",
+            "J1"
+          ],
+          [
+            "J1",
+            "J1"
+          ]
+        ],
+        "differentIDsWithinPair": false,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "canvas"
+        ]
+      },
+      {
+        "case": "joint-browser-version-proxy",
+        "interventionApplied": true,
+        "freshStores": true,
+        "IDGroups": [
+          [
+            "J2",
+            "J2"
+          ],
+          [
+            "J2",
+            "J2"
+          ]
+        ],
+        "differentIDsWithinPair": false,
+        "stableOnReload": true,
+        "actualIPsDiffer": true,
+        "initialIDsAlreadyObservedInEarlierProxyTest": [
+          true,
+          true
+        ],
+        "mainWorkerCPUMatches": true,
+        "rawAttributeGroupsDifferingWithinPair": [
+          "canvas"
+        ]
+      }
+    ],
+    "excludedAttempts": 0,
+    "allPageAgentServerIDsAndEventsMatch": true,
+    "allPageWorkerServerUAsMatch": true,
+    "universalFreshProfileUniquenessEstablished": false,
+    "allUnrelatedPreexistingProfilesAndProxiesUnchanged": true,
+    "complete": true
+  },
+  "serverRecognizedExistingVisitorOnInitial": {
+    "fresh": 16,
+    "recreate": 16
+  },
+  "storageAPIProbe": {
+    "nativeFlagsRequested": [
+      {
+        "storageAPIEnabled": false
+      },
+      {
+        "storageAPIEnabled": true
+      }
+    ],
+    "verifiedUncachedEvents": 4,
+    "bothProfilesSameVisitorID": true,
+    "storageContextObservations": [
+      [
+        {
+          "estimate": null,
+          "estimateSupported": false,
+          "secureContext": true
+        },
+        {
+          "estimate": null,
+          "estimateSupported": false,
+          "secureContext": true
+        }
+      ],
+      [
+        {
+          "estimate": null,
+          "estimateSupported": false,
+          "secureContext": true
+        },
+        {
+          "estimate": null,
+          "estimateSupported": false,
+          "secureContext": true
+        }
+      ]
+    ],
+    "quotaActuallyMeasured": false,
+    "conclusion": "Native Storage API flag did not expose StorageManager. No quota-to-visitor-ID causality claim on this iOS16 device."
+  },
+  "universalFreshProfileUniquenessEstablished": false,
+  "completeRetentionCauseEstablished": false,
+  "limitations": [
+    "Finite real-device observations cannot guarantee external IDs for every future profile.",
+    "New profiles have independent UUIDs/stores; this does not force a third-party service to issue different visitor IDs.",
+    "Three supplied proxies did not complete TLS IP checks; further demo-only failures are identified by label. They are not counted as measured IDs.",
+    "The four-profile reopen sample is not an all-route reopen test. Exit-IP coverage and unavailable routes are reported separately for each fresh round.",
+    "The older 2228-event one-IP report keeps its original scope. This multi-IP report is separate, not a silent replacement of that cohort."
+  ]
+}
