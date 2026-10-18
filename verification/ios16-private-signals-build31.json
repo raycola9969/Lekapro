@@ -1,0 +1,1567 @@
+{
+  "actualOSVersion": "16.1.1",
+  "build": "31",
+  "completed": true,
+  "acceptedCases": 8,
+  "freshProfiles": 16,
+  "uniqueUncachedEvents": 32,
+  "distinctObservedIDs": 4,
+  "IDsNotPreviouslyObserved": 3,
+  "historicalReferenceScope": "Archived native-engine reports from builds before 31; not an exhaustive server history",
+  "historicalReferenceDistinctIDs": 184,
+  "actualIPCount": 1,
+  "serverEnvironmentCount": 1,
+  "pageAgentServerResponsesUnmodified": true,
+  "unlimitedUniquenessGuaranteed": false,
+  "ephemeralStoresDoNotPersistAcrossAppLaunches": true,
+  "cases": [
+    {
+      "case": "persistent-private",
+      "options": [
+        {},
+        {
+          "ephemeralStore": true
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G1",
+          "G1"
+        ],
+        [
+          "G1",
+          "G1"
+        ]
+      ],
+      "distinctInitialIDs": 1,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 2,
+      "differentRawAttributeGroups": [
+        "canvas"
+      ]
+    },
+    {
+      "case": "two-private",
+      "options": [
+        {
+          "ephemeralStore": true
+        },
+        {
+          "ephemeralStore": true
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G1",
+          "G1"
+        ],
+        [
+          "G1",
+          "G1"
+        ]
+      ],
+      "distinctInitialIDs": 1,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 2,
+      "differentRawAttributeGroups": [
+        "canvas"
+      ]
+    },
+    {
+      "case": "cpu-persistent",
+      "options": [
+        {
+          "hardwareThreadLimit": 1
+        },
+        {
+          "hardwareThreadLimit": 4
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 1,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 1,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G2",
+          "G2"
+        ],
+        [
+          "G1",
+          "G1"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 1,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "hardware_concurrency"
+      ]
+    },
+    {
+      "case": "depth-persistent",
+      "options": [
+        {
+          "colorDepthLimit": 8
+        },
+        {
+          "colorDepthLimit": 16
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 4,
+              "serverColorDepth": 8,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 4,
+              "serverColorDepth": 8,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G3",
+          "G3"
+        ],
+        [
+          "G4",
+          "G4"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 0,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "color_depth"
+      ]
+    },
+    {
+      "case": "combined-persistent",
+      "options": [
+        {
+          "hardwareThreadLimit": 1,
+          "colorDepthLimit": 8
+        },
+        {
+          "hardwareThreadLimit": 4,
+          "colorDepthLimit": 16
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 1,
+              "serverColorDepth": 8,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 1,
+              "serverColorDepth": 8,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": true,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": false,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G3",
+          "G3"
+        ],
+        [
+          "G4",
+          "G4"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 0,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "color_depth",
+        "hardware_concurrency"
+      ]
+    },
+    {
+      "case": "combined-private",
+      "options": [
+        {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 1,
+          "colorDepthLimit": 8
+        },
+        {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 4,
+          "colorDepthLimit": 16
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 1,
+              "serverColorDepth": 8,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 1,
+              "serverColorDepth": 8,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G3",
+          "G3"
+        ],
+        [
+          "G4",
+          "G4"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 0,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "color_depth",
+        "hardware_concurrency"
+      ]
+    },
+    {
+      "case": "cpu-private",
+      "options": [
+        {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 1
+        },
+        {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 4
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 1,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 1,
+              "workerCPU": 1,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 1,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 32,
+              "pixelDepth": 32,
+              "serverCPU": 4,
+              "serverColorDepth": 32,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G2",
+          "G2"
+        ],
+        [
+          "G1",
+          "G1"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 1,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "hardware_concurrency"
+      ]
+    },
+    {
+      "case": "depth-private",
+      "options": [
+        {
+          "ephemeralStore": true,
+          "colorDepthLimit": 8
+        },
+        {
+          "ephemeralStore": true,
+          "colorDepthLimit": 16
+        }
+      ],
+      "freshProfiles": 2,
+      "signalsVerifiedInPageWorkerServer": true,
+      "signals": [
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 4,
+              "serverColorDepth": 8,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 8,
+              "pixelDepth": 8,
+              "serverCPU": 4,
+              "serverColorDepth": 8,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        },
+        {
+          "persistentStore": false,
+          "requestedPersistenceObserved": true,
+          "visits": [
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            },
+            {
+              "cpu": 4,
+              "workerCPU": 4,
+              "colorDepth": 16,
+              "pixelDepth": 16,
+              "serverCPU": 4,
+              "serverColorDepth": 16,
+              "serverIncognito": true,
+              "serverTampering": false,
+              "serverTamperingConfidence": "high",
+              "requestedLimitsObserved": true
+            }
+          ]
+        }
+      ],
+      "noInterventionCausalConclusion": false,
+      "visitorGroups": [
+        [
+          "G3",
+          "G3"
+        ],
+        [
+          "G4",
+          "G4"
+        ]
+      ],
+      "distinctInitialIDs": 2,
+      "reloadStableProfiles": 2,
+      "initialIDsAlreadyObservedBeforeBuild31": 0,
+      "differentRawAttributeGroups": [
+        "canvas",
+        "color_depth"
+      ]
+    }
+  ],
+  "baselineProfilesUnchanged": true,
+  "baselineProxiesUnchanged": true,
+  "baselineProfileCount": 1002,
+  "nativeColdProxyControls": [
+    {
+      "actualOSVersion": "16.1.1",
+      "build": "29",
+      "freshProfiles": 2,
+      "actualExitIPs": 2,
+      "verifiedUncachedEvents": 4,
+      "nativeNetworkPIDChangedForBothProfiles": true,
+      "persistentNetworkStateFlushedForBoth": true,
+      "noCookiesOrLocalStorageBeforeFirstNetworkVisit": true,
+      "distinctIDsInPair": 1,
+      "reloadStableProfiles": 2,
+      "unlimitedUniquenessGuaranteed": false,
+      "initialIDsAlreadySeenInPreviousMultiProxySeries": 2
+    },
+    {
+      "actualOSVersion": "16.1.1",
+      "build": "29",
+      "freshProfiles": 2,
+      "actualExitIPs": 2,
+      "verifiedUncachedEvents": 4,
+      "nativeNetworkPIDChangedForBothProfiles": true,
+      "persistentNetworkStateFlushedForBoth": true,
+      "noCookiesOrLocalStorageBeforeFirstNetworkVisit": true,
+      "combinedPrivacyEnabled": true,
+      "privacyOptions": {
+        "canvasNoise": true,
+        "audioNoise": true,
+        "reduceHardwareInfo": true,
+        "protectBlobWorkers": true,
+        "blockWebGL": true
+      },
+      "distinctIDsInPair": 1,
+      "initialIDsAlreadySeenInPreviousMultiProxySeries": 2,
+      "reloadStableProfiles": 2,
+      "unlimitedUniquenessGuaranteed": false,
+      "differentRawAttributeGroups": [
+        "audio",
+        "canvas"
+      ],
+      "mainWorkerServerCPUVerified": true
+    }
+  ],
+  "artifact": {
+    "ciConclusion": "success",
+    "build": "31",
+    "sourceCommit": "8165b6bfd4f99b1d2e57d6d449a8eb8c9077e3a5",
+    "artifactSHA256": "f936616d3b9f3e93b589a7a39ce7021be9c5b42787232c12a155f1b433e45b59",
+    "ipaSHA256": "182612787df66542438cdc75919a5fd05fc4e59c7d4716189b8ad6811707d64c",
+    "runID": 39165536023
+  },
+  "simulatorValidation": {
+    "passedTests": 32,
+    "skippedLiveNetworkTests": 1,
+    "failedTests": 0
+  },
+  "freshReplication": {
+    "completed": true,
+    "replicatedSettings": 12,
+    "freshProfiles": 24,
+    "uniqueUncachedEvents": 48,
+    "distinctIDs": 4,
+    "IDsNotSeenInFirstMatrix": 0,
+    "unlimitedUniquenessGuaranteed": false,
+    "cases": [
+      {
+        "options": {
+          "hardwareThreadLimit": 1
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "hardwareThreadLimit": 4
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "colorDepthLimit": 8
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "colorDepthLimit": 16
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "hardwareThreadLimit": 1,
+          "colorDepthLimit": 8
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "hardwareThreadLimit": 4,
+          "colorDepthLimit": 16
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 1,
+          "colorDepthLimit": 8
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 4,
+          "colorDepthLimit": 16
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 1
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "hardwareThreadLimit": 4
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "colorDepthLimit": 8
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      },
+      {
+        "options": {
+          "ephemeralStore": true,
+          "colorDepthLimit": 16
+        },
+        "freshProfiles": 2,
+        "distinctIDsInPair": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2,
+        "initialIDsPreviouslySeenForSameSetting": 2
+      }
+    ],
+    "baselineProfilesUnchanged": true,
+    "baselineProfileCount": 1018
+  },
+  "cpuAndStateRetention": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "existingDisposableStores": 2,
+    "freshBaselineProfiles": 2,
+    "baselineContrastAvailable": true,
+    "newUniqueUncachedEvents": 16,
+    "initialGroups": [
+      [
+        "R1",
+        "R1"
+      ],
+      [
+        "R2",
+        "R2"
+      ]
+    ],
+    "savedTabURLsTemporarilyBlankAndRestored": true,
+    "excludedInterruptedPreliminaryAttempts": 1,
+    "allPageWorkerServerCPUsVerified": true,
+    "soleRetentionCauseEstablished": false,
+    "unlimitedUniquenessGuaranteed": false,
+    "phases": [
+      {
+        "phase": "swap-preserving-state",
+        "cpuLimits": [
+          4,
+          1
+        ],
+        "sameStoresAsOriginalPair": true,
+        "cookieAndLocalStorageRemovalVerified": false,
+        "distinctInitialIDs": 2,
+        "identityTokensPresentBeforeReset": [],
+        "initialIDsRetainOriginalStoreID": [
+          true,
+          true
+        ],
+        "initialIDsMatchOriginalCPUSetting": [
+          false,
+          false
+        ],
+        "reloadStableProfiles": 2,
+        "visitorGroups": [
+          [
+            "R1",
+            "R1"
+          ],
+          [
+            "R2",
+            "R2"
+          ]
+        ]
+      },
+      {
+        "phase": "same-swapped-cpu-clear-cookies-and-localStorage",
+        "cpuLimits": [
+          4,
+          1
+        ],
+        "sameStoresAsOriginalPair": true,
+        "cookieAndLocalStorageRemovalVerified": true,
+        "distinctInitialIDs": 2,
+        "identityTokensPresentBeforeReset": [
+          true,
+          true
+        ],
+        "initialIDsRetainOriginalStoreID": [
+          true,
+          true
+        ],
+        "initialIDsMatchOriginalCPUSetting": [
+          false,
+          false
+        ],
+        "reloadStableProfiles": 2,
+        "visitorGroups": [
+          [
+            "R1",
+            "R1"
+          ],
+          [
+            "R2",
+            "R2"
+          ]
+        ]
+      },
+      {
+        "phase": "restore-original-cpu-preserving-current-state",
+        "cpuLimits": [
+          1,
+          4
+        ],
+        "sameStoresAsOriginalPair": true,
+        "cookieAndLocalStorageRemovalVerified": false,
+        "distinctInitialIDs": 2,
+        "identityTokensPresentBeforeReset": [],
+        "initialIDsRetainOriginalStoreID": [
+          true,
+          true
+        ],
+        "initialIDsMatchOriginalCPUSetting": [
+          true,
+          true
+        ],
+        "reloadStableProfiles": 2,
+        "visitorGroups": [
+          [
+            "R1",
+            "R1"
+          ],
+          [
+            "R2",
+            "R2"
+          ]
+        ]
+      }
+    ]
+  },
+  "fullNativeResetAndCPUSwap": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "existingDisposableStores": 2,
+    "verifiedUncachedEvents": 4,
+    "cpuLimits": [
+      4,
+      1
+    ],
+    "sameStoresAsOriginalBaseline": true,
+    "initialIDsRetainOriginalStoreID": [
+      false,
+      false
+    ],
+    "initialIDsMatchOriginalCPUSetting": [
+      false,
+      true
+    ],
+    "distinctInitialIDs": 2,
+    "reloadStableProfiles": 2,
+    "stateResets": [
+      {
+        "nativeTypeCount": 19,
+        "nativeTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkPIDChanged": true,
+        "cookiesAndLocalStorageVerifiedEmpty": true,
+        "nativeRecordEnumerationComplete": true,
+        "nativeRecordCount": 0,
+        "allEnumeratedNativeRecordsEmpty": true
+      },
+      {
+        "nativeTypeCount": 19,
+        "nativeTypes": [
+          "WKWebsiteDataTypeCookies",
+          "WKWebsiteDataTypeDiskCache",
+          "WKWebsiteDataTypeFetchCache",
+          "WKWebsiteDataTypeFileSystem",
+          "WKWebsiteDataTypeIndexedDBDatabases",
+          "WKWebsiteDataTypeLocalStorage",
+          "WKWebsiteDataTypeMemoryCache",
+          "WKWebsiteDataTypeOfflineWebApplicationCache",
+          "WKWebsiteDataTypeServiceWorkerRegistrations",
+          "WKWebsiteDataTypeSessionStorage",
+          "WKWebsiteDataTypeWebSQLDatabases",
+          "_WKWebsiteDataTypeAdClickAttributions",
+          "_WKWebsiteDataTypeAlternativeServices",
+          "_WKWebsiteDataTypeCredentials",
+          "_WKWebsiteDataTypeHSTSCache",
+          "_WKWebsiteDataTypeMediaKeys",
+          "_WKWebsiteDataTypePrivateClickMeasurements",
+          "_WKWebsiteDataTypeResourceLoadStatistics",
+          "_WKWebsiteDataTypeSearchFieldRecentSearches"
+        ],
+        "networkPIDChanged": true,
+        "cookiesAndLocalStorageVerifiedEmpty": true,
+        "nativeRecordEnumerationComplete": true,
+        "nativeRecordCount": 0,
+        "allEnumeratedNativeRecordsEmpty": true
+      }
+    ],
+    "allPageWorkerServerCPUsVerified": true,
+    "savedTabURLsTemporarilyBlankAndRestored": true,
+    "soleRetentionCauseEstablished": false,
+    "unlimitedUniquenessGuaranteed": false,
+    "initialIDsAlreadySeenInFirstMatrix": [
+      false,
+      true
+    ],
+    "rawGroupsChangedComparedWithSameCPUAfterCookieLocalReset": [
+      [],
+      []
+    ]
+  },
+  "freshProfilesWithFullNativeReset": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 4,
+    "verifiedUncachedEvents": 8,
+    "distinctIDs": 3,
+    "IDsNotSeenInFirstMatrix": 2,
+    "oneUniqueIDPerFreshProfile": false,
+    "unlimitedUniquenessGuaranteed": false,
+    "cases": [
+      {
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "sameUAAndCPUForBoth": true,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 0
+      },
+      {
+        "cpuLimit": 1,
+        "freshProfiles": 2,
+        "sameUAAndCPUForBoth": true,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 1,
+        "reloadStableProfiles": 2,
+        "initialIDsSeenInFirstMatrix": 2
+      }
+    ]
+  },
+  "sameCPUFreshNativeResetReplication": {
+    "completed": true,
+    "stopReason": "bounded_replication_complete",
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 20,
+    "verifiedUncachedEvents": 40,
+    "distinctIDs": 20,
+    "IDsNotSeenInEarlierBuild31Tests": 20,
+    "unlimitedUniquenessGuaranteed": false,
+    "cases": [
+      {
+        "trial": 1,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 2,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 3,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 4,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 5,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 6,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 7,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 8,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 9,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      },
+      {
+        "trial": 10,
+        "cpuLimit": 4,
+        "freshProfiles": 2,
+        "native19TypesAndEmptyRecordsVerified": true,
+        "bothNetworkPIDsChanged": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObservedInBuild31": 0
+      }
+    ]
+  },
+  "reopenedFreshNativeResetProfiles": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "reopenedProfiles": 20,
+    "verifiedUncachedEvents": 40,
+    "distinctIDs": 20,
+    "profilesPreservingOriginalID": 20,
+    "unlimitedUniquenessGuaranteed": false,
+    "cases": [
+      {
+        "trial": 1,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 2,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 3,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 4,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 5,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 6,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 7,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 8,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 9,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      },
+      {
+        "trial": 10,
+        "reopenedProfiles": 2,
+        "sameStoreUUIDs": true,
+        "noSiteStateReset": true,
+        "originalIDsPreserved": [
+          true,
+          true
+        ],
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2
+      }
+    ]
+  },
+  "nativeResetAblation": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 4,
+    "verifiedUncachedEvents": 8,
+    "distinctIDs": 4,
+    "cases": [
+      {
+        "action": "networkOnly",
+        "freshProfiles": 2,
+        "cpuLimit": 4,
+        "nativeTypesRemoved": 0,
+        "networkRestartRequested": true,
+        "verifiedResetPreconditions": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObserved": 0
+      },
+      {
+        "action": "allNativeData",
+        "freshProfiles": 2,
+        "cpuLimit": 4,
+        "nativeTypesRemoved": 19,
+        "networkRestartRequested": false,
+        "verifiedResetPreconditions": true,
+        "distinctInitialIDs": 2,
+        "reloadStableProfiles": 2,
+        "initialIDsPreviouslyObserved": 0
+      }
+    ],
+    "unlimitedUniquenessGuaranteed": false,
+    "soleRetentionCauseEstablished": false
+  },
+  "rawAttributeComparison": {
+    "profiles": 20,
+    "distinctIDs": 20,
+    "actualIPCount": 1,
+    "serverEnvironmentCount": 1,
+    "sameIPAsInitialMatrix": true,
+    "IDsAlreadySeenInArchivedPre31Reference": 0,
+    "distinctRawAttributeSets": 2,
+    "varyingRawAttributeGroups": {
+      "canvas": 2
+    },
+    "sameRawAttributesCanHaveDifferentIDs": true,
+    "allNativeEnumerationsEmpty": true
+  },
+  "contemporaneousNoResetControls": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "build": "31",
+    "freshProfiles": 4,
+    "verifiedUncachedEvents": 8,
+    "distinctIDs": 4,
+    "cases": [
+      {
+        "case": "cpu4-and-native",
+        "options": [
+          {
+            "hardwareThreadLimit": 4
+          },
+          {}
+        ],
+        "freshProfiles": 2,
+        "noStateReset": true,
+        "distinctInitialIDs": 2,
+        "initialIDsPreviouslyObserved": [
+          false,
+          false
+        ],
+        "reloadStableProfiles": 2
+      },
+      {
+        "case": "cpu1-and-cpu4",
+        "options": [
+          {
+            "hardwareThreadLimit": 1
+          },
+          {
+            "hardwareThreadLimit": 4
+          }
+        ],
+        "freshProfiles": 2,
+        "noStateReset": true,
+        "distinctInitialIDs": 2,
+        "initialIDsPreviouslyObserved": [
+          true,
+          false
+        ],
+        "reloadStableProfiles": 2
+      }
+    ],
+    "unlimitedUniquenessGuaranteed": false
+  },
+  "twentyProfileScenarioPassed": true,
+  "resetNecessityEstablished": false,
+  "soleRetentionCauseEstablished": false,
+  "nativeRecordEnumerationScope": "Public WKWebsiteDataStore.allWebsiteDataTypes(); does not enumerate every private type",
+  "allNewStrictEvents": 212,
+  "allNewFreshProfiles": 78,
+  "allNewActualIPCount": 3,
+  "originalBaselineProfilesAndProxiesUnchangedAtFinalAudit": true
+}
