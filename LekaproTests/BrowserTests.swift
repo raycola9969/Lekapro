@@ -114,20 +114,24 @@ final class BrowserTests: XCTestCase {
         source.tags = "qa-disposable-site-state"; target.tags = source.tags
         let a = try DataStoreFactory.make(id: source.dataStoreID, forceLegacy: true)
         let b = try DataStoreFactory.make(id: target.dataStoreID, forceLegacy: true)
-        let ta = try await DiagnosticSiteState.originDocument(store: a)
-        let tb = try await DiagnosticSiteState.originDocument(store: b)
         defer {
-            ta.close(); tb.close()
             DataStoreFactory.release(id: source.dataStoreID); DataStoreFactory.release(id: target.dataStoreID)
         }
-        _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-A')")
-        _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-B'); localStorage.setItem('unrelated','keep-B')")
         var request = DiagnosticSiteState.CopyRequest(sourceProfileID: source.id, targetProfileID: target.id,
             kind: .localStorage, key: "_vid_t")
-        let copied = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
-        XCTAssertEqual(copied["copiedValueCount"] as? Int, 1)
-        let values = try await DiagnosticSiteState.localValues(tb)
-        XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
+        // Release seed WebViews before cold network restarts. A stopped but
+        // retained view can reconnect to the process being terminated.
+        do {
+            let ta = try await DiagnosticSiteState.originDocument(store: a)
+            let tb = try await DiagnosticSiteState.originDocument(store: b)
+            defer { ta.close(); tb.close() }
+            _ = try await ta.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-A')")
+            _ = try await tb.webView.evaluateJavaScript("localStorage.setItem('_vid_t','fixture-B'); localStorage.setItem('unrelated','keep-B')")
+            let copied = try await DiagnosticSiteState.copy(request, source: source, target: target, sourceStore: a, targetStore: b)
+            XCTAssertEqual(copied["copiedValueCount"] as? Int, 1)
+            let values = try await DiagnosticSiteState.localValues(tb)
+            XCTAssertEqual(values["_vid_t"], "fixture-A"); XCTAssertEqual(values["unrelated"], "keep-B")
+        }
         let cookie = CookieRecord(name: "_vid_t", value: "cookie-A", domain: "fingerprint.com",
             expirationDate: Date().addingTimeInterval(3600).timeIntervalSince1970)
         let secondCookie = CookieRecord(name: "_iidt", value: "cookie-A-second", domain: "fingerprint.com",
@@ -155,9 +159,11 @@ final class BrowserTests: XCTestCase {
         XCTAssertFalse(controlCookies.contains { ["_vid_t", "_iidt"].contains($0.name) })
         let controlState = try XCTUnwrap(control["targetAfterClear"] as? [String: Any])
         XCTAssertEqual((controlState["nativeDataRecords"] as? [NSDictionary])?.count, 0)
-        let afterRestartSource = try await DiagnosticSiteState.originDocument(store: a)
-        defer { afterRestartSource.close() }
-        _ = try await afterRestartSource.webView.evaluateJavaScript("document.cookie='qa_after_restart=A; path=/; max-age=3600'; localStorage.setItem('qa_after_restart','A')")
+        do {
+            let afterRestartSource = try await DiagnosticSiteState.originDocument(store: a)
+            defer { afterRestartSource.close() }
+            _ = try await afterRestartSource.webView.evaluateJavaScript("document.cookie='qa_after_restart=A; path=/; max-age=3600'; localStorage.setItem('qa_after_restart','A')")
+        }
         let isolatedTarget = try await DiagnosticSiteState.snapshot(store: b, requireNativeRecords: true)
         XCTAssertEqual(isolatedTarget["cookieCount"] as? Int, 0)
         XCTAssertEqual(isolatedTarget["localStorageKeyNames"] as? [String], [])
@@ -169,8 +175,12 @@ final class BrowserTests: XCTestCase {
         let after = try XCTUnwrap(cleared["stateAfter"] as? [String: Any])
         XCTAssertEqual(after["cookieCount"] as? Int, 0)
         XCTAssertEqual(after["localStorageKeyNames"] as? [String], [])
-        let sourceValues = try await DiagnosticSiteState.localValues(ta)
-        XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
+        do {
+            let sourceAfterColdCopy = try await DiagnosticSiteState.originDocument(store: a)
+            defer { sourceAfterColdCopy.close() }
+            let sourceValues = try await DiagnosticSiteState.localValues(sourceAfterColdCopy)
+            XCTAssertEqual(sourceValues["_vid_t"], "fixture-A")
+        }
         let sourceCookies = await CookieService.all(in: a)
         XCTAssertTrue(sourceCookies.contains { $0.value == "cookie-A" })
         let restarted = try await DiagnosticSiteState.reset(.allNativeDataAndNetwork, profile: target, store: b)
