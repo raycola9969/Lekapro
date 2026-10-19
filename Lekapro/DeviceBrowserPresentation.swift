@@ -50,13 +50,9 @@ enum DeviceBrowserPresentation {
     static func hide() async {
         guard let current = controller else { return }
         controller = nil
-        // On iOS 16, asking a SwiftUI hosting controller to dismiss itself can
-        // complete without detaching it. Dismiss from its actual presenter.
-        let roots = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows).compactMap(\.rootViewController)
-        guard let presenter = current.presentingViewController ?? roots.first(where: { $0.presentedViewController === current }) else { return }
+        guard current.presentingViewController != nil else { return }
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            presenter.dismiss(animated: false) { continuation.resume() }
+            current.dismiss(animated: false) { continuation.resume() }
         }
     }
 }
