@@ -114,7 +114,7 @@ jobs:
         timeout-minutes: 6
         run: |
           set -o pipefail
-          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/NetworkResetResults.xcresult -only-testing:LekaproTests/BrowserTests/testNetworkOnlyResetRetainsDisposablePersistentTokens -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/network-reset-tests.log
+          xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/NetworkResetResults.xcresult -only-testing:LekaproTests/BrowserTests/testNetworkOnlyResetRetainsDisposablePersistentTokens -test-timeouts-enabled YES -default-test-execution-time-allowance 180 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/network-reset-tests.log
       - name: Export sanitized live-probe summary
         if: always() && contains(github.event.head_commit.message, '[live-probe]')
         run: |

@@ -1,0 +1,71 @@
+{
+  "build": "32",
+  "actualOSVersion": "16.1.1",
+  "sourceCommit": "a558fd0e182893171565c72dfa3c61a0bbaf3df1",
+  "ipaSHA256": "3b3eccece562800373a6513a4a2d01f65ce0f7cc0ff6ac1f77baafd579435db8",
+  "ciURL": "https://github.com/raycola9969/Lekapro/actions/runs/39187378755",
+  "ci": {
+    "passedTests": 46,
+    "failedTests": 0,
+    "skippedTests": 1,
+    "admissionTestsPassed": 14,
+    "allWorkflowStepsPassed": true,
+    "runID": 39187378755
+  },
+  "installation": {
+    "installedBuild": "32",
+    "actualOSVersion": "16.1.1",
+    "sourceCommit": "a558fd0e182893171565c72dfa3c61a0bbaf3df1",
+    "ipaSHA256": "3b3eccece562800373a6513a4a2d01f65ce0f7cc0ff6ac1f77baafd579435db8",
+    "profileBytesPreserved": true,
+    "preservedProfileCount": 1108
+  },
+  "deviceAdmission": {
+    "completed": true,
+    "actualOSVersion": "16.1.1",
+    "installedBuild": "32",
+    "freshCandidates": 4,
+    "approved": 1,
+    "automaticallyDeletedDuplicates": 3,
+    "uniqueUncachedFingerprintEvents": 8,
+    "distinctObservedIDs": 1,
+    "actualExitIPCount": 2,
+    "allPageAgentServerObservationsValidatedByProductionReader": true,
+    "allPreexistingProfilesAndProxyRecordsUnchanged": true,
+    "ledgerRetainedAcrossAppRelaunch": true,
+    "normalProductionReviewAndDeletionPathUsed": true,
+    "serviceResponsesOrIDsModified": false,
+    "trials": [
+      {
+        "trial": 1,
+        "freshCandidates": 2,
+        "approved": 1,
+        "automaticallyDeletedDuplicates": 1,
+        "uniqueUncachedEvents": 4,
+        "priorProfilesPreserved": 1108,
+        "priorProxiesUnchanged": true,
+        "ledgerBefore": 0,
+        "ledgerAfter": 1,
+        "basicTrackerBlockerEnabled": false
+      },
+      {
+        "trial": 2,
+        "freshCandidates": 2,
+        "approved": 0,
+        "automaticallyDeletedDuplicates": 2,
+        "uniqueUncachedEvents": 4,
+        "priorProfilesPreserved": 1109,
+        "priorProxiesUnchanged": true,
+        "ledgerBefore": 1,
+        "ledgerAfter": 1,
+        "basicTrackerBlockerEnabled": true
+      }
+    ],
+    "scope": "Only IDs recorded in this device ledger; not unlimited identity generation or future server uniqueness"
+  },
+  "policy": "Reject an ID already registered for another profile/store in this device ledger; do not reject merely for server visitor_found=true",
+  "oldUnregisteredProfilesAutomaticallyVerified": false,
+  "oldProfilesAutomaticallyDeleted": false,
+  "unlimitedNewExternalIDsGuaranteed": false,
+  "futureServerIDStabilityGuaranteed": false
+}

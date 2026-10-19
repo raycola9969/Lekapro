@@ -1,6 +1,19 @@
 import Foundation
 import Security
 
+// The production path always defaults to Keychain. Unit tests can exercise
+// password-change invalidation without unsigned simulator entitlements.
+struct ProxySecretAccess {
+    let password: (UUID) throws -> String?
+    let save: (String, UUID) throws -> Void
+    let remove: (UUID) throws -> Void
+    static var keychain: Self {
+        Self(password: { try SecretStore.password(for: $0) },
+             save: { try SecretStore.save(password: $0, for: $1) },
+             remove: { try SecretStore.remove($0) })
+    }
+}
+
 enum SecretStore {
     private static let service = "app.lekapro.proxy"
     private static func query(_ id: UUID) -> [String: Any] {

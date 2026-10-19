@@ -2,6 +2,10 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Kiểm tra ID trước khi dùng hồ sơ — build 32
+
+Đã cài và đo trên iOS 16.1.1: **4 ứng viên, 1 được nhận, 3 trùng bị tự xóa**, qua hai lần khởi động app. Khi bật kiểm tra, hồ sơ mới chỉ được dùng nếu ID thật không trùng lịch sử Lekapro; lỗi đo giữ trạng thái chưa đạt. Hồ sơ cũ không tự bị xóa và cần được đo để tham gia đối chiếu. Không bảo đảm cấp ID mới vô hạn hoặc ID không đổi về sau. [Cách dùng, bảng đo và giới hạn](verification/profile-id-admission-build32.md).
+
 ## Kiểm chứng mới: trạng thái kho và đổi đường mạng
 
 Ba kho native qua ba IP thoát đạt **72/72 kiểm tra cookie/localStorage**, gồm ghi xen kẽ, cookie HTTPS thực nhận và khởi động lại app. Đã chạy thêm phép trực tiếp → hai proxy → trực tiếp trên hai kho đang có ID riêng và đối chứng thứ tự truy cập bằng bốn kho mới, tổng **36 event mới**; không reset hay đổi UA. [Kết quả và phạm vi bảo đảm](verification/ios16-state-isolation-and-identity-build31.md).
