@@ -144,9 +144,11 @@ final class FingerprintAdmissionTests: XCTestCase {
     }
 
     func testProxyPasswordChangeRequiresRecheckButRenameDoesNot() throws {
-        let store = ProfileStore(fileURL: file())
+        var passwords: [UUID: String] = [:]
+        let secrets = ProxySecretAccess(password: { passwords[$0] }, save: { passwords[$1] = $0 },
+            remove: { _ = passwords.removeValue(forKey: $0) })
+        let store = ProfileStore(fileURL: file(), secrets: secrets)
         var proxy = ProxyRecord(); proxy.host = "127.0.0.1"
-        defer { try? SecretStore.remove(proxy.id) }
         try store.saveProxy(proxy, password: "first")
         var a = BrowserProfile(); a.proxyID = proxy.id; a.fingerprintCheck = .newCandidate
         try store.save(a)
@@ -155,6 +157,7 @@ final class FingerprintAdmissionTests: XCTestCase {
         try store.saveProxy(proxy, password: "first")
         XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.state, .approved)
         try store.saveProxy(proxy, password: "second")
+        XCTAssertEqual(passwords[proxy.id], "second")
         XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.state, .pending)
         XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.canAutoDelete, false)
     }

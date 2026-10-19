@@ -7,10 +7,12 @@ final class ProfileStore: ObservableObject {
     @Published var errorMessage: String?
     private(set) var isReadOnly = false
     private let fileURL: URL
+    private let secrets: ProxySecretAccess
     var profiles: [BrowserProfile] { database.profiles }
     var proxies: [ProxyRecord] { database.proxies }
 
-    init(fileURL: URL? = nil) {
+    init(fileURL: URL? = nil, secrets: ProxySecretAccess = .keychain) {
+        self.secrets = secrets
         let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Lekapro", isDirectory: true)
         self.fileURL = fileURL ?? directory.appendingPathComponent("profiles.json")
@@ -192,7 +194,7 @@ final class ProfileStore: ObservableObject {
         var next = database
         if let index = next.proxies.firstIndex(where: { $0.id == proxy.id }) { next.proxies[index] = proxy }
         else { next.proxies.append(proxy) }
-        let previous = try SecretStore.password(for: proxy.id)
+        let previous = try secrets.password(proxy.id)
         let oldProxy = self.proxy(proxy.id)
         let connectionChanged = oldProxy?.kind != proxy.kind || oldProxy?.host != proxy.host ||
             oldProxy?.port != proxy.port || oldProxy?.username != proxy.username || (previous ?? "") != password
@@ -204,11 +206,11 @@ final class ProfileStore: ObservableObject {
                 }
             }
         }
-        try SecretStore.save(password: password, for: proxy.id)
+        try secrets.save(password, proxy.id)
         do { try commit(next) }
         catch {
-            if let previous { try? SecretStore.save(password: previous, for: proxy.id) }
-            else { try? SecretStore.remove(proxy.id) }
+            if let previous { try? secrets.save(previous, proxy.id) }
+            else { try? secrets.remove(proxy.id) }
             throw error
         }
     }
@@ -219,7 +221,7 @@ final class ProfileStore: ObservableObject {
         var next = database
         next.proxies.removeAll { $0.id == id }
         try commit(next)
-        try SecretStore.remove(id)
+        try secrets.remove(id)
     }
     func exportConfiguration() throws -> Data {
         let encoder = JSONEncoder()
