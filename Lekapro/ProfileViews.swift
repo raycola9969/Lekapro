@@ -7,6 +7,8 @@ struct ProfileListView: View {
     @State private var editing: BrowserProfile?
     @State private var activeSession: BrowserSession?
     @State private var deleting: BrowserProfile?
+    @State private var reviewing: BrowserProfile?
+    @State private var reviewAfterEditor: UUID?
     @State private var busy = false
     private var filtered: [BrowserProfile] {
         store.profiles.filter { search.isEmpty || ($0.name + " " + $0.tags).localizedCaseInsensitiveContains(search) }
@@ -37,6 +39,9 @@ struct ProfileListView: View {
                                     Text(profile.name).font(.headline).foregroundStyle(.primary)
                                     Text(store.proxy(profile.proxyID)?.name ?? "Kết nối trực tiếp").font(.caption).foregroundStyle(.secondary)
                                     if !profile.tags.isEmpty { Text(profile.tags).font(.caption2).foregroundStyle(profile.tint) }
+                                    if let check = profile.fingerprintCheck {
+                                        Text(check.title).font(.caption2).foregroundStyle(check.allowsBrowsing ? Color.green : Color.orange)
+                                    }
                                 }
                                 Spacer()
                                 Image(systemName: "arrow.up.right").foregroundStyle(.secondary)
@@ -45,8 +50,12 @@ struct ProfileListView: View {
                         .contextMenu {
                             ActionButton("Mở", systemImage: "globe") { launch(profile) }
                             ActionButton("Chỉnh sửa", systemImage: "slider.horizontal.3") { editing = profile }
+                            ActionButton("Kiểm tra Visitor ID", systemImage: "checkmark.shield") { reviewing = profile }
                             ActionButton("Sao chép cấu hình", systemImage: "doc.on.doc") {
-                                do { try store.save(profile.duplicated()) } catch { store.errorMessage = error.localizedDescription }
+                                do {
+                                    var copy = profile.duplicated(); copy.fingerprintCheck = .newCandidate
+                                    try store.save(copy)
+                                } catch { store.errorMessage = error.localizedDescription }
                             }
                             ActionButton("Xóa hồ sơ", systemImage: "trash", role: .destructive) { deleting = profile }
                         }
@@ -64,8 +73,15 @@ struct ProfileListView: View {
                     ActionButton("Tạo hồ sơ", systemImage: "plus") { editing = BrowserProfile() }.disabled(store.isReadOnly || busy)
                 }
             }
-            .sheet(item: $editing) { ProfileEditor(profile: $0) }
+            .sheet(item: $editing, onDismiss: {
+                if let id = reviewAfterEditor { reviewing = store.profile(id); reviewAfterEditor = nil }
+            }) {
+                ProfileEditor(profile: $0, onSaved: { profile in
+                    if let check = profile.fingerprintCheck, !check.allowsBrowsing { reviewAfterEditor = profile.id }
+                })
+            }
             .fullScreenCover(item: $activeSession) { BrowserView(session: $0) }
+            .fullScreenCover(item: $reviewing) { FingerprintReviewView(profileID: $0.id) }
             .confirmationDialog("Xóa hồ sơ và dữ liệu website?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), titleVisibility: .visible) {
                 Button("Xóa hồ sơ", role: .destructive) {
                     guard let profile = deleting else { return }
@@ -81,6 +97,9 @@ struct ProfileListView: View {
         }
     }
     private func launch(_ profile: BrowserProfile) {
+        if let check = store.profile(profile.id)?.fingerprintCheck, !check.allowsBrowsing {
+            reviewing = profile; return
+        }
         do { activeSession = try workspace.session(for: profile, store: store) }
         catch { store.errorMessage = error.localizedDescription }
     }
@@ -91,6 +110,8 @@ struct ProfileEditor: View {
     @EnvironmentObject private var workspace: BrowserWorkspace
     @Environment(\.dismiss) private var dismiss
     @State var profile: BrowserProfile
+    var onSaved: (BrowserProfile) -> Void = { _ in }
+    @State private var checkNewProfile = true
     @State private var errorMessage: String?
     var body: some View {
         NavigationStack {
@@ -154,6 +175,13 @@ struct ProfileEditor: View {
                     }
                     if profile.proxyID != nil { Text("Proxy áp dụng cho hồ sơ này. Kiểm tra IP sau khi mở và kiểm tra kết nối khi proxy bị ngắt.").font(.caption).foregroundStyle(.secondary) }
                 }
+                if store.profile(profile.id) == nil {
+                    Section {
+                        Toggle("Kiểm tra ID trước khi sử dụng", isOn: $checkNewProfile)
+                    } footer: {
+                        Text("Mở Fingerprint bằng kết nối của hồ sơ. Nếu ID trùng lịch sử Lekapro, tự xóa hồ sơ mới; nếu đo lỗi, giữ trạng thái chưa đạt. Hồ sơ cũ chưa được đo không nằm trong lịch sử so sánh.")
+                    }
+                }
                 Section {
                     Toggle("Chặn tracker cơ bản", isOn: $profile.privacy.blockTrackers)
                     Toggle("Chặn đọc Canvas", isOn: $profile.privacy.blockCanvasReadback)
@@ -192,8 +220,12 @@ struct ProfileEditor: View {
                             if let latest = store.profile(profile.id) {
                                 profile.tabs = latest.tabs; profile.selectedTabID = latest.selectedTabID
                                 profile.history = latest.history; profile.bookmarks = latest.bookmarks
+                            } else {
+                                profile.fingerprintCheck = checkNewProfile ? .newCandidate : nil
                             }
-                            try store.save(profile); dismiss()
+                            try store.save(profile)
+                            if let saved = store.profile(profile.id) { onSaved(saved) }
+                            dismiss()
                         } catch { errorMessage = error.localizedDescription }
                     }
                 }

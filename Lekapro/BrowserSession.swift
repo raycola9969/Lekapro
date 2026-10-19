@@ -8,6 +8,7 @@ final class BrowserSession: ObservableObject, Identifiable {
     let dataStore: WKWebsiteDataStore
     let profile: BrowserProfile
     private let store: ProfileStore
+    private let persistsBrowsingState: Bool
     @Published var tabs: [BrowserTab] = []
     @Published var selectedTabID: UUID?
     @Published var message: String?
@@ -19,8 +20,12 @@ final class BrowserSession: ObservableObject, Identifiable {
     private let fontStyle: NSObject?
     var selectedTab: BrowserTab? { tabs.first { $0.id == selectedTabID } }
 
-    init(profile: BrowserProfile, store: ProfileStore) throws {
+    init(profile: BrowserProfile, store: ProfileStore, persistsBrowsingState: Bool = true) throws {
         self.id = profile.id; self.profile = profile; self.store = store
+        self.persistsBrowsingState = persistsBrowsingState
+        if persistsBrowsingState, let check = store.profile(profile.id)?.fingerprintCheck, !check.allowsBrowsing {
+            throw BrowserError.invalid("Hồ sơ cần kiểm tra ID trước khi sử dụng.")
+        }
         if let font = profile.fontFamily {
             fontStyle = try LegacyWebKitBridge.makeFontStyle(family: font.css)
         } else { fontStyle = nil }
@@ -38,6 +43,7 @@ final class BrowserSession: ObservableObject, Identifiable {
             do { blocker = try await PrivacyService.blocker() }
             catch { message = "Chưa bật được bộ chặn tracker: \(error.localizedDescription)" }
         }
+        if !persistsBrowsingState { addTab(url: URL(string: "about:blank")); return }
         if profile.tabs.isEmpty { addTab(url: URL(string: profile.homeURL)) }
         else {
             for saved in profile.tabs.prefix(30) {
@@ -68,7 +74,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         tab.onChange = { [weak self] in self?.scheduleSave() }
         tab.onNewTab = { [weak self] url in self?.addTab(url: url) }
         tab.onVisit = { [weak self] title, url in
-            guard let self else { return }
+            guard let self, self.persistsBrowsingState else { return }
             self.store.update(self.id) { value in
                 value.history.removeAll { $0.url == url.absoluteString }
                 value.history.insert(PageRecord(title: title, url: url.absoluteString), at: 0)
@@ -96,7 +102,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         }
     }
     func persist() {
-        guard started else { return }
+        guard started, persistsBrowsingState else { return }
         let snapshot = tabs.map { SavedTab(id: $0.id, url: $0.url?.absoluteString ?? "about:blank", title: $0.title) }
         store.update(id) { $0.tabs = snapshot; $0.selectedTabID = selectedTabID }
     }
@@ -120,8 +126,12 @@ final class BrowserWorkspace: ObservableObject {
     @Published var diagnosticSession: BrowserSession?
     private var sessions: [UUID: BrowserSession] = [:]
     func session(for profile: BrowserProfile, store: ProfileStore) throws -> BrowserSession {
+        guard let current = store.profile(profile.id) else { throw BrowserError.invalid("Không tìm thấy hồ sơ.") }
+        if let check = current.fingerprintCheck, !check.allowsBrowsing {
+            throw BrowserError.invalid("Hồ sơ cần kiểm tra ID trước khi sử dụng.")
+        }
         if let session = sessions[profile.id] { return session }
-        let session = try BrowserSession(profile: profile, store: store)
+        let session = try BrowserSession(profile: current, store: store)
         sessions[profile.id] = session
         return session
     }
@@ -133,5 +143,13 @@ final class BrowserWorkspace: ObservableObject {
         await CookieService.clear(try DataStoreFactory.make(id: profile.dataStoreID))
         DataStoreFactory.release(id: profile.dataStoreID)
         try store.removeProfile(profile.id)
+    }
+    func deleteRejectedCandidate(_ id: UUID, configurationDigest: String, store: ProfileStore) async throws {
+        let candidate = try store.rejectedCandidate(id, configurationDigest: configurationDigest)
+        close(id)
+        await CookieService.clear(try DataStoreFactory.make(id: candidate.dataStoreID))
+        DataStoreFactory.release(id: candidate.dataStoreID)
+        _ = try store.rejectedCandidate(id, configurationDigest: configurationDigest)
+        try store.removeProfile(id)
     }
 }

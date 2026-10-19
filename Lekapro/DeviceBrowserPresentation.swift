@@ -8,6 +8,16 @@ enum DeviceBrowserPresentation {
     private static var controller: UIViewController?
 
     static func show(_ session: BrowserSession, store: ProfileStore, workspace: BrowserWorkspace) async throws {
+        try await showContent(BrowserView(session: session).environmentObject(store).environmentObject(workspace))
+    }
+
+    static func showReview(_ review: FingerprintReviewController, profileID: UUID,
+                           store: ProfileStore, workspace: BrowserWorkspace) async throws {
+        try await showContent(FingerprintReviewView(profileID: profileID, controller: review)
+            .environmentObject(store).environmentObject(workspace))
+    }
+
+    private static func showContent<Content: View>(_ content: Content) async throws {
         await hide()
         let deadline = Date().addingTimeInterval(15)
         var presenter: UIViewController?
@@ -25,8 +35,7 @@ enum DeviceBrowserPresentation {
             try await Task.sleep(for: .milliseconds(100))
         }
         guard let presenter else { throw BrowserError.invalid("The app is not ready to present the QA browser.") }
-        let browser = BrowserView(session: session).environmentObject(store).environmentObject(workspace)
-        let host = UIHostingController(rootView: browser)
+        let host = UIHostingController(rootView: content)
         host.modalPresentationStyle = .fullScreen
         controller = host
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in

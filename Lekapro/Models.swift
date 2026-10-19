@@ -122,6 +122,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var history: [PageRecord] = []
     var createdAt = Date()
     var lastUsed: Date?
+    var fingerprintCheck: FingerprintCheck?
 
     func duplicated() -> BrowserProfile {
         var copy = self
@@ -134,6 +135,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
         copy.history = []
         copy.createdAt = Date()
         copy.lastUsed = nil
+        copy.fingerprintCheck = fingerprintCheck == nil ? nil : .newCandidate
         return copy
     }
 }
@@ -192,6 +194,10 @@ struct BrowserDatabase: Codable {
     var version = 1
     var profiles: [BrowserProfile] = []
     var proxies: [ProxyRecord] = []
+    // Optional for compatibility with databases written before build 32.
+    // Keep this history when a profile is deleted; imports never replace it.
+    var fingerprintLedger: [FingerprintLedgerEntry]?
+    var fingerprintEnvironmentID: String?
 }
 
 enum BrowserError: LocalizedError {
