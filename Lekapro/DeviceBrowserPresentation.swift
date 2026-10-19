@@ -16,6 +16,10 @@ enum DeviceBrowserPresentation {
         try await showContent(FingerprintReviewView(profileID: profileID, controller: review)
             .environmentObject(store).environmentObject(workspace))
     }
+    static func showAutomatic(_ creator: AutomaticProfileCreator, store: ProfileStore, workspace: BrowserWorkspace) async throws {
+        try await showContent(AutomaticProfileCreationView(creator: creator)
+            .environmentObject(store).environmentObject(workspace))
+    }
 
     private static func showContent<Content: View>(_ content: Content) async throws {
         await hide()

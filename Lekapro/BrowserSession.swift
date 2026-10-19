@@ -184,6 +184,9 @@ final class BrowserWorkspace: ObservableObject {
         await CookieService.clear(try DataStoreFactory.make(id: candidate.dataStoreID))
         DataStoreFactory.release(id: candidate.dataStoreID)
         _ = try store.rejectedCandidate(id, configurationDigest: configurationDigest)
+        // Candidates have never been used outside verification. Drop the iOS16
+        // directory too so automatic retries do not accumulate website caches.
+        try DataStoreFactory.removeRejectedLegacyDirectory(id: candidate.dataStoreID)
         try store.removeProfile(id)
     }
 }

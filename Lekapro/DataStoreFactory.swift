@@ -54,4 +54,19 @@ enum DataStoreFactory {
             stores.removeValue(forKey: key)
         }
     }
+    static func removeRejectedLegacyDirectory(id: UUID) throws {
+        if #available(iOS 17, *) { return }
+        let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("Lekapro/WebsiteProfiles", isDirectory: true).standardizedFileURL
+        let target = root.appendingPathComponent(id.uuidString, isDirectory: true).standardizedFileURL
+        guard FileManager.default.fileExists(atPath: target.path) else { return }
+        let resolvedRoot = root.resolvingSymlinksInPath()
+        let resolved = target.resolvingSymlinksInPath()
+        guard resolved.deletingLastPathComponent() == resolvedRoot,
+              resolved.lastPathComponent == id.uuidString,
+              try target.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink != true else {
+            throw BrowserError.invalid("Không xóa kho dữ liệu ngoài thư mục của ứng viên.")
+        }
+        try FileManager.default.removeItem(at: target)
+    }
 }
