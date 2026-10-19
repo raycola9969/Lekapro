@@ -19,6 +19,6 @@ Việc đọc phản hồi HTTPS hiển thị trên demo là kiểm tra tính nh
 ## Tình trạng kiểm chứng
 
 - Bộ đọc JavaScript mới khớp 36 trang đo thật đã lưu, ba mẫu phản hồi thiếu không được nhận.
-- Đã kiểm tra cú pháp 33 file Swift bằng parser trên máy Windows; đây không phải kiểm tra biên dịch/type checking.
-- Có 12 XCTest mới cho ledger, lưu qua khởi động lại, xóa riêng kho bị loại, lỗi đo, cấu hình đổi, import/export, phản hồi sai và phiên kiểm tra không khôi phục/ghi đè tab cũ.
+- Đã kiểm tra cú pháp Swift bằng parser trên máy Windows; đây không phải kiểm tra biên dịch/type checking.
+- Có 14 XCTest mới cho ledger, lưu qua khởi động lại, xóa riêng kho bị loại, lỗi đo/ghi file, cấu hình đổi, import/export, phản hồi sai, hủy/thử lại và phiên kiểm tra không khôi phục/ghi đè tab cũ.
 - Xcode build, XCTest và phép thử iOS 16.1.1 của bản 32 đang chờ thực hiện. Máy hiện vẫn ở build 31 cho đến khi artifact mới qua kiểm tra và được cài.

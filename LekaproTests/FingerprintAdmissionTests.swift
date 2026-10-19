@@ -87,6 +87,45 @@ final class FingerprintAdmissionTests: XCTestCase {
         XCTAssertEqual(try store.recordFingerprint(proof(a, store: store), for: a.id), .approved)
     }
 
+    func testFailedDiskWriteCannotApproveOrReserveAnID() throws {
+        let path = file(), store = ProfileStore(fileURL: path), a = try candidate(in: store)
+        let saved = try Data(contentsOf: path)
+        try FileManager.default.removeItem(at: path)
+        try FileManager.default.createDirectory(at: path, withIntermediateDirectories: false)
+        defer {
+            try? FileManager.default.removeItem(at: path)
+            try? saved.write(to: path)
+        }
+        XCTAssertThrowsError(try store.recordFingerprint(proof(a, store: store), for: a.id))
+        XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.state, .pending)
+        XCTAssertTrue(store.database.fingerprintLedger?.isEmpty ?? true)
+        XCTAssertNotNil(store.profile(a.id))
+    }
+
+    func testCancelAndRetryCannotRunTwoChecksOnTheSameProfile() async throws {
+        let store = ProfileStore(fileURL: file()), workspace = BrowserWorkspace(), a = try candidate(in: store)
+        let first = FingerprintReviewController(), second = FingerprintReviewController()
+        let task = Task { await first.run(profileID: a.id, store: store, workspace: workspace) }
+        let deadline = Date().addingTimeInterval(10)
+        while first.session == nil && !task.isCancelled {
+            guard Date() < deadline else {
+                first.close(); task.cancel(); await task.value
+                XCTFail("First review did not create its offline tab"); return
+            }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        // Closing the screen must not release the per-profile lock before its
+        // suspended work (including any deletion) has actually finished.
+        first.close()
+        await second.run(profileID: a.id, store: store, workspace: workspace)
+        XCTAssertFalse(second.approved)
+        XCTAssertNil(second.session)
+        XCTAssertTrue(second.message.contains("lần kiểm tra trước"))
+        task.cancel(); await task.value
+        XCTAssertNotNil(store.profile(a.id))
+        XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.state, .pending)
+    }
+
     func testMetadataKeepsVerdictButUAAndStaleEvidenceInvalidateIt() throws {
         let store = ProfileStore(fileURL: file()), a = try candidate(in: store)
         let oldProof = try proof(a, store: store)

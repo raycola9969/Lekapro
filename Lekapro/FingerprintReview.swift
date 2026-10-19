@@ -44,6 +44,7 @@ enum FingerprintDemoReader {
 
 @MainActor
 final class FingerprintReviewController: ObservableObject {
+    private static var checkingProfiles: Set<UUID> = []
     @Published private(set) var session: BrowserSession?
     @Published private(set) var busy = false
     @Published private(set) var message = "Chuẩn bị kiểm tra…"
@@ -61,6 +62,10 @@ final class FingerprintReviewController: ObservableObject {
 
     func run(profileID: UUID, store: ProfileStore, workspace: BrowserWorkspace) async {
         guard !busy else { return }
+        didStart = true
+        guard Self.checkingProfiles.insert(profileID).inserted else {
+            message = "Hồ sơ vẫn đang hoàn tất lần kiểm tra trước. Hãy thử lại sau."; return
+        }
         close(); let token = UUID(); runID = token
         busy = true; approved = false; deleted = false
         didStart = true
@@ -68,7 +73,11 @@ final class FingerprintReviewController: ObservableObject {
         diagnosticProof = nil
         #endif
         var measuredSession: BrowserSession?
-        defer { measuredSession?.close(); if runID == token { close() } }
+        defer {
+            measuredSession?.close()
+            if runID == token { close() }
+            Self.checkingProfiles.remove(profileID)
+        }
         do {
             workspace.close(profileID)
             try store.beginFingerprintReview(profileID)
