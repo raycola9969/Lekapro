@@ -46,6 +46,9 @@ final class ProfileStore: ObservableObject {
             throw BrowserError.invalid("Định danh hồ sơ hoặc proxy bị trùng.")
         }
         for profile in database.profiles {
+            if profile.effectiveTimeZoneMode == .custom, profile.timeZoneID == nil {
+                throw BrowserError.invalid("Chưa chọn múi giờ thủ công.")
+            }
             guard !profile.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 throw BrowserError.invalid("Tên hồ sơ không được để trống.")
             }

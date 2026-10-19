@@ -13,15 +13,22 @@ final class BrowserSession: ObservableObject, Identifiable {
     @Published var selectedTabID: UUID?
     @Published var message: String?
     @Published var downloads: [URL] = []
+    @Published private(set) var ipTimeZone: IPTimeZone?
+    @Published private(set) var startupError: String?
     private var started = false
+    private var ready = false
+    private var closed = false
+    private let timeZoneResolver: any IPTimeZoneResolving
     private var blocker: WKContentRuleList?
     private var saveRevision = 0
-    private let processPool: WKProcessPool?
+    private var processPool: WKProcessPool?
     private let fontStyle: NSObject?
     var selectedTab: BrowserTab? { tabs.first { $0.id == selectedTabID } }
 
-    init(profile: BrowserProfile, store: ProfileStore, persistsBrowsingState: Bool = true) throws {
+    init(profile: BrowserProfile, store: ProfileStore, persistsBrowsingState: Bool = true,
+         timeZoneResolver: (any IPTimeZoneResolving)? = nil) throws {
         self.id = profile.id; self.profile = profile; self.store = store
+        self.timeZoneResolver = timeZoneResolver ?? IPTimeZoneResolver()
         self.persistsBrowsingState = persistsBrowsingState
         if persistsBrowsingState, let check = store.profile(profile.id)?.fingerprintCheck, !check.allowsBrowsing {
             throw BrowserError.invalid("Hồ sơ cần kiểm tra ID trước khi sử dụng.")
@@ -29,20 +36,39 @@ final class BrowserSession: ObservableObject, Identifiable {
         if let font = profile.fontFamily {
             fontStyle = try LegacyWebKitBridge.makeFontStyle(family: font.css)
         } else { fontStyle = nil }
-        if let zone = profile.timeZoneID {
+        if profile.effectiveTimeZoneMode == .custom, let zone = profile.timeZoneID {
             processPool = try LegacyWebKitBridge.makeProcessPool(timeZone: zone)
-        } else { processPool = nil }
+        }
         if let proxyID = profile.proxyID, store.proxy(proxyID) == nil { throw BrowserError.invalid("Proxy của hồ sơ không còn tồn tại.") }
         dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID),
             diagnosticQuota: DiagnosticEngineRegistry.originQuota(profileID: profile.id),
             diagnosticEphemeral: DiagnosticEngineRegistry.ephemeralStore(profileID: profile.id))
     }
     func start() async {
-        guard !started else { return }; started = true
+        guard !started, !closed else { return }; started = true
+        startupError = nil
+        if profile.effectiveTimeZoneMode == .ip {
+            message = "Đang xác định múi giờ theo IP thoát…"
+            do {
+                let value = try await timeZoneResolver.resolve(dataStore: dataStore,
+                    proxy: store.proxy(profile.proxyID), userAgent: profile.userAgent)
+                try Task.checkCancellation()
+                guard !closed else { return }
+                processPool = try LegacyWebKitBridge.makeProcessPool(timeZone: value.identifier)
+                ipTimeZone = value; message = "Múi giờ theo IP: \(value.identifier)"
+            } catch {
+                guard !closed else { return }
+                startupError = error.localizedDescription; message = startupError
+                return
+            }
+        }
+        guard !closed else { return }
         if profile.privacy.blockTrackers {
             do { blocker = try await PrivacyService.blocker() }
             catch { message = "Chưa bật được bộ chặn tracker: \(error.localizedDescription)" }
         }
+        guard !closed, !Task.isCancelled else { return }
+        ready = true
         if !persistsBrowsingState { addTab(url: URL(string: "about:blank")); return }
         if profile.tabs.isEmpty { addTab(url: URL(string: profile.homeURL)) }
         else {
@@ -56,6 +82,7 @@ final class BrowserSession: ObservableObject, Identifiable {
         persist()
     }
     func addTab(url: URL? = nil, id: UUID = UUID()) {
+        guard ready, !closed else { return }
         guard tabs.count < 30 else { message = "Tối đa 30 tab mỗi hồ sơ."; return }
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = dataStore
@@ -102,14 +129,19 @@ final class BrowserSession: ObservableObject, Identifiable {
         }
     }
     func persist() {
-        guard started, persistsBrowsingState else { return }
+        guard started, ready, persistsBrowsingState else { return }
         let snapshot = tabs.map { SavedTab(id: $0.id, url: $0.url?.absoluteString ?? "about:blank", title: $0.title) }
         store.update(id) { $0.tabs = snapshot; $0.selectedTabID = selectedTabID }
     }
     func close() {
+        closed = true; timeZoneResolver.cancel()
         saveRevision &+= 1; persist()
         tabs.forEach { $0.close() }; tabs = []; selectedTabID = nil
         DataStoreFactory.release(id: profile.dataStoreID)
+    }
+    func retryStart() async {
+        guard startupError != nil, tabs.isEmpty, !closed else { return }
+        started = false; await start()
     }
     func bookmarkCurrentPage() {
         guard let tab = selectedTab, let url = tab.url, ["http", "https"].contains(url.scheme ?? "") else { return }
@@ -130,8 +162,10 @@ final class BrowserWorkspace: ObservableObject {
         if let check = current.fingerprintCheck, !check.allowsBrowsing {
             throw BrowserError.invalid("Hồ sơ cần kiểm tra ID trước khi sử dụng.")
         }
-        if let session = sessions[profile.id] { return session }
-        let session = try BrowserSession(profile: current, store: store)
+        if let session = sessions[profile.id], current.effectiveTimeZoneMode != .ip { return session }
+        close(profile.id)
+        // Closing may persist the latest tabs; use that snapshot when reopening.
+        let session = try BrowserSession(profile: store.profile(profile.id) ?? current, store: store)
         sessions[profile.id] = session
         return session
     }

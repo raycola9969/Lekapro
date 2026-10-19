@@ -112,6 +112,8 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var desktopMode = false
     var userAgent: String?
     var timeZoneID: String?
+    var timeZoneMode: ProfileTimeZoneMode?
+    var effectiveTimeZoneMode: ProfileTimeZoneMode { timeZoneMode ?? (timeZoneID == nil ? .device : .custom) }
     var minimumFontSize: Double?
     var fontFamily: ProfileFont?
     var proxyID: UUID?
@@ -137,6 +139,18 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
         copy.lastUsed = nil
         copy.fingerprintCheck = fingerprintCheck == nil ? nil : .newCandidate
         return copy
+    }
+}
+
+enum ProfileTimeZoneMode: String, Codable, CaseIterable, Identifiable {
+    case ip, device, custom
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .ip: return "Theo IP (tự động)"
+        case .device: return "Theo thiết bị"
+        case .custom: return "Chọn thủ công"
+        }
     }
 }
 

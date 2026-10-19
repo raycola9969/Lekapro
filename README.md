@@ -2,6 +2,10 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Múi giờ theo IP — build 33
+
+Hồ sơ mới mặc định **Theo IP (tự động)**: lấy IP thoát qua proxy của hồ sơ, áp dụng múi giờ native cho trang/Worker trước khi mở web hoặc kiểm tra ID. Lỗi tra cứu giữ các tab và cho thử lại; không dùng múi giờ máy thay thế. Đã đo trực tiếp/proxy trên iOS 16.1.1 và giữ danh sách hồ sơ sạch. [Kết quả và hướng dẫn](verification/ip-timezone-build33.md).
+
 ## Kiểm tra ID trước khi dùng hồ sơ — build 32
 
 Đã cài và đo trên iOS 16.1.1: **4 ứng viên, 1 được nhận, 3 trùng bị tự xóa**, qua hai lần khởi động app. Khi bật kiểm tra, hồ sơ mới chỉ được dùng nếu ID thật không trùng lịch sử Lekapro; lỗi đo giữ trạng thái chưa đạt. Hồ sơ cũ không tự bị xóa và cần được đo để tham gia đối chiếu. Không bảo đảm cấp ID mới vô hạn hoặc ID không đổi về sau. [Cách dùng, bảng đo và giới hạn](verification/profile-id-admission-build32.md).
