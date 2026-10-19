@@ -1,0 +1,42 @@
+{
+  "build": "33",
+  "sourceCommit": "2643b5950068f62e056a718ac4238551196f5c8a",
+  "ipaSHA256": "6226b281910acf3da147c95936b22b126884ccbbd80053c231c62020608401e5",
+  "ciURL": "https://github.com/raycola9969/Lekapro/actions/runs/39193147977",
+  "tests": {
+    "passed": 52,
+    "failed": 0,
+    "skipped": 1
+  },
+  "newTimeZoneTestsPassed": 6,
+  "admissionTestsPassed": 14,
+  "deviceTimeZoneCheck": {
+    "completed": true,
+    "build": "33",
+    "actualOSVersion": "16.1.1",
+    "routesTested": 2,
+    "actualExitIPsDistinct": true,
+    "nativePageAndWorkerTimeZonesMatched": true,
+    "separateAppLaunchPerRoute": true,
+    "savedProfilesProxiesAndLedgerBytesPreserved": true,
+    "savedProfileCount": 0,
+    "temporaryQAStoresRemoved": true,
+    "routes": [
+      {
+        "route": "direct",
+        "resolvedTimeZone": "Asia/Bangkok",
+        "pageTimeZone": "Asia/Bangkok",
+        "workerTimeZone": "Asia/Bangkok",
+        "januaryOffsetMinutes": -420
+      },
+      {
+        "route": "proxy",
+        "resolvedTimeZone": "America/Chicago",
+        "pageTimeZone": "America/Chicago",
+        "workerTimeZone": "America/Chicago",
+        "januaryOffsetMinutes": 360
+      }
+    ]
+  },
+  "existingConfigurationBytesPreserved": true
+}
