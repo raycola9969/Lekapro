@@ -70,7 +70,10 @@ struct ProfileListView: View {
             .searchable(text: $search, prompt: "Tên hồ sơ hoặc nhãn")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    ActionButton("Tạo hồ sơ", systemImage: "plus") { editing = BrowserProfile() }.disabled(store.isReadOnly || busy)
+                    ActionButton("Tạo hồ sơ", systemImage: "plus") {
+                        var profile = BrowserProfile(); profile.timeZoneMode = .ip
+                        editing = profile
+                    }.disabled(store.isReadOnly || busy)
                 }
             }
             .sheet(item: $editing, onDismiss: {
@@ -142,14 +145,21 @@ struct ProfileEditor: View {
                             Text("\(Int(size)) điểm").tag(Optional(size))
                         }
                     }
-                    Picker("Múi giờ", selection: $profile.timeZoneID) {
-                        Text("Theo thiết bị").tag(String?.none)
-                        ForEach(["UTC", "Asia/Ho_Chi_Minh", "Asia/Tokyo", "America/Chicago", "Europe/Berlin"], id: \.self) { zone in
-                            Text(zone).tag(Optional(zone))
-                        }
+                    Picker("Múi giờ", selection: Binding(get: { profile.effectiveTimeZoneMode }, set: {
+                        profile.timeZoneMode = $0
+                        profile.timeZoneID = $0 == .custom ? (profile.timeZoneID ?? "UTC") : nil
+                    })) {
+                        ForEach(ProfileTimeZoneMode.allCases) { Text($0.title).tag($0) }
                     }
-                    if profile.timeZoneID != nil {
-                        Text("Múi giờ riêng dùng cấu hình WebKit nội bộ; app báo lỗi nếu hệ điều hành không hỗ trợ.")
+                    if profile.effectiveTimeZoneMode == .custom {
+                        TextField("Ví dụ: Asia/Ho_Chi_Minh", text: Binding(get: { profile.timeZoneID ?? "UTC" }, set: { profile.timeZoneID = $0 }))
+                            .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    }
+                    if profile.effectiveTimeZoneMode == .ip {
+                        Text("Tự xác định múi giờ từ IP thoát qua proxy của hồ sơ; kết nối trực tiếp dùng IP mạng hiện tại. Không mở web nếu chưa xác định được. Việc tra cứu gửi IP thoát tới ipwho.is.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } else if profile.effectiveTimeZoneMode == .custom {
+                        Text("Múi giờ thủ công áp dụng cho riêng hồ sơ này.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }

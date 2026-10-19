@@ -97,6 +97,7 @@ final class FingerprintReviewController: ObservableObject {
             session = browser
             await browser.start()
             try ensureActive(token)
+            if let error = browser.startupError { throw BrowserError.invalid(error) }
             session = browser // Publish again after the tab has been created.
             guard let tab = browser.selectedTab else { throw BrowserError.invalid("Không mở được tab kiểm tra.") }
             // Suppress links opening unmeasured tabs; the visible main page is
@@ -110,6 +111,9 @@ final class FingerprintReviewController: ObservableObject {
             }
             message = "Đang kiểm tra IP qua kết nối của hồ sơ…"
             let exitIP = try await checkIP(tab: tab, token: token)
+            if let zone = browser.ipTimeZone, !IPTimeZone.sameIP(zone.exitIP, exitIP) {
+                throw BrowserError.invalid("IP đã đổi sau khi xác định múi giờ. Hãy thử lại bằng proxy có IP ổn định.")
+            }
             message = "Đang đọc Visitor ID thật từ Fingerprint…"
             tab.navigate(URL(string: "https://fingerprint.com/demo/?lekapro_check=\(UUID().uuidString)")!)
             let first = try await observe(tab: tab, previous: nil, token: token)

@@ -101,6 +101,7 @@ enum FingerprintConfiguration {
         let userAgent: String?
         let desktopMode: Bool
         let timeZoneID: String?
+        let timeZoneMode: ProfileTimeZoneMode?
         let minimumFontSize: Double?
         let fontFamily: ProfileFont?
         let privacy: PrivacySettings
@@ -112,7 +113,7 @@ enum FingerprintConfiguration {
     }
     static func digest(_ profile: BrowserProfile, proxy: ProxyRecord?) throws -> String {
         let value = Value(dataStoreID: profile.dataStoreID, userAgent: profile.userAgent,
-            desktopMode: profile.desktopMode, timeZoneID: profile.timeZoneID,
+            desktopMode: profile.desktopMode, timeZoneID: profile.timeZoneID, timeZoneMode: profile.timeZoneMode,
             minimumFontSize: profile.minimumFontSize, fontFamily: profile.fontFamily,
             privacy: profile.privacy, proxyID: profile.proxyID, proxyKind: proxy?.kind,
             proxyHost: proxy?.host, proxyPort: proxy?.port, proxyUsername: proxy?.username)

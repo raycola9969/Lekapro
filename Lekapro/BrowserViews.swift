@@ -25,6 +25,9 @@ struct BrowserView: View {
                     ActionButton("Cookie của hồ sơ", systemImage: "externaldrive") { panel = .cookies }
                     ActionButton("File đã tải", systemImage: "arrow.down.circle") { panel = .downloads }
                     ActionButton("Kiểm tra IP hiện tại", systemImage: "network") { session.selectedTab?.navigate(URL(string: "https://api.ipify.org?format=json")!) }
+                    if let zone = session.ipTimeZone {
+                        Label("Múi giờ theo IP: \(zone.identifier)", systemImage: "clock")
+                    }
                     if let url = session.selectedTab?.url, ["https", "http"].contains(url.scheme ?? "") {
                         ShareLink(item: url) { Label("Chia sẻ liên kết", systemImage: "square.and.arrow.up") }
                         ActionButton("Mở ngoài app", systemImage: "safari") { UIApplication.shared.open(url) }
@@ -32,7 +35,14 @@ struct BrowserView: View {
                 } label: { Image(systemName: "ellipsis.circle").font(.title3).padding(8) }
             }.padding(.horizontal, 8).padding(.top, 5).background(.bar)
             if let tab = session.selectedTab { BrowserPage(tab: tab).id(tab.id) }
-            else { Spacer(); ProgressView("Đang mở hồ sơ…"); Spacer() }
+            else {
+                Spacer()
+                if let error = session.startupError {
+                    Text(error).multilineTextAlignment(.center).padding()
+                    Button("Thử lại") { Task { await session.retryStart() } }
+                } else { ProgressView(session.message ?? "Đang mở hồ sơ…") }
+                Spacer()
+            }
         }
         .task { await session.start() }
         .onDisappear { session.persist() }
