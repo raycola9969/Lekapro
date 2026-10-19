@@ -39,6 +39,7 @@ struct AutomaticProfileCreationView: View {
                                 } catch { self.error = error.localizedDescription }
                             }.disabled(store.isReadOnly || creator.busy)
                             if let error { Text(error).foregroundStyle(.red) }
+                            if !creator.status.isEmpty { Text(creator.status).font(.caption).foregroundStyle(.secondary) }
                         } footer: {
                             Text("App tự gắn proxy, đặt múi giờ theo IP và kiểm tra ID. Nếu trùng, tự xóa hồ sơ mới rồi thử cấu hình iOS khác, tối đa 3 lượt/proxy. Không bảo đảm luôn tạo được ID mới. Giữ app ở màn hình trước trong lúc chạy.")
                         }

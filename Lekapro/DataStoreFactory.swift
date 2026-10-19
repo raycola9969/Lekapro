@@ -62,7 +62,9 @@ enum DataStoreFactory {
         guard FileManager.default.fileExists(atPath: target.path) else { return }
         let resolvedRoot = root.resolvingSymlinksInPath()
         let resolved = target.resolvingSymlinksInPath()
-        guard resolved.deletingLastPathComponent() == resolvedRoot,
+        let expectedRoot = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .resolvingSymlinksInPath().appendingPathComponent("Lekapro/WebsiteProfiles", isDirectory: true).standardizedFileURL
+        guard resolvedRoot == expectedRoot, resolved.deletingLastPathComponent() == resolvedRoot,
               resolved.lastPathComponent == id.uuidString,
               try target.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink != true else {
             throw BrowserError.invalid("Không xóa kho dữ liệu ngoài thư mục của ứng viên.")
