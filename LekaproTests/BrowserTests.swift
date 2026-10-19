@@ -195,6 +195,10 @@ final class BrowserTests: XCTestCase {
         XCTAssertEqual(preservedValues["_vid_t"], "fixture-A")
     }
     func testNetworkOnlyResetRetainsDisposablePersistentTokens() async throws {
+        // This fixture performs two persistent WebKit network restarts. The
+        // iOS18.5 runner completed it in 146s; keep its assertions and use the
+        // existing CLI maximum of 180s instead of the 120s default.
+        executionTimeAllowance = 180
         var profile = BrowserProfile(); profile.tags = "qa-disposable-site-state"
         let dataStore = try DataStoreFactory.make(id: profile.dataStoreID, forceLegacy: true)
         let document = try await DiagnosticSiteState.originDocument(store: dataStore)

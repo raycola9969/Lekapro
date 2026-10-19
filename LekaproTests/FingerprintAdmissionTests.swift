@@ -1,5 +1,6 @@
 import XCTest
 import WebKit
+import UIKit
 @testable import Lekapro
 
 @MainActor
@@ -103,6 +104,7 @@ final class FingerprintAdmissionTests: XCTestCase {
     }
 
     func testCancelAndRetryCannotRunTwoChecksOnTheSameProfile() async throws {
+        let idleSettingBefore = UIApplication.shared.isIdleTimerDisabled
         let store = ProfileStore(fileURL: file()), workspace = BrowserWorkspace(), a = try candidate(in: store)
         let first = FingerprintReviewController(), second = FingerprintReviewController()
         let task = Task { await first.run(profileID: a.id, store: store, workspace: workspace) }
@@ -117,11 +119,13 @@ final class FingerprintAdmissionTests: XCTestCase {
         // Closing the screen must not release the per-profile lock before its
         // suspended work (including any deletion) has actually finished.
         first.close()
+        XCTAssertTrue(UIApplication.shared.isIdleTimerDisabled)
         await second.run(profileID: a.id, store: store, workspace: workspace)
         XCTAssertFalse(second.approved)
         XCTAssertNil(second.session)
         XCTAssertTrue(second.message.contains("lần kiểm tra trước"))
         task.cancel(); await task.value
+        XCTAssertEqual(UIApplication.shared.isIdleTimerDisabled, idleSettingBefore)
         XCTAssertNotNil(store.profile(a.id))
         XCTAssertEqual(store.profile(a.id)?.fingerprintCheck?.state, .pending)
     }

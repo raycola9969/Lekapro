@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import UIKit
 
 // Read the real HTTPS demo without modifying its agent, requests or responses.
 enum FingerprintDemoReader {
@@ -45,6 +46,8 @@ enum FingerprintDemoReader {
 @MainActor
 final class FingerprintReviewController: ObservableObject {
     private static var checkingProfiles: Set<UUID> = []
+    private static var awakeReviews = 0
+    private static var previousIdleSetting = false
     @Published private(set) var session: BrowserSession?
     @Published private(set) var busy = false
     @Published private(set) var message = "Chuẩn bị kiểm tra…"
@@ -67,6 +70,9 @@ final class FingerprintReviewController: ObservableObject {
             message = "Hồ sơ vẫn đang hoàn tất lần kiểm tra trước. Hãy thử lại sau."; return
         }
         close(); let token = UUID(); runID = token
+        if Self.awakeReviews == 0 { Self.previousIdleSetting = UIApplication.shared.isIdleTimerDisabled }
+        Self.awakeReviews += 1
+        UIApplication.shared.isIdleTimerDisabled = true
         busy = true; approved = false; deleted = false
         didStart = true
         #if DEBUG
@@ -77,6 +83,8 @@ final class FingerprintReviewController: ObservableObject {
             measuredSession?.close()
             if runID == token { close() }
             Self.checkingProfiles.remove(profileID)
+            Self.awakeReviews -= 1
+            if Self.awakeReviews == 0 { UIApplication.shared.isIdleTimerDisabled = Self.previousIdleSetting }
         }
         do {
             workspace.close(profileID)
