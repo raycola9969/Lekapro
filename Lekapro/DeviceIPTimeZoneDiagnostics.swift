@@ -16,7 +16,7 @@ enum DeviceIPTimeZoneDiagnostics {
         #endif
     }
     #if DEBUG
-    private struct Request: Decodable { var proxyIDs: [UUID?] }
+    private struct Request: Decodable { var proxyIDs: [UUID?]; var routeIndex: Int? }
     private static func run(input: URL, store: ProfileStore, workspace: BrowserWorkspace) async {
         let output = input.deletingLastPathComponent().appendingPathComponent("Lekapro-timezone-report.json")
         let beforeProfiles = store.profiles, beforeProxies = store.proxies
@@ -39,8 +39,12 @@ enum DeviceIPTimeZoneDiagnostics {
                   let proxyID = request.proxyIDs[1], store.proxy(proxyID) != nil else {
                 throw BrowserError.invalid("Timezone QA requires direct and one saved proxy.")
             }
+            if let index = request.routeIndex, !(0...1).contains(index) {
+                throw BrowserError.invalid("Invalid timezone QA route index")
+            }
             try FileManager.default.removeItem(at: input)
-            for proxyID in request.proxyIDs {
+            for index in request.routeIndex.map({ [$0] }) ?? [0, 1] {
+                let proxyID = request.proxyIDs[index]
                 var profile = BrowserProfile(); profile.timeZoneMode = .ip; profile.proxyID = proxyID
                 profile.privacy.blockTrackers = false
                 let session = try BrowserSession(profile: profile, store: store, persistsBrowsingState: false)
