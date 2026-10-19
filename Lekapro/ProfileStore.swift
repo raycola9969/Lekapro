@@ -217,6 +217,16 @@ final class ProfileStore: ObservableObject {
             throw error
         }
     }
+    func proxyForQuickCreation(_ input: PastedProxy) throws -> ProxyRecord {
+        // Never change credentials used by an existing profile just because a
+        // pasted endpoint matches. Reuse only an exact endpoint/password pair.
+        for proxy in proxies where ProxyPaste.sameEndpoint(proxy, input.record) {
+            if try secrets.password(proxy.id) == input.password { return proxy }
+        }
+        var proxy = input.record; proxy.id = UUID()
+        try saveProxy(proxy, password: input.password)
+        return proxy
+    }
     func removeProxy(_ id: UUID) throws {
         guard !profiles.contains(where: { $0.proxyID == id }) else {
             throw BrowserError.invalid("Proxy đang được sử dụng. Đổi cấu hình hồ sơ trước khi xóa.")

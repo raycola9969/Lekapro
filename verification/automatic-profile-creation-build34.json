@@ -1,0 +1,37 @@
+{
+  "build": "34",
+  "sourceCommit": "30f0a518744e1dcda10ccb043c8b7af9bf8bd9b2",
+  "ipaSHA256": "0ec7c3c3093c8e77019a86fb54948b64dd8fb7b0f98767e55096ad676f6b7a6c",
+  "ciURL": "https://github.com/raycola9969/Lekapro/actions/runs/39241253846",
+  "tests": {
+    "passed": 61,
+    "failed": 0,
+    "skipped": 1
+  },
+  "automaticCreationTestsPassed": 9,
+  "deviceAutomaticCreation": {
+    "completed": true,
+    "build": "34",
+    "actualOSVersion": "16.1.1",
+    "pastedProxies": 1,
+    "automaticAttempts": 2,
+    "profilesAccepted": 1,
+    "duplicatesAutomaticallyDeleted": 1,
+    "uncachedEvents": 4,
+    "observedDistinctIDs": 2,
+    "oldProfilesAndProxiesPreserved": true,
+    "ledgerBefore": 1,
+    "ledgerAfter": 2,
+    "acceptedQAProfilesRemovedAfterCheck": 1,
+    "finalSavedProfileCount": 0,
+    "temporaryWebsiteStoresRemoved": true,
+    "productionParserCreatorViewAndAdmissionPathUsed": true,
+    "newAcceptedIDAbsentFromPreviousLedger": true,
+    "duplicatesMatchedPreviousLedger": true,
+    "finalWebsiteStoreCount": 0
+  },
+  "unlimitedNewVisitorIDsGuaranteed": false,
+  "requiresAppForeground": true,
+  "maximumProxiesPerBatch": 20,
+  "maximumAttemptsPerProxy": 3
+}

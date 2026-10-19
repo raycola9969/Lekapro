@@ -26,6 +26,7 @@ struct LekaproApp: App {
                 DeviceUserAgentDiagnostics.startIfRequested(store: store, workspace: workspace)
                 DeviceAdmissionDiagnostics.startIfRequested(store: store, workspace: workspace)
                 DeviceIPTimeZoneDiagnostics.startIfRequested(store: store, workspace: workspace)
+                DeviceAutomaticCreationDiagnostics.startIfRequested(store: store, workspace: workspace)
             }
             .fullScreenCover(item: $workspace.diagnosticSession) {
                 BrowserView(session: $0).environmentObject(store).environmentObject(workspace)

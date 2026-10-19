@@ -2,6 +2,10 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Tạo hồ sơ tự động — build 34
+
+Bấm **+ → dán proxy host:port:user:pass → Tạo hồ sơ**. App tự tạo kho, chọn UA iPhone, đặt múi giờ theo IP và kiểm tra ID; giữ ID mới, xóa ứng viên trùng rồi thử cấu hình kế tiếp, tối đa 3 lượt/proxy. Lỗi đo giữ hồ sơ chưa đạt. Tối đa 20 proxy mỗi đợt và cần giữ app ở màn hình trước. Không bảo đảm luôn tìm được ID mới. [Cách dùng và phép thử thật](verification/automatic-profile-creation-build34.md).
+
 ## Múi giờ theo IP — build 33
 
 Hồ sơ mới mặc định **Theo IP (tự động)**: lấy IP thoát qua proxy của hồ sơ, áp dụng múi giờ native cho trang/Worker trước khi mở web hoặc kiểm tra ID. Lỗi tra cứu giữ các tab và cho thử lại; không dùng múi giờ máy thay thế. Đã đo trực tiếp/proxy trên iOS 16.1.1 và giữ danh sách hồ sơ sạch. [Kết quả và hướng dẫn](verification/ip-timezone-build33.md).

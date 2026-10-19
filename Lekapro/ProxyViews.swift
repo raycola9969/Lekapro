@@ -4,6 +4,7 @@ struct ProxyListView: View {
     @EnvironmentObject private var store: ProfileStore
     @EnvironmentObject private var workspace: BrowserWorkspace
     @State private var editing: ProxyRecord?
+    @State private var automaticCreation = false
     var body: some View {
         NavigationStack {
             List {
@@ -27,8 +28,12 @@ struct ProxyListView: View {
                 }
             }
             .navigationTitle("Kho proxy")
-            .toolbar { ActionButton("Thêm proxy", systemImage: "plus") { editing = ProxyRecord() } }
+            .toolbar {
+                ActionButton("Tạo hồ sơ từ proxy", systemImage: "person.crop.square.badge.plus") { automaticCreation = true }
+                ActionButton("Thêm proxy", systemImage: "plus") { editing = ProxyRecord() }
+            }
             .sheet(item: $editing) { ProxyEditor(proxy: $0) }
+            .fullScreenCover(isPresented: $automaticCreation) { AutomaticProfileCreationView() }
         }
     }
 }

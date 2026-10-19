@@ -10,6 +10,7 @@ struct ProfileListView: View {
     @State private var reviewing: BrowserProfile?
     @State private var reviewAfterEditor: UUID?
     @State private var busy = false
+    @State private var automaticCreation = false
     private var filtered: [BrowserProfile] {
         store.profiles.filter { search.isEmpty || ($0.name + " " + $0.tags).localizedCaseInsensitiveContains(search) }
             .sorted { ($0.lastUsed ?? $0.createdAt) > ($1.lastUsed ?? $1.createdAt) }
@@ -70,7 +71,9 @@ struct ProfileListView: View {
             .searchable(text: $search, prompt: "Tên hồ sơ hoặc nhãn")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    ActionButton("Tạo hồ sơ", systemImage: "plus") {
+                    ActionButton("Tạo hồ sơ tự động", systemImage: "plus") { automaticCreation = true }
+                        .disabled(store.isReadOnly || busy)
+                    ActionButton("Tạo thủ công", systemImage: "slider.horizontal.3") {
                         var profile = BrowserProfile(); profile.timeZoneMode = .ip
                         editing = profile
                     }.disabled(store.isReadOnly || busy)
@@ -85,6 +88,7 @@ struct ProfileListView: View {
             }
             .fullScreenCover(item: $activeSession) { BrowserView(session: $0) }
             .fullScreenCover(item: $reviewing) { FingerprintReviewView(profileID: $0.id) }
+            .fullScreenCover(isPresented: $automaticCreation) { AutomaticProfileCreationView() }
             .confirmationDialog("Xóa hồ sơ và dữ liệu website?", isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }), titleVisibility: .visible) {
                 Button("Xóa hồ sơ", role: .destructive) {
                     guard let profile = deleting else { return }
