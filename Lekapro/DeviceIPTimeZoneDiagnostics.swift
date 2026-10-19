@@ -76,13 +76,14 @@ enum DeviceIPTimeZoneDiagnostics {
                     const url=URL.createObjectURL(new Blob([code],{type:'text/javascript'}));
                     return await new Promise((resolve,reject)=>{
                       const w=new Worker(url), timer=setTimeout(()=>{w.terminate();URL.revokeObjectURL(url);reject(new Error('Worker timeout'))},10000);
-                      w.onmessage=e=>{clearTimeout(timer);w.terminate();URL.revokeObjectURL(url);resolve({zone:Intl.DateTimeFormat().resolvedOptions().timeZone,offset:d.getTimezoneOffset(),...e.data})};
+                      w.onmessage=e=>{clearTimeout(timer);w.terminate();URL.revokeObjectURL(url);resolve({zone:Intl.DateTimeFormat().resolvedOptions().timeZone,expectedCanonical:Intl.DateTimeFormat('en-US',{timeZone:expectedZone}).resolvedOptions().timeZone,offset:d.getTimezoneOffset(),...e.data})};
                       w.onerror=()=>{clearTimeout(timer);w.terminate();URL.revokeObjectURL(url);reject(new Error('Worker failed'))};
                     });
-                    """#, arguments: [:], in: nil, contentWorld: .page)
+                    """#, arguments: ["expectedZone": zone.identifier], in: nil, contentWorld: .page)
                     guard let context = value as? [String: Any],
-                          context["zone"] as? String == zone.identifier,
-                          context["workerZone"] as? String == zone.identifier,
+                          let canonical = context["expectedCanonical"] as? String,
+                          context["zone"] as? String == canonical,
+                          context["workerZone"] as? String == canonical,
                           let date = ISO8601DateFormatter().date(from: "2026-01-15T12:00:00Z"),
                           let timezone = TimeZone(identifier: zone.identifier),
                           context["offset"] as? Int == -timezone.secondsFromGMT(for: date) / 60,

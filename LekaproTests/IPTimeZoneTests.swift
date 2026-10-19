@@ -92,21 +92,22 @@ final class IPTimeZoneTests: XCTestCase {
 
     func testResolvedTimeZoneAppliesNativelyToPageAndWorkerInSeparateProfiles() async throws {
         let s = store()
-        for (zone, expectedOffset) in [("Asia/Tokyo", -540), ("America/Chicago", 360)] {
+        for (zone, expectedOffset) in [("Asia/Tokyo", -540), ("America/Chicago", 360), ("Asia/Ho_Chi_Minh", -420)] {
             let p = try profile(in: s), resolver = try Resolver(zone)
             let session = try BrowserSession(profile: p, store: s, timeZoneResolver: resolver)
             await session.start(); defer { session.close() }
             let tab = try XCTUnwrap(session.selectedTab)
-            let result = try await Self.context(tab)
-            XCTAssertEqual(result["zone"] as? String, zone)
-            XCTAssertEqual(result["workerZone"] as? String, zone)
+            let result = try await Self.context(tab, expectedZone: zone)
+            let canonical = try XCTUnwrap(result["expectedCanonical"] as? String)
+            XCTAssertEqual(result["zone"] as? String, canonical)
+            XCTAssertEqual(result["workerZone"] as? String, canonical)
             XCTAssertEqual(result["offset"] as? Int, expectedOffset)
             XCTAssertEqual(result["workerOffset"] as? Int, expectedOffset)
             XCTAssertEqual(tab.webView.configuration.userContentController.userScripts.count, 0)
         }
     }
 
-    static func context(_ tab: BrowserTab) async throws -> [String: Any] {
+    static func context(_ tab: BrowserTab, expectedZone: String) async throws -> [String: Any] {
         tab.webView.loadHTMLString("<!doctype html><title>Timezone check</title>", baseURL: URL(string: "https://timezone.lekapro.invalid"))
         let deadline = Date().addingTimeInterval(15)
         while tab.webView.isLoading || tab.webView.url?.host != "timezone.lekapro.invalid" {
@@ -119,10 +120,10 @@ final class IPTimeZoneTests: XCTestCase {
         const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
         return await new Promise((resolve,reject)=>{
           const worker=new Worker(url), timer=setTimeout(()=>{worker.terminate();URL.revokeObjectURL(url);reject(new Error('Worker timed out'))},5000);
-          worker.onmessage=e=>{clearTimeout(timer);worker.terminate();URL.revokeObjectURL(url);resolve({zone:Intl.DateTimeFormat().resolvedOptions().timeZone,offset:date.getTimezoneOffset(),...e.data})};
+          worker.onmessage=e=>{clearTimeout(timer);worker.terminate();URL.revokeObjectURL(url);resolve({zone:Intl.DateTimeFormat().resolvedOptions().timeZone,expectedCanonical:Intl.DateTimeFormat('en-US',{timeZone:expectedZone}).resolvedOptions().timeZone,offset:date.getTimezoneOffset(),...e.data})};
           worker.onerror=()=>{clearTimeout(timer);worker.terminate();URL.revokeObjectURL(url);reject(new Error('Worker failed'))};
         });
-        """#, arguments: [:], in: nil, contentWorld: .page)
+        """#, arguments: ["expectedZone": expectedZone], in: nil, contentWorld: .page)
         return try XCTUnwrap(result as? [String: Any])
     }
 }
