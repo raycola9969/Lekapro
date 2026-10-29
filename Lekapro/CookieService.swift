@@ -15,8 +15,8 @@ struct CookieRecord: Codable, Equatable {
         name = cookie.name; value = cookie.value; domain = cookie.domain
         path = cookie.path; secure = cookie.isSecure; httpOnly = cookie.isHTTPOnly
         expirationDate = cookie.expiresDate?.timeIntervalSince1970
-        if cookie.sameSitePolicy == .strict { sameSite = "strict" }
-        else if cookie.sameSitePolicy == .lax { sameSite = "lax" }
+        if cookie.sameSitePolicy == .sameSiteStrict { sameSite = "strict" }
+        else if cookie.sameSitePolicy == .sameSiteLax { sameSite = "lax" }
     }
     init(name: String, value: String, domain: String, path: String = "/", secure: Bool = false, expirationDate: Double? = nil) {
         self.name = name; self.value = value; self.domain = domain; self.path = path
@@ -31,7 +31,7 @@ struct CookieRecord: Codable, Equatable {
         if secure == true { properties[.secure] = "TRUE" }
         if httpOnly == true { properties[HTTPCookiePropertyKey("HttpOnly")] = "TRUE" }
         if let policy = sameSite?.lowercased(), ["strict", "lax"].contains(policy) {
-            properties[.sameSitePolicy] = (policy == "strict" ? HTTPCookieStringPolicy.strict : .lax).rawValue
+            properties[.sameSitePolicy] = (policy == "strict" ? HTTPCookieStringPolicy.sameSiteStrict : .sameSiteLax).rawValue
         }
         if let expiry = expirationDate, expiry > 0 { properties[.expires] = Date(timeIntervalSince1970: expiry) }
         guard let cookie = HTTPCookie(properties: properties) else { throw BrowserError.invalid("Không tạo được cookie: \(name).") }

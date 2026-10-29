@@ -69,8 +69,8 @@ final class CookiePoolTests: XCTestCase {
         XCTAssertEqual(cookies.count, 2); XCTAssertTrue(otherCookies.isEmpty)
         let session = try XCTUnwrap(cookies.first { $0.name == "session" })
         XCTAssertTrue(session.isHTTPOnly); XCTAssertTrue(session.isSecure)
-        XCTAssertEqual(session.path, "/account"); XCTAssertEqual(session.sameSitePolicy, .strict)
-        XCTAssertEqual(try CookieRecord(session).cookie().sameSitePolicy, .strict)
+        XCTAssertEqual(session.path, "/account"); XCTAssertEqual(session.sameSitePolicy, .sameSiteStrict)
+        XCTAssertEqual(try CookieRecord(session).cookie().sameSitePolicy, .sameSiteStrict)
     }
     func testCreatorSeedsEveryFreshAttemptBeforeRunningReview() async throws {
         var passwords: [UUID:String] = [:]

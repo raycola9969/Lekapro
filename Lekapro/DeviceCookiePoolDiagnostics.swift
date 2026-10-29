@@ -68,7 +68,7 @@ enum DeviceCookiePoolDiagnostics {
                 let third = try DataStoreFactory.make(id:candidates[2].dataStoreID)
                 let installed = await CookieService.all(in:third)
                 guard let actual = installed.first(where:{$0.name=="qa_secure"}), actual.isSecure, actual.isHTTPOnly,
-                      actual.sameSitePolicy == .strict else { throw BrowserError.invalid("Cookie security attributes changed") }
+                      actual.sameSitePolicy == .sameSiteStrict else { throw BrowserError.invalid("Cookie security attributes changed") }
                 result["secureHttpOnlySameSitePreserved"] = true
                 result["storesIsolated"] = true;result["navigationRequestsMade"] = 0
                 let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
