@@ -48,6 +48,7 @@ enum DeviceAdmissionDiagnostics {
             try FileManager.default.removeItem(at: input)
             for id in request.profileIDs {
                 let review = FingerprintReviewController()
+                review.captureCandidateDiagnostics = true
                 try await DeviceBrowserPresentation.showReview(review, profileID: id, store: store, workspace: workspace)
                 let deadline = Date().addingTimeInterval(240)
                 while !review.didStart || review.busy {
@@ -57,6 +58,8 @@ enum DeviceAdmissionDiagnostics {
                 var row: [String: Any] = ["profileID": id.uuidString, "approved": review.approved,
                     "deleted": review.deleted, "message": review.message,
                     "profilePresent": store.profile(id) != nil]
+                row["observations"] = review.diagnosticObservations
+                row["cookiesBeforeNavigation"] = review.diagnosticCookiesBeforeNavigation
                 if let state = store.profile(id)?.fingerprintCheck?.state { row["state"] = state.rawValue }
                 if let proof = review.diagnosticProof {
                     row["visitorID"] = proof.first.visitorID
