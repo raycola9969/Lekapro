@@ -47,4 +47,30 @@ Nguồn chính thức: https://github.com/fingerprintjs/fingerprintjs#limitation
 - Các ca ledger, trùng ID, hủy kiểm tra, không mất dữ liệu khi xóa ứng viên vẫn giữ nguyên.
 - Kiểm tra cú pháp Swift/YAML/tài nguyên không thay thế build Xcode hoặc thử máy thật.
 
-Chưa xác nhận build/cài máy thật tại thời điểm tạo bản sửa; xem kết quả CI tương ứng.
+## Kết quả đã đo ngày 2026-10-29
+
+- [CI thành công](https://github.com/raycola9969/Lekapro/actions/runs/40878003052):
+  iPhone/simulator build và bộ đọc JS đạt; 65 XCTest qua, 1 live probe tùy chọn
+  được bỏ qua, 0 lỗi. Lượt CI đầu bị timeout ở ca reset WebKit cũ. Khởi động lại
+  simulator trước mỗi ca reset giúp lượt đầy đủ tiếp theo qua cả hai ca; không
+  bỏ assertion hoặc đổi mã chức năng reset.
+- Đã cài build 35 trên iPhone 11 Pro Max iOS 16.1.1. Tệp cấu hình được so sánh
+  byte trước/sau khi cài, không bị thay đổi trong quá trình cập nhật.
+- Có ba lượt QA native: một proxy cũ lỗi xác thực trước khi mở trang; một lượt
+  trang chủ không trả đủ bằng chứng nên hồ sơ bị giữ chưa đạt; lượt trang chủ
+  tiếp theo đọc được hai event không cache, khác event/timeOrigin và cùng ID/IP.
+- Lượt thành công chạy parser/creator/controller thật, một hồ sơ được duyệt với
+  ID chưa có trong lịch sử. Kho tăng từ 2 lên 3 ID. Sau QA đã xóa hồ sơ thử, giữ
+  cả 3 ID và 23 bản ghi proxy. Danh sách cuối có 0 hồ sơ, không còn yêu cầu QA chờ.
+
+Phép đo này chứng minh đường trang chủ chạy được trên máy đã thử, không chứng
+minh dịch vụ luôn trả đủ dữ liệu hoặc mọi hồ sơ sẽ có ID mới. Ca thiếu phản hồi
+không được tính là ID trùng. Build 35 chưa có thuật toán tự đo nội bộ mới.
+
+- Mã nguồn CI: `bd5622bd5d7bcd24ac4bbd78daf26a81b5759630`.
+- Commit nguồn đóng gói của PR: `ce3074c6681d2202714a17439959562eeebd57ac`.
+- IPA SHA-256: `6affb13ae0c2f93f7950ae5f0ec162d55f9492bf7d049595bc178be4c38f12bd`.
+- [Số liệu đã bỏ ID/IP và thông tin đăng nhập](homepage-check-build35.json).
+
+Các ảnh chụp cấu hình và phản hồi thật nằm ở bằng chứng riêng trên máy tính,
+không đưa vào repo. Repo đã chuyển public theo xác nhận để chạy CI.
