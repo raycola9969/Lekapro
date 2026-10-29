@@ -51,11 +51,11 @@ final class CookiePoolTests: XCTestCase {
     }
     func testNetscapeImportDeduplicatesAndRetainsCookieSecurity() throws {
         let pool = CookiePoolStore(fileURL: file(), key: SymmetricKey(size: .bits256))
-        let text = "# Netscape HTTP Cookie File\n#HttpOnly_.alpha.invalid\tTRUE\t/account\tTRUE\t0\tsession\tfirst\n#HttpOnly_.alpha.invalid\tTRUE\t/account\tTRUE\t0\tsession\tlast\n"
+        let text = "# Netscape HTTP Cookie File\n#HttpOnly_.alpha.invalid\tTRUE\t/account\tTRUE\t0\tsession\tfirst\n#HttpOnly_.alpha.invalid\tTRUE\t/account\tTRUE\t0\tsession\tlast#HttpOnly_literal\n"
         try pool.replace(with: Data(text.utf8))
         XCTAssertEqual(pool.records.count, 1)
         let cookie = try XCTUnwrap(pool.records.first).cookie()
-        XCTAssertEqual(cookie.value, "last"); XCTAssertTrue(cookie.isSecure); XCTAssertTrue(cookie.isHTTPOnly)
+        XCTAssertEqual(cookie.value, "last#HttpOnly_literal"); XCTAssertTrue(cookie.isSecure); XCTAssertTrue(cookie.isHTTPOnly)
         XCTAssertEqual(cookie.path, "/account"); XCTAssertNil(cookie.expiresDate)
     }
     func testCookieSeedInstallsOnlyIntoSelectedStoreBeforeNavigation() async throws {
@@ -77,18 +77,22 @@ final class CookiePoolTests: XCTestCase {
         let s = ProfileStore(fileURL: file(), secrets: ProxySecretAccess(password: { passwords[$0] }, save: { passwords[$1]=$0 }, remove: { passwords.removeValue(forKey:$0) }))
         let config = CookieSeedConfiguration(records: Array(fixture().prefix(2)), domainCount: 1)
         var calls=0; var storeIDs=Set<UUID>()
-        let creator = AutomaticProfileCreator { id, store, _, _ in
+        // The unsigned simulator uses in-memory proxy secrets. Exercise real
+        // WebKit cookie writes directly; the device QA covers saved proxy setup.
+        let creator = AutomaticProfileCreator(cookieSeeder: { configuration, profile, _ in
+            try await configuration.apply(to: profile, proxy: nil)
+        }, runner: { id, store, _, _ in
             calls+=1
             do {
                 let profile = try XCTUnwrap(store.profile(id)); storeIDs.insert(profile.dataStoreID)
                 XCTAssertEqual(profile.cookieSeed?.cookieCount, 2)
-                let dataStore = try DataStoreFactory.make(id: profile.dataStoreID, proxy: store.proxy(profile.proxyID))
+                let dataStore = try DataStoreFactory.make(id: profile.dataStoreID)
                 let cookies = await CookieService.all(in: dataStore); XCTAssertEqual(cookies.count, 2)
                 // Fixture rejection makes the creator try a new UUID; real
                 // Fingerprint evidence validation remains covered separately.
                 try store.removeProfile(id); return .duplicateDeleted
             } catch { XCTFail("Cookie fixture did not reach the review"); return .failed }
-        }
+        })
         await creator.run(inputs: try ProxyPaste.parse("127.0.0.1:1080:fixture:fixture"), store: s, workspace: BrowserWorkspace(), cookieSeed: config)
         XCTAssertEqual(calls,3); XCTAssertEqual(storeIDs.count,3); XCTAssertTrue(s.profiles.isEmpty)
         for id in storeIDs { DataStoreFactory.release(id:id) }

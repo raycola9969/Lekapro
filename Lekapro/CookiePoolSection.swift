@@ -13,7 +13,7 @@ struct CookiePoolSection: View {
                 .font(.caption).foregroundStyle(.secondary)
             Toggle("Chia cookie ngẫu nhiên cho hồ sơ mới", isOn: Binding(get: { pool.enabled }, set: {
                 do { try pool.setEnabled($0) } catch { self.error = error.localizedDescription }
-            })).disabled(pool.domains.isEmpty || pool.loadError != nil)
+            })).disabled((pool.domains.isEmpty && !pool.enabled) || pool.loadError != nil)
             if pool.enabled {
                 Stepper("Tối đa \(pool.domainCount) nhóm domain / hồ sơ", value: Binding(get: { pool.domainCount }, set: {
                     do { try pool.setDomainCount($0) } catch { self.error = error.localizedDescription }

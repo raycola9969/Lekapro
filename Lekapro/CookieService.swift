@@ -50,7 +50,8 @@ enum CookieService {
             var parsed: [CookieRecord] = []
             for line in text.components(separatedBy: .newlines) {
                 guard !line.isEmpty, !line.hasPrefix("#") || line.hasPrefix("#HttpOnly_") else { continue }
-                let fields = line.replacingOccurrences(of: "#HttpOnly_", with: "").components(separatedBy: "\t")
+                let content = line.hasPrefix("#HttpOnly_") ? String(line.dropFirst("#HttpOnly_".count)) : line
+                let fields = content.components(separatedBy: "\t")
                 guard fields.count == 7, let expiry = Double(fields[4]) else { throw BrowserError.invalid("Định dạng cookie cần JSON hoặc Netscape TXT hợp lệ.") }
                 var record = CookieRecord(name: fields[5], value: fields[6], domain: fields[0], path: fields[2], secure: fields[3].uppercased() == "TRUE", expirationDate: expiry > 0 ? expiry : nil)
                 record.httpOnly = line.hasPrefix("#HttpOnly_")

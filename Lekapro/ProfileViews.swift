@@ -249,6 +249,9 @@ struct ProfileEditor: View {
                                 profile.history = latest.history; profile.bookmarks = latest.bookmarks
                             } else {
                                 profile.fingerprintCheck = checkNewProfile ? .newCandidate : nil
+                                var proposed = store.database
+                                proposed.profiles.append(profile)
+                                try ProfileStore.validate(proposed)
                                 if let configuration = cookiePool.configuration {
                                     seededNewStore = true
                                     profile.cookieSeed = try await configuration.apply(to: profile, proxy: store.proxy(profile.proxyID))

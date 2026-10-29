@@ -7,6 +7,7 @@ import WebKit
 // is changed. Runs the production encrypted pool and cookie-install functions.
 @MainActor
 enum DeviceCookiePoolDiagnostics {
+    private struct Request: Decodable { var fixture: String; var proxyID: UUID? }
     private static var started = false
     static func startIfRequested(store: ProfileStore) {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -31,9 +32,11 @@ enum DeviceCookiePoolDiagnostics {
             result["ownedStoreIDs"] = candidates.map { $0.dataStoreID.uuidString }
             do {
                 let data = try Data(contentsOf:request)
-                guard data.count < 1024,
-                      let body = try JSONSerialization.jsonObject(with:data) as? [String:String],
-                      body == ["fixture":"own-cookie-pool"] else { throw BrowserError.invalid("Invalid cookie-pool QA request") }
+                guard data.count < 1024 else { throw BrowserError.invalid("Invalid cookie-pool QA request") }
+                let body = try JSONDecoder().decode(Request.self,from:data)
+                guard body.fixture == "own-cookie-pool" else { throw BrowserError.invalid("Invalid cookie-pool QA request") }
+                let proxy = store.proxy(body.proxyID)
+                guard body.proxyID == nil || proxy != nil else { throw BrowserError.invalid("Saved QA proxy not found") }
                 try FileManager.default.removeItem(at:request)
                 var secure = CookieRecord(name:"qa_secure",value:"local-fixture-only",domain:"alpha.invalid",secure:true,
                     expirationDate:Date().addingTimeInterval(3600).timeIntervalSince1970)
@@ -49,14 +52,15 @@ enum DeviceCookiePoolDiagnostics {
                       let configuration = reopened.configuration else { throw BrowserError.invalid("Encrypted pool reload failed") }
                 result["encryptedPoolReloadedWithDeviceKeychain"] = true
                 var assignments:[[String:Any]] = []
-                for candidate in candidates.prefix(2) {
-                    let receipt = try await configuration.apply(to:candidate,proxy:nil)
+                for (index,candidate) in candidates.prefix(2).enumerated() {
+                    let receipt = try await configuration.apply(to:candidate,proxy:index == 1 ? proxy : nil)
                     guard receipt.domains.count == 2, !receipt.domains.contains("expired.invalid") else {
                         throw BrowserError.invalid("Random domain grouping failed")
                     }
                     assignments.append(["domains":receipt.domains,"cookieCount":receipt.cookieCount])
                 }
                 result["randomAssignments"] = assignments
+                result["seededThroughSavedProxy"] = proxy != nil
                 let a = try DataStoreFactory.make(id:candidates[0].dataStoreID)
                 let b = try DataStoreFactory.make(id:candidates[1].dataStoreID)
                 let isolated = try CookieRecord(name:"qa_isolation",value:"A",domain:"isolation.invalid").cookie()
