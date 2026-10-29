@@ -2,47 +2,7 @@ import SwiftUI
 import WebKit
 import UIKit
 
-// Read the real HTTPS demo without modifying its agent, requests or responses.
-enum FingerprintDemoReader {
-    static let script = #"""
-    (() => {
-      const text = document.body?.innerText ?? '';
-      function responseAfter(label) {
-        const at = text.toUpperCase().indexOf(label);
-        if (at < 0) return null;
-        const start = text.indexOf('{', at + label.length);
-        if (start < 0) return null;
-        let depth = 0, quoted = false, escaped = false;
-        for (let i = start; i < text.length; i++) {
-          const ch = text[i];
-          if (quoted) {
-            if (escaped) escaped = false;
-            else if (ch === '\\') escaped = true;
-            else if (ch === '"') quoted = false;
-          } else if (ch === '"') quoted = true;
-          else if (ch === '{') depth++;
-          else if (ch === '}' && --depth === 0) {
-            try { return JSON.parse(text.slice(start, i + 1)); } catch (_) { return null; }
-          }
-        }
-        return null;
-      }
-      const ids = [];
-      const patterns = [
-        /"visitorId"\s*:\s*"([a-zA-Z0-9]{16,64})"/g,
-        /Your Device['’]s Visitor ID\s*\n\s*([a-zA-Z0-9]{16,64})/gi,
-        /(?:Your Unique Visitor ID|VISITOR ID:)\s*\n?\s*([a-zA-Z0-9]{16,64})/gi
-      ];
-      for (const pattern of patterns) for (const match of text.matchAll(pattern)) ids.push(match[1]);
-      const unique = [...new Set(ids)];
-      return {visitorID:unique.length === 1 ? unique[0] : null,
-        agentResponse:responseAfter('JAVASCRIPT AGENT RESPONSE'),
-        serverResponse:responseAfter('SERVER API RESPONSE'),
-        javascriptUserAgent:navigator.userAgent, timeOrigin:performance.timeOrigin, url:location.href};
-    })()
-    """#
-}
-
+// Read the homepage and its displayed developer responses without altering identification.
 @MainActor
 final class FingerprintReviewController: ObservableObject {
     private static var checkingProfiles: Set<UUID> = []
@@ -115,7 +75,7 @@ final class FingerprintReviewController: ObservableObject {
                 throw BrowserError.invalid("IP đã đổi sau khi xác định múi giờ. Hãy thử lại bằng proxy có IP ổn định.")
             }
             message = "Đang đọc Visitor ID thật từ Fingerprint…"
-            tab.navigate(URL(string: "https://fingerprint.com/demo/?lekapro_check=\(UUID().uuidString)")!)
+            tab.navigate(URL(string: "https://fingerprint.com/?lekapro_check=\(UUID().uuidString)")!)
             let first = try await observe(tab: tab, previous: nil, token: token)
             message = "Đang tải lại để xác nhận ID và IP ổn định…"
             tab.webView.reloadFromOrigin()
@@ -174,18 +134,21 @@ final class FingerprintReviewController: ObservableObject {
     }
     private func observe(tab: BrowserTab, previous: FingerprintObservation?, token: UUID) async throws -> FingerprintObservation {
         let end = Date().addingTimeInterval(75)
+        var homepage = FingerprintHomepageEvidence()
         while Date() < end {
             try ensureActive(token)
             if let error = tab.navigationError { throw error }
-            if !tab.webView.isLoading, let url = tab.webView.url, FingerprintObservation.isDemo(url),
-               let page = try await tab.webView.evaluateJavaScript(FingerprintDemoReader.script) as? [String: Any],
+            if !tab.webView.isLoading, let url = tab.webView.url, FingerprintObservation.isHomepage(url),
+               let read = try await tab.webView.evaluateJavaScript(
+                   FingerprintHomepageReader.script(wantedTab: homepage.wantedTab)) as? [String: Any],
+               let page = homepage.consume(read),
                let value = try? FingerprintObservation(page: page, actualURL: url),
                previous == nil || (value.timeOrigin != previous?.timeOrigin && value.eventID != previous?.eventID) {
                 return value
             }
             try await Task.sleep(for: .milliseconds(500))
         }
-        throw BrowserError.invalid("Chưa đọc được phản hồi mới của Fingerprint. Không xóa hoặc duyệt hồ sơ từ kết quả thiếu.")
+        throw BrowserError.invalid("Trang chủ Fingerprint chưa trả đủ ID và hai phản hồi mới. Có thể trang chưa tải xong hoặc giao diện đã thay đổi. Không xóa hoặc duyệt hồ sơ từ kết quả thiếu.")
     }
 }
 

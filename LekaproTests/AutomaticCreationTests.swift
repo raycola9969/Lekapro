@@ -14,7 +14,7 @@ final class AutomaticCreationTests: XCTestCase {
     }
     private func proof(_ id: UUID, _ store: ProfileStore, visitor: String) throws -> FingerprintProof {
         let profile = try XCTUnwrap(store.profile(id)), ua = profile.userAgent ?? "Fixture UA"
-        let url = URL(string: "https://fingerprint.com/demo/")!
+        let url = URL(string: "https://fingerprint.com/")!
         func observation(_ origin: Double) throws -> FingerprintObservation {
             let event = UUID().uuidString
             return try FingerprintObservation(page: ["visitorID": visitor, "url": url.absoluteString, "timeOrigin": origin,

@@ -26,6 +26,8 @@ jobs:
           brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
+      - name: Verify homepage reader
+        run: node scripts/test-homepage-reader.cjs
       - name: Build for iPhone
         run: |
           mkdir -p build

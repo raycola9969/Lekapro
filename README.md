@@ -2,6 +2,10 @@
 
 Trình duyệt iOS nhiều hồ sơ, viết mới bằng SwiftUI và WKWebView. Bản 0.3 hỗ trợ iOS 16.1 trở lên, với nhánh tương thích dành cho thiết bị jailbreak/TrollStore.
 
+## Kiểm tra ID ở trang chủ — build 35
+
+Luồng tạo/kiểm tra hồ sơ chuyển sang **https://fingerprint.com/**. App đọc ID thật cùng JSON trong hai tab developer của trang chủ, rồi tải lại để xác nhận. Chỉ số hiển thị hoặc ví dụ quảng cáo không đủ để duyệt hồ sơ. Lịch sử ID cũ được giữ nguyên. [Cách đọc, kiểm thử và khả năng tự đo](verification/homepage-check-build35.md).
+
 ## Tạo hồ sơ tự động — build 34
 
 Bấm **+ → dán proxy host:port:user:pass → Tạo hồ sơ**. App tự tạo kho, chọn UA iPhone, đặt múi giờ theo IP và kiểm tra ID; giữ ID mới, xóa ứng viên trùng rồi thử cấu hình kế tiếp, tối đa 3 lượt/proxy. Lỗi đo giữ hồ sơ chưa đạt. Tối đa 20 proxy mỗi đợt và cần giữ app ở màn hình trước. Không bảo đảm luôn tìm được ID mới. [Cách dùng và phép thử thật](verification/automatic-profile-creation-build34.md).

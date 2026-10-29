@@ -18,17 +18,17 @@ final class FingerprintAdmissionTests: XCTestCase {
     }
     private func page(visitor: String, event: String, origin: Double, environment: String = "fixture-environment",
                       ua: String = "Fixture UA") -> [String: Any] {
-        ["visitorID": visitor, "url": "https://fingerprint.com/demo/", "timeOrigin": origin,
+        ["visitorID": visitor, "url": "https://fingerprint.com/", "timeOrigin": origin,
          "javascriptUserAgent": ua,
          "agentResponse": ["visitor_id": visitor, "event_id": event, "cache_hit": false],
          "serverResponse": ["identification": ["visitor_id": visitor, "visitor_found": true],
                             "event_id": event, "environment_id": environment, "ip_address": "192.0.2.1",
-                            "user_agent": ua, "url": "https://fingerprint.com/demo/"]]
+                            "user_agent": ua, "url": "https://fingerprint.com/"]]
     }
     private func observation(visitor: String, event: String, origin: Double,
                              environment: String = "fixture-environment", ua: String = "Fixture UA") throws -> FingerprintObservation {
         try FingerprintObservation(page: page(visitor: visitor, event: event, origin: origin, environment: environment, ua: ua),
-            actualURL: URL(string: "https://fingerprint.com/demo/")!)
+            actualURL: URL(string: "https://fingerprint.com/")!)
     }
     private func proof(_ profile: BrowserProfile, store: ProfileStore, visitor: String? = nil,
                        environment: String = "fixture-environment") throws -> FingerprintProof {
@@ -192,7 +192,7 @@ final class FingerprintAdmissionTests: XCTestCase {
     }
 
     func testMalformedCachedAndMismatchedEvidenceNeverFormsProof() throws {
-        let url = URL(string: "https://fingerprint.com/demo/")!
+        let url = URL(string: "https://fingerprint.com/")!
         var cached = page(visitor: visitor, event: "event-a", origin: 1)
         var agent = try XCTUnwrap(cached["agentResponse"] as? [String: Any]); agent["cache_hit"] = true
         cached["agentResponse"] = agent
@@ -251,6 +251,59 @@ final class FingerprintAdmissionTests: XCTestCase {
             XCTFail("An accepted profile must never be automatically deleted")
         } catch {}
         XCTAssertNotNil(store.profile(a.id))
+    }
+
+    func testAdmissionOnlyAcceptsExactHTTPSHomepage() throws {
+        for raw in ["https://fingerprint.com/demo/", "http://fingerprint.com/",
+                    "https://fingerprint.com.evil/", "https://user@fingerprint.com/",
+                    "https://fingerprint.com:444/", "https://fingerprint.com/other"] {
+            XCTAssertThrowsError(try FingerprintObservation(
+                page: page(visitor: visitor, event: "fixture", origin: 1), actualURL: URL(string: raw)!))
+        }
+    }
+
+    func testHomepageDeveloperTabsMergeOnlyWithinSameDocument() throws {
+        var evidence = FingerprintHomepageEvidence()
+        var agentPage = page(visitor: visitor, event: "event-a", origin: 1)
+        agentPage["serverResponse"] = nil
+        XCTAssertNil(evidence.consume(agentPage))
+        XCTAssertEqual(evidence.wantedTab, "smartSignals.json")
+        var serverPage = page(visitor: visitor, event: "event-a", origin: 1)
+        serverPage["agentResponse"] = nil
+        serverPage["visitorID"] = nil // Developer mode can hide the ID label.
+        let combined = try XCTUnwrap(evidence.consume(serverPage))
+        let value = try FingerprintObservation(page: combined, actualURL: URL(string: "https://fingerprint.com/")!)
+        XCTAssertEqual(value.visitorID, visitor)
+        XCTAssertEqual(value.eventID, "event-a")
+    }
+
+    func testHomepageEvidenceClearsAtNavigationOrQueryChange() throws {
+        for changeOrigin in [true, false] {
+            var evidence = FingerprintHomepageEvidence()
+            var first = page(visitor: visitor, event: "event-a", origin: 1)
+            first["serverResponse"] = nil
+            XCTAssertNil(evidence.consume(first))
+            var next = page(visitor: visitor, event: "event-b", origin: changeOrigin ? 2 : 1)
+            if !changeOrigin { next["url"] = "https://fingerprint.com/?different_document=1" }
+            next["agentResponse"] = nil; next["visitorID"] = nil
+            XCTAssertNil(evidence.consume(next))
+            XCTAssertEqual(evidence.wantedTab, "response.json")
+        }
+    }
+
+    func testHomepageMixedEventsAndMissingDisplayNeverApprove() throws {
+        let url = URL(string: "https://fingerprint.com/")!
+        var evidence = FingerprintHomepageEvidence()
+        var first = page(visitor: visitor, event: "event-a", origin: 1)
+        first["serverResponse"] = nil
+        XCTAssertNil(evidence.consume(first))
+        var next = page(visitor: visitor, event: "event-b", origin: 1)
+        next["agentResponse"] = nil
+        XCTAssertThrowsError(try FingerprintObservation(page: XCTUnwrap(evidence.consume(next)), actualURL: url))
+        var noDisplay = page(visitor: visitor, event: "event-a", origin: 1)
+        noDisplay["visitorID"] = nil
+        var fresh = FingerprintHomepageEvidence()
+        XCTAssertNil(fresh.consume(noDisplay))
     }
 
     func testLegacyDatabaseLoadsWithoutMarkingOldProfilesAsVerified() throws {
