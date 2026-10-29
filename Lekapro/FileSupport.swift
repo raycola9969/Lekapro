@@ -24,6 +24,7 @@ struct SettingsView: View {
     @State private var importing = false
     @State private var exporting = false
     @State private var document = JSONDocument()
+    @StateObject private var cookiePool = CookiePoolStore.shared
     var body: some View {
         NavigationStack {
             Form {
@@ -35,6 +36,7 @@ struct SettingsView: View {
                     ActionButton("Nhập cấu hình từ file JSON", systemImage: "square.and.arrow.down") { importing = true }
                     Text("Bản sao lưu có lịch sử và dấu trang, không chứa mật khẩu proxy hay dữ liệu website. Nhập file tạo hồ sơ mới; proxy cần nhập lại mật khẩu.").font(.caption).foregroundStyle(.secondary)
                 }
+                CookiePoolSection(pool: cookiePool)
                 Section("Lekapro") {
                     LabeledContent("Phiên bản", value: "0.2.0")
                     LabeledContent("Lưu trữ", value: "Trên thiết bị")

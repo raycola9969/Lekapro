@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-struct CookieRecord: Codable {
+struct CookieRecord: Codable, Equatable {
     var name: String
     var value: String
     var domain: String
@@ -9,11 +9,14 @@ struct CookieRecord: Codable {
     var secure: Bool?
     var httpOnly: Bool?
     var expirationDate: Double?
+    var sameSite: String?
 
     init(_ cookie: HTTPCookie) {
         name = cookie.name; value = cookie.value; domain = cookie.domain
         path = cookie.path; secure = cookie.isSecure; httpOnly = cookie.isHTTPOnly
         expirationDate = cookie.expiresDate?.timeIntervalSince1970
+        if cookie.sameSitePolicy == .strict { sameSite = "strict" }
+        else if cookie.sameSitePolicy == .lax { sameSite = "lax" }
     }
     init(name: String, value: String, domain: String, path: String = "/", secure: Bool = false, expirationDate: Double? = nil) {
         self.name = name; self.value = value; self.domain = domain; self.path = path
@@ -27,6 +30,9 @@ struct CookieRecord: Codable {
         var properties: [HTTPCookiePropertyKey: Any] = [.name: name, .value: value, .domain: domain, .path: path ?? "/"]
         if secure == true { properties[.secure] = "TRUE" }
         if httpOnly == true { properties[HTTPCookiePropertyKey("HttpOnly")] = "TRUE" }
+        if let policy = sameSite?.lowercased(), ["strict", "lax"].contains(policy) {
+            properties[.sameSitePolicy] = (policy == "strict" ? HTTPCookieStringPolicy.strict : .lax).rawValue
+        }
         if let expiry = expirationDate, expiry > 0 { properties[.expires] = Date(timeIntervalSince1970: expiry) }
         guard let cookie = HTTPCookie(properties: properties) else { throw BrowserError.invalid("Không tạo được cookie: \(name).") }
         return cookie

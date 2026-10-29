@@ -119,6 +119,9 @@ struct ProfileEditor: View {
     @State var profile: BrowserProfile
     var onSaved: (BrowserProfile) -> Void = { _ in }
     @State private var checkNewProfile = true
+    @StateObject private var cookiePool = CookiePoolStore.shared
+    @State private var saving = false
+    @State private var seededNewStore = false
     @State private var errorMessage: String?
     var body: some View {
         NavigationStack {
@@ -190,10 +193,16 @@ struct ProfileEditor: View {
                     if profile.proxyID != nil { Text("Proxy áp dụng cho hồ sơ này. Kiểm tra IP sau khi mở và kiểm tra kết nối khi proxy bị ngắt.").font(.caption).foregroundStyle(.secondary) }
                 }
                 if store.profile(profile.id) == nil {
+                    CookiePoolSection(pool: cookiePool)
                     Section {
                         Toggle("Kiểm tra ID trước khi sử dụng", isOn: $checkNewProfile)
                     } footer: {
                         Text("Mở Fingerprint bằng kết nối của hồ sơ. Nếu ID trùng lịch sử Lekapro, tự xóa hồ sơ mới; nếu đo lỗi, giữ trạng thái chưa đạt. Hồ sơ cũ chưa được đo không nằm trong lịch sử so sánh.")
+                    }
+                } else if let seeded = profile.cookieSeed {
+                    Section("Cookie ban đầu") {
+                        Text("Đã nạp \(seeded.cookieCount) cookie từ \(seeded.domains.count) nhóm domain khi tạo.")
+                        Text(seeded.domains.joined(separator: ", ")).font(.caption).foregroundStyle(.secondary)
                     }
                 }
                 Section {
@@ -222,11 +231,15 @@ struct ProfileEditor: View {
                     Text("Thay đổi nhẹ kết quả đọc ảnh hoặc âm thanh, ổn định theo hồ sơ và website. Có thể ảnh hưởng xuất ảnh và xử lý âm thanh. Không bảo đảm website không liên kết các hồ sơ.")
                 }
             }
+            .disabled(saving)
             .navigationTitle("Cấu hình hồ sơ").navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Hủy") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button("Hủy") { dismiss() }.disabled(saving) }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Lưu") {
+                        saving = true
+                        Task {
+                        defer { saving = false }
                         do {
                             profile.name = profile.name.trimmingCharacters(in: .whitespacesAndNewlines)
                             try AddressInput.validateHome(profile.homeURL)
@@ -236,17 +249,30 @@ struct ProfileEditor: View {
                                 profile.history = latest.history; profile.bookmarks = latest.bookmarks
                             } else {
                                 profile.fingerprintCheck = checkNewProfile ? .newCandidate : nil
+                                if let configuration = cookiePool.configuration {
+                                    seededNewStore = true
+                                    profile.cookieSeed = try await configuration.apply(to: profile, proxy: store.proxy(profile.proxyID))
+                                }
                             }
                             try store.save(profile)
                             if let saved = store.profile(profile.id) { onSaved(saved) }
                             dismiss()
                         } catch { errorMessage = error.localizedDescription }
+                        }
                     }
+                    .disabled(saving || (store.profile(profile.id) == nil && cookiePool.loadError != nil))
                 }
             }
             .alert("Chưa lưu được", isPresented: Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })) {
                 Button("Đóng") { errorMessage = nil }
             } message: { Text(errorMessage ?? "") }
+        }
+        .interactiveDismissDisabled(saving)
+        .onDisappear {
+            if seededNewStore && store.profile(profile.id) == nil {
+                DataStoreFactory.release(id: profile.dataStoreID)
+                try? DataStoreFactory.removeRejectedLegacyDirectory(id: profile.dataStoreID)
+            }
         }
     }
 }

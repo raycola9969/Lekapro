@@ -36,16 +36,16 @@ final class AutomaticProfileCreator: ObservableObject {
 
     init(runner: ReviewRunner? = nil) { self.runner = runner }
 
-    func start(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace) {
+    func start(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace, cookieSeed: CookieSeedConfiguration? = nil) {
         guard !busy else { return }
-        task = Task { await run(inputs: inputs, store: store, workspace: workspace) }
+        task = Task { await run(inputs: inputs, store: store, workspace: workspace, cookieSeed: cookieSeed) }
     }
     func cancel() {
         cancelled = true; status = "Đang dừng…"
         task?.cancel(); review?.close()
     }
 
-    func run(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace) async {
+    func run(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace, cookieSeed: CookieSeedConfiguration? = nil) async {
         guard !busy else { return }
         guard Self.activeOwner == nil else { status = "Đợt tạo trước vẫn đang hoàn tất. Hãy thử lại sau."; return }
         guard !inputs.isEmpty, inputs.count <= 20, !store.isReadOnly else { status = "Chưa thể bắt đầu tạo hồ sơ."; return }
@@ -74,6 +74,19 @@ final class AutomaticProfileCreator: ObservableObject {
                     candidate.userAgent = preset.value; candidate.fingerprintCheck = .newCandidate
                     try store.save(candidate)
                     results[index].attempts = attempt + 1; results[index].profileID = candidate.id
+                    status = "Đang tạo hồ sơ \(index + 1)/\(inputs.count)"
+                    if let cookieSeed {
+                        results[index].message = "Đang chia và nạp cookie · lượt \(attempt + 1)"
+                        do {
+                            candidate.cookieSeed = try await cookieSeed.apply(to: candidate, proxy: proxy)
+                            try store.save(candidate)
+                        } catch {
+                            try? store.recordFingerprintFailure(candidate.id, message: "Chưa nạp được cookie. Chưa mở website.")
+                            results[index].state = cancelled || Task.isCancelled ? .cancelled : .failed
+                            results[index].message = "Chưa nạp được cookie. Giữ hồ sơ chờ kiểm tra; chưa mở website."
+                            break
+                        }
+                    }
                     results[index].message = "Lượt \(attempt + 1)/\(Self.presets.count) · \(preset.title)"
                     status = "Đang tạo hồ sơ \(index + 1)/\(inputs.count)"
                     let controller = FingerprintReviewController(); review = controller

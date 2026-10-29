@@ -266,6 +266,7 @@ final class ProfileStore: ObservableObject {
             profile.tabs = profile.tabs.map { value in var tab = value; tab.id = UUID(); return tab }
             profile.selectedTabID = profile.tabs.first?.id
             profile.fingerprintCheck = .newCandidate
+            profile.cookieSeed = nil
             next.profiles.append(profile)
         }
         try commit(next)
