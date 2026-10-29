@@ -26,6 +26,8 @@ jobs:
           brew install xcodegen
       - name: Generate Xcode project
         run: xcodegen generate
+      - name: Verify homepage reader
+        run: node scripts/test-homepage-reader.cjs
       - name: Build for iPhone
         run: |
           mkdir -p build
@@ -105,11 +107,23 @@ jobs:
           # Network-restart fixtures terminate a process shared by WebKit stores.
           # Run them in fresh test-host processes, retaining every assertion.
           xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/TestResults.xcresult -skip-testing:LekaproTests/BrowserTests/testDisposableIdentityTokenCopyAndVerifiedCombinedReset -skip-testing:LekaproTests/BrowserTests/testNetworkOnlyResetRetainsDisposablePersistentTokens -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
+      - name: Restart simulator before cold-reset test
+        timeout-minutes: 5
+        run: |
+          # A new test host still shares WebKit's simulator services with the
+          # previous suite. End those services before destructive reset fixtures.
+          xcrun simctl shutdown "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
       - name: Run isolated cold-reset test
         timeout-minutes: 6
         run: |
           set -o pipefail
           xcodebuild -project Lekapro.xcodeproj -scheme Lekapro -destination "platform=iOS Simulator,id=$SIMULATOR_ID" -parallel-testing-enabled NO -derivedDataPath build/simulator -resultBundlePath build/ColdResetResults.xcresult -only-testing:LekaproTests/BrowserTests/testDisposableIdentityTokenCopyAndVerifiedCombinedReset -test-timeouts-enabled YES -default-test-execution-time-allowance 120 -maximum-test-execution-time-allowance 180 CODE_SIGNING_ALLOWED=NO test | tee build/cold-reset-tests.log
+      - name: Restart simulator before network-reset test
+        timeout-minutes: 5
+        run: |
+          xcrun simctl shutdown "$SIMULATOR_ID" || true
+          xcrun simctl bootstatus "$SIMULATOR_ID" -b
       - name: Run isolated network-reset test
         timeout-minutes: 6
         run: |

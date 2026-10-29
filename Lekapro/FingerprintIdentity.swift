@@ -37,10 +37,10 @@ struct FingerprintObservation: Equatable {
     let userAgent: String
     let timeOrigin: Double
 
-    // This is a consistency check of the HTTPS demo's displayed agent/server
+    // This is a consistency check of the HTTPS homepage's displayed agent/server
     // responses, not cryptographic attestation or our own Server API access.
     init(page: [String: Any], actualURL: URL) throws {
-        guard Self.isDemo(actualURL),
+        guard Self.isHomepage(actualURL),
               let pageURL = page["url"] as? String, pageURL == actualURL.absoluteString,
               let visitor = page["visitorID"] as? String, Self.validID(visitor),
               let agent = page["agentResponse"] as? [String: Any],
@@ -62,12 +62,12 @@ struct FingerprintObservation: Equatable {
         exitIP = ip; userAgent = ua; timeOrigin = origin
     }
 
-    static func isDemo(_ url: URL) -> Bool {
+    static func isHomepage(_ url: URL) -> Bool {
         url.scheme == "https" && url.host == "fingerprint.com" &&
-            ["/demo", "/demo/"].contains(url.path) && url.user == nil && url.password == nil &&
+            ["", "/"].contains(url.path) && url.user == nil && url.password == nil &&
             (url.port == nil || url.port == 443)
     }
-    private static func validID(_ value: String) -> Bool {
+    static func validID(_ value: String) -> Bool {
         (16...64).contains(value.utf8.count) && value.utf8.allSatisfy {
             (48...57).contains($0) || (65...90).contains($0) || (97...122).contains($0)
         }
