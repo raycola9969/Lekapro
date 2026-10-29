@@ -16,6 +16,9 @@ final class FingerprintReviewController: ObservableObject {
     private(set) var didStart = false
     #if DEBUG
     private(set) var diagnosticProof: FingerprintProof?
+    var captureCandidateDiagnostics = false
+    private(set) var diagnosticObservations: [[String: Any]] = []
+    private(set) var diagnosticCookiesBeforeNavigation: [[String: Any]] = []
     #endif
     private var runID: UUID?
 
@@ -37,6 +40,8 @@ final class FingerprintReviewController: ObservableObject {
         didStart = true
         #if DEBUG
         diagnosticProof = nil
+        diagnosticObservations = []
+        diagnosticCookiesBeforeNavigation = []
         #endif
         var measuredSession: BrowserSession?
         defer {
@@ -58,6 +63,11 @@ final class FingerprintReviewController: ObservableObject {
             await browser.start()
             try ensureActive(token)
             if let error = browser.startupError { throw BrowserError.invalid(error) }
+            #if DEBUG
+            if captureCandidateDiagnostics && profile.tags == "qa-admission-candidate" {
+                diagnosticCookiesBeforeNavigation = await FingerprintDiagnosticCapture.cookies(browser.dataStore)
+            }
+            #endif
             session = browser // Publish again after the tab has been created.
             guard let tab = browser.selectedTab else { throw BrowserError.invalid("Không mở được tab kiểm tra.") }
             // Suppress links opening unmeasured tabs; the visible main page is
@@ -144,6 +154,13 @@ final class FingerprintReviewController: ObservableObject {
                let page = homepage.consume(read),
                let value = try? FingerprintObservation(page: page, actualURL: url),
                previous == nil || (value.timeOrigin != previous?.timeOrigin && value.eventID != previous?.eventID) {
+                #if DEBUG
+                if captureCandidateDiagnostics, let browser = session,
+                   browser.profile.tags == "qa-admission-candidate" {
+                    diagnosticObservations.append(await FingerprintDiagnosticCapture.capture(
+                        tab: tab, page: page, store: browser.dataStore))
+                }
+                #endif
                 return value
             }
             try await Task.sleep(for: .milliseconds(500))
