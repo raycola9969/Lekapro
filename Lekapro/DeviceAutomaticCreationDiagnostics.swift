@@ -13,7 +13,7 @@ enum DeviceAutomaticCreationDiagnostics {
         #endif
     }
     #if DEBUG
-    private struct Request: Decodable { let proxyID: UUID }
+    private struct Request: Decodable { let proxyID: UUID; let useCookiePool: Bool? }
     private static func run(input: URL, store: ProfileStore, workspace: BrowserWorkspace) async {
         let output = input.deletingLastPathComponent().appendingPathComponent("Lekapro-automatic-report.json")
         var report: [String: Any] = ["completed": false, "status": "running",
@@ -26,6 +26,10 @@ enum DeviceAutomaticCreationDiagnostics {
         save()
         do {
             let request = try JSONDecoder().decode(Request.self, from: Data(contentsOf: input))
+            let cookieSeed = request.useCookiePool == true ? CookiePoolStore.shared.configuration : nil
+            guard request.useCookiePool != true || (CookiePoolStore.shared.loadError == nil && cookieSeed != nil) else {
+                throw BrowserError.invalid("Cookie pool must be imported and enabled before cookie QA.")
+            }
             guard let proxy = store.proxy(request.proxyID) else { throw BrowserError.invalid("Missing QA proxy") }
             let password = try SecretStore.password(for: proxy.id) ?? ""
             let host = proxy.host.contains(":") ? "[\(proxy.host)]" : proxy.host
@@ -35,7 +39,14 @@ enum DeviceAutomaticCreationDiagnostics {
             try FileManager.default.removeItem(at: input)
             let creator = AutomaticProfileCreator()
             try await DeviceBrowserPresentation.showAutomatic(creator, store: store, workspace: workspace)
-            await creator.run(inputs: inputs, store: store, workspace: workspace)
+            await creator.run(inputs: inputs, store: store, workspace: workspace, cookieSeed: cookieSeed)
+            report["cookiePoolRequested"] = request.useCookiePool == true
+            report["events"] = creator.diagnosticEvents
+            report["attempts"] = creator.results.first?.attempts
+            report["approved"] = creator.approvedCount; report["duplicatesDeleted"] = creator.duplicateCount
+            report["terminalState"] = creator.results.first.map { String(describing: $0.state) }
+            report["profileID"] = creator.results.first?.profileID?.uuidString
+            report["ledgerBefore"] = ledger.count; report["ledgerAfter"] = store.database.fingerprintLedger?.count ?? 0
             guard creator.finished, !creator.busy, creator.results.count == 1,
                   let row = creator.results.first, [.approved, .exhausted].contains(row.state),
                   beforeProfiles.allSatisfy({ store.profile($0.id) == $0 }), beforeProxies == store.proxies,

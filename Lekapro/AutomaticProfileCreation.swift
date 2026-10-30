@@ -109,7 +109,11 @@ final class AutomaticProfileCreator: ObservableObject {
                         diagnosticEvents.append(["profileID": candidate.id.uuidString,
                             "visitorID": proof.first.visitorID, "reloadVisitorID": proof.reload.visitorID,
                             "eventID": proof.first.eventID, "reloadEventID": proof.reload.eventID,
-                            "exitIP": proof.first.exitIP, "environmentID": proof.first.environmentID])
+                            "exitIP": proof.first.exitIP, "environmentID": proof.first.environmentID,
+                            "userAgent": proof.first.userAgent,
+                            "cookieDomainCount": String(candidate.cookieSeed?.domains.count ?? 0),
+                            "cookieCount": String(candidate.cookieSeed?.cookieCount ?? 0),
+                            "cookieDomains": candidate.cookieSeed?.domains.joined(separator: "|") ?? ""])
                     }
                     #endif
                     review = nil
