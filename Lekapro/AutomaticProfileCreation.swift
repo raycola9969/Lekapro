@@ -17,6 +17,7 @@ enum AutomaticReviewOutcome: Equatable { case approved, duplicateDeleted, failed
 @MainActor
 final class AutomaticProfileCreator: ObservableObject {
     typealias ReviewRunner = (UUID, ProfileStore, BrowserWorkspace, FingerprintReviewController) async -> AutomaticReviewOutcome
+    typealias CookieSeeder = (CookieSeedConfiguration, BrowserProfile, ProxyRecord?) async throws -> CookieSeedReceipt
     // A single sequential creator across both entry points. No unbounded loop.
     private static var activeOwner: UUID?
     static let presets: [UserAgentPreset] = [.ios172, .crios174, .fxios175]
@@ -26,6 +27,7 @@ final class AutomaticProfileCreator: ObservableObject {
     @Published private(set) var status = ""
     @Published private(set) var review: FingerprintReviewController?
     private let runner: ReviewRunner?
+    private let cookieSeeder: CookieSeeder
     private var cancelled = false
     private var task: Task<Void, Never>?
     var approvedCount: Int { results.filter { $0.state == .approved }.count }
@@ -34,18 +36,24 @@ final class AutomaticProfileCreator: ObservableObject {
     private(set) var diagnosticEvents: [[String: String]] = []
     #endif
 
-    init(runner: ReviewRunner? = nil) { self.runner = runner }
+    init(runner: ReviewRunner? = nil) {
+        self.runner = runner
+        cookieSeeder = { configuration, profile, proxy in try await configuration.apply(to: profile, proxy: proxy) }
+    }
+    init(cookieSeeder: @escaping CookieSeeder, runner: ReviewRunner? = nil) {
+        self.cookieSeeder = cookieSeeder; self.runner = runner
+    }
 
-    func start(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace) {
+    func start(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace, cookieSeed: CookieSeedConfiguration? = nil) {
         guard !busy else { return }
-        task = Task { await run(inputs: inputs, store: store, workspace: workspace) }
+        task = Task { await run(inputs: inputs, store: store, workspace: workspace, cookieSeed: cookieSeed) }
     }
     func cancel() {
         cancelled = true; status = "Đang dừng…"
         task?.cancel(); review?.close()
     }
 
-    func run(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace) async {
+    func run(inputs: [PastedProxy], store: ProfileStore, workspace: BrowserWorkspace, cookieSeed: CookieSeedConfiguration? = nil) async {
         guard !busy else { return }
         guard Self.activeOwner == nil else { status = "Đợt tạo trước vẫn đang hoàn tất. Hãy thử lại sau."; return }
         guard !inputs.isEmpty, inputs.count <= 20, !store.isReadOnly else { status = "Chưa thể bắt đầu tạo hồ sơ."; return }
@@ -74,6 +82,19 @@ final class AutomaticProfileCreator: ObservableObject {
                     candidate.userAgent = preset.value; candidate.fingerprintCheck = .newCandidate
                     try store.save(candidate)
                     results[index].attempts = attempt + 1; results[index].profileID = candidate.id
+                    status = "Đang tạo hồ sơ \(index + 1)/\(inputs.count)"
+                    if let cookieSeed {
+                        results[index].message = "Đang chia và nạp cookie · lượt \(attempt + 1)"
+                        do {
+                            candidate.cookieSeed = try await cookieSeeder(cookieSeed, candidate, proxy)
+                            try store.save(candidate)
+                        } catch {
+                            try? store.recordFingerprintFailure(candidate.id, message: "Chưa nạp được cookie. Chưa mở website.")
+                            results[index].state = cancelled || Task.isCancelled ? .cancelled : .failed
+                            results[index].message = "Chưa nạp được cookie. Giữ hồ sơ chờ kiểm tra; chưa mở website."
+                            break
+                        }
+                    }
                     results[index].message = "Lượt \(attempt + 1)/\(Self.presets.count) · \(preset.title)"
                     status = "Đang tạo hồ sơ \(index + 1)/\(inputs.count)"
                     let controller = FingerprintReviewController(); review = controller
@@ -88,7 +109,11 @@ final class AutomaticProfileCreator: ObservableObject {
                         diagnosticEvents.append(["profileID": candidate.id.uuidString,
                             "visitorID": proof.first.visitorID, "reloadVisitorID": proof.reload.visitorID,
                             "eventID": proof.first.eventID, "reloadEventID": proof.reload.eventID,
-                            "exitIP": proof.first.exitIP, "environmentID": proof.first.environmentID])
+                            "exitIP": proof.first.exitIP, "environmentID": proof.first.environmentID,
+                            "userAgent": proof.first.userAgent,
+                            "cookieDomainCount": String(candidate.cookieSeed?.domains.count ?? 0),
+                            "cookieCount": String(candidate.cookieSeed?.cookieCount ?? 0),
+                            "cookieDomains": candidate.cookieSeed?.domains.joined(separator: "|") ?? ""])
                     }
                     #endif
                     review = nil

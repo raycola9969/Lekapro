@@ -1,13 +1,16 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AutomaticProfileCreationView: View {
     @EnvironmentObject private var store: ProfileStore
     @EnvironmentObject private var workspace: BrowserWorkspace
     @Environment(\.dismiss) private var dismiss
     @StateObject private var creator: AutomaticProfileCreator
+    @StateObject private var cookiePool = CookiePoolStore.shared
     @State private var proxyText = ""
     @State private var kind = ProxyKind.socks5
     @State private var error: String?
+    @State private var importingCookies = false
     @Environment(\.scenePhase) private var phase
 
     init() { _creator = StateObject(wrappedValue: AutomaticProfileCreator()) }
@@ -30,14 +33,15 @@ struct AutomaticProfileCreationView: View {
                             Text("Thông tin đăng nhập được lưu trong Keychain. Dòng trùng được gộp; tối đa 20 proxy mỗi đợt.")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
+                        CookiePoolSection(pool: cookiePool) { importingCookies = true }
                         Section {
                             Button("Tạo hồ sơ") {
                                 do {
                                     let inputs = try ProxyPaste.parse(proxyText, kind: kind)
                                     proxyText = ""; error = nil
-                                    creator.start(inputs: inputs, store: store, workspace: workspace)
+                                    creator.start(inputs: inputs, store: store, workspace: workspace, cookieSeed: cookiePool.configuration)
                                 } catch { self.error = error.localizedDescription }
-                            }.disabled(store.isReadOnly || creator.busy)
+                            }.disabled(store.isReadOnly || creator.busy || cookiePool.loadError != nil)
                             if let error { Text(error).foregroundStyle(.red) }
                             if !creator.status.isEmpty { Text(creator.status).font(.caption).foregroundStyle(.secondary) }
                         } footer: {
@@ -76,6 +80,11 @@ struct AutomaticProfileCreationView: View {
         }
         .interactiveDismissDisabled(creator.busy)
         .onDisappear { if creator.busy { creator.cancel() } }
+        // Present from the stable screen host, not a recyclable Form section.
+        .fileImporter(isPresented: $importingCookies, allowedContentTypes: [.json, .plainText]) { result in
+            do { try cookiePool.replace(with: DocumentReader.read(try result.get())); error = nil }
+            catch { self.error = error.localizedDescription }
+        }
     }
 }
 

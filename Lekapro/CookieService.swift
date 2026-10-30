@@ -1,7 +1,7 @@
 import Foundation
 import WebKit
 
-struct CookieRecord: Codable {
+struct CookieRecord: Codable, Equatable {
     var name: String
     var value: String
     var domain: String
@@ -9,11 +9,14 @@ struct CookieRecord: Codable {
     var secure: Bool?
     var httpOnly: Bool?
     var expirationDate: Double?
+    var sameSite: String?
 
     init(_ cookie: HTTPCookie) {
         name = cookie.name; value = cookie.value; domain = cookie.domain
         path = cookie.path; secure = cookie.isSecure; httpOnly = cookie.isHTTPOnly
         expirationDate = cookie.expiresDate?.timeIntervalSince1970
+        if cookie.sameSitePolicy == .sameSiteStrict { sameSite = "strict" }
+        else if cookie.sameSitePolicy == .sameSiteLax { sameSite = "lax" }
     }
     init(name: String, value: String, domain: String, path: String = "/", secure: Bool = false, expirationDate: Double? = nil) {
         self.name = name; self.value = value; self.domain = domain; self.path = path
@@ -27,6 +30,9 @@ struct CookieRecord: Codable {
         var properties: [HTTPCookiePropertyKey: Any] = [.name: name, .value: value, .domain: domain, .path: path ?? "/"]
         if secure == true { properties[.secure] = "TRUE" }
         if httpOnly == true { properties[HTTPCookiePropertyKey("HttpOnly")] = "TRUE" }
+        if let policy = sameSite?.lowercased(), ["strict", "lax"].contains(policy) {
+            properties[.sameSitePolicy] = (policy == "strict" ? HTTPCookieStringPolicy.sameSiteStrict : .sameSiteLax).rawValue
+        }
         if let expiry = expirationDate, expiry > 0 { properties[.expires] = Date(timeIntervalSince1970: expiry) }
         guard let cookie = HTTPCookie(properties: properties) else { throw BrowserError.invalid("Không tạo được cookie: \(name).") }
         return cookie
@@ -44,7 +50,8 @@ enum CookieService {
             var parsed: [CookieRecord] = []
             for line in text.components(separatedBy: .newlines) {
                 guard !line.isEmpty, !line.hasPrefix("#") || line.hasPrefix("#HttpOnly_") else { continue }
-                let fields = line.replacingOccurrences(of: "#HttpOnly_", with: "").components(separatedBy: "\t")
+                let content = line.hasPrefix("#HttpOnly_") ? String(line.dropFirst("#HttpOnly_".count)) : line
+                let fields = content.components(separatedBy: "\t")
                 guard fields.count == 7, let expiry = Double(fields[4]) else { throw BrowserError.invalid("Định dạng cookie cần JSON hoặc Netscape TXT hợp lệ.") }
                 var record = CookieRecord(name: fields[5], value: fields[6], domain: fields[0], path: fields[2], secure: fields[3].uppercased() == "TRUE", expirationDate: expiry > 0 ? expiry : nil)
                 record.httpOnly = line.hasPrefix("#HttpOnly_")

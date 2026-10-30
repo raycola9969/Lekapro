@@ -125,6 +125,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
     var createdAt = Date()
     var lastUsed: Date?
     var fingerprintCheck: FingerprintCheck?
+    var cookieSeed: CookieSeedReceipt?
 
     func duplicated() -> BrowserProfile {
         var copy = self
@@ -137,6 +138,7 @@ struct BrowserProfile: Codable, Identifiable, Equatable {
         copy.history = []
         copy.createdAt = Date()
         copy.lastUsed = nil
+        copy.cookieSeed = nil
         copy.fingerprintCheck = fingerprintCheck == nil ? nil : .newCandidate
         return copy
     }
