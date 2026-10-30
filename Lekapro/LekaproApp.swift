@@ -28,6 +28,7 @@ struct LekaproApp: App {
                 DeviceIPTimeZoneDiagnostics.startIfRequested(store: store, workspace: workspace)
                 DeviceAutomaticCreationDiagnostics.startIfRequested(store: store, workspace: workspace)
                 #if DEBUG
+                DeviceCookiePoolImport.startIfRequested(store: store)
                 DeviceCookiePoolDiagnostics.startIfRequested(store: store)
                 #endif
             }
