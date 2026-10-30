@@ -22,6 +22,7 @@ enum DocumentReader {
 struct SettingsView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var importing = false
+    @State private var importingCookiePool = false
     @State private var exporting = false
     @State private var document = JSONDocument()
     @StateObject private var cookiePool = CookiePoolStore.shared
@@ -33,10 +34,10 @@ struct SettingsView: View {
                         do { document = JSONDocument(data: try store.exportConfiguration()); exporting = true }
                         catch { store.errorMessage = error.localizedDescription }
                     }
-                    ActionButton("Nhập cấu hình từ file JSON", systemImage: "square.and.arrow.down") { importing = true }
+                    ActionButton("Nhập cấu hình từ file JSON", systemImage: "square.and.arrow.down") { importingCookiePool = false; importing = true }
                     Text("Bản sao lưu có lịch sử và dấu trang, không chứa mật khẩu proxy hay dữ liệu website. Nhập file tạo hồ sơ mới; proxy cần nhập lại mật khẩu.").font(.caption).foregroundStyle(.secondary)
                 }
-                CookiePoolSection(pool: cookiePool)
+                CookiePoolSection(pool: cookiePool) { importingCookiePool = true; importing = true }
                 Section("Lekapro") {
                     LabeledContent("Phiên bản", value: "0.2.0")
                     LabeledContent("Lưu trữ", value: "Trên thiết bị")
@@ -44,8 +45,12 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Cài đặt")
-            .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in
-                do { try store.importConfiguration(DocumentReader.read(try result.get())) }
+            .fileImporter(isPresented: $importing, allowedContentTypes: importingCookiePool ? [.json, .plainText] : [.json]) { result in
+                do {
+                    let data = try DocumentReader.read(try result.get())
+                    if importingCookiePool { try cookiePool.replace(with: data) }
+                    else { try store.importConfiguration(data) }
+                }
                 catch { store.errorMessage = error.localizedDescription }
             }
             .fileExporter(isPresented: $exporting, document: document, contentType: .json, defaultFilename: "Lekapro-config") { result in

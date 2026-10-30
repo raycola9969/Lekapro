@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ProfileListView: View {
     @EnvironmentObject private var store: ProfileStore
@@ -122,6 +123,7 @@ struct ProfileEditor: View {
     @StateObject private var cookiePool = CookiePoolStore.shared
     @State private var saving = false
     @State private var seededNewStore = false
+    @State private var importingCookies = false
     @State private var errorMessage: String?
     var body: some View {
         NavigationStack {
@@ -193,7 +195,7 @@ struct ProfileEditor: View {
                     if profile.proxyID != nil { Text("Proxy áp dụng cho hồ sơ này. Kiểm tra IP sau khi mở và kiểm tra kết nối khi proxy bị ngắt.").font(.caption).foregroundStyle(.secondary) }
                 }
                 if store.profile(profile.id) == nil {
-                    CookiePoolSection(pool: cookiePool)
+                    CookiePoolSection(pool: cookiePool) { importingCookies = true }
                     Section {
                         Toggle("Kiểm tra ID trước khi sử dụng", isOn: $checkNewProfile)
                     } footer: {
@@ -276,6 +278,10 @@ struct ProfileEditor: View {
                 DataStoreFactory.release(id: profile.dataStoreID)
                 try? DataStoreFactory.removeRejectedLegacyDirectory(id: profile.dataStoreID)
             }
+        }
+        .fileImporter(isPresented: $importingCookies, allowedContentTypes: [.json, .plainText]) { result in
+            do { try cookiePool.replace(with: DocumentReader.read(try result.get())) }
+            catch { errorMessage = error.localizedDescription }
         }
     }
 }

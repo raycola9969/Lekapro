@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct AutomaticProfileCreationView: View {
     @EnvironmentObject private var store: ProfileStore
@@ -9,6 +10,7 @@ struct AutomaticProfileCreationView: View {
     @State private var proxyText = ""
     @State private var kind = ProxyKind.socks5
     @State private var error: String?
+    @State private var importingCookies = false
     @Environment(\.scenePhase) private var phase
 
     init() { _creator = StateObject(wrappedValue: AutomaticProfileCreator()) }
@@ -31,7 +33,7 @@ struct AutomaticProfileCreationView: View {
                             Text("Thông tin đăng nhập được lưu trong Keychain. Dòng trùng được gộp; tối đa 20 proxy mỗi đợt.")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
-                        CookiePoolSection(pool: cookiePool)
+                        CookiePoolSection(pool: cookiePool) { importingCookies = true }
                         Section {
                             Button("Tạo hồ sơ") {
                                 do {
@@ -78,6 +80,11 @@ struct AutomaticProfileCreationView: View {
         }
         .interactiveDismissDisabled(creator.busy)
         .onDisappear { if creator.busy { creator.cancel() } }
+        // Present from the stable screen host, not a recyclable Form section.
+        .fileImporter(isPresented: $importingCookies, allowedContentTypes: [.json, .plainText]) { result in
+            do { try cookiePool.replace(with: DocumentReader.read(try result.get())); error = nil }
+            catch { self.error = error.localizedDescription }
+        }
     }
 }
 

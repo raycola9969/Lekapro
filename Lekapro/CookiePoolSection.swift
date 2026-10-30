@@ -3,11 +3,11 @@ import UniformTypeIdentifiers
 
 struct CookiePoolSection: View {
     @ObservedObject var pool: CookiePoolStore
-    @State private var importing = false
+    var onImport: () -> Void
     @State private var error: String?
     var body: some View {
         Section {
-            Button("Nhập / thay kho cookie JSON hoặc TXT") { importing = true }
+            Button("Nhập / thay kho cookie JSON hoặc TXT", action: onImport)
                 .disabled(pool.loadError != nil)
             Text("\(pool.records.count) cookie · \(pool.domains.count) nhóm domain còn hạn")
                 .font(.caption).foregroundStyle(.secondary)
@@ -28,10 +28,6 @@ struct CookiePoolSection: View {
             if let error { Text(error).font(.caption).foregroundStyle(.red) }
         } header: { Text("Kho cookie tổng") } footer: {
             Text("Mỗi hồ sơ nhận toàn bộ cookie còn hạn của các domain được chọn ngẫu nhiên. Kho gốc được dùng lại; các hồ sơ có thể nhận trùng nhóm và chia sẻ phiên đăng nhập. Cookie được nạp trước khi mở website; không tạo lịch sử truy cập hay bảo đảm ID mới.")
-        }
-        .fileImporter(isPresented: $importing, allowedContentTypes: [.json, .plainText]) { result in
-            do { try pool.replace(with: DocumentReader.read(try result.get())); error = nil }
-            catch { self.error = error.localizedDescription }
         }
     }
 }
